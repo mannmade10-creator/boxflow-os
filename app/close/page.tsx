@@ -1,3 +1,5 @@
+'use client'
+import React from 'react'
 export default function ClosePage() {
   const container: React.CSSProperties = {
     padding: 32,
