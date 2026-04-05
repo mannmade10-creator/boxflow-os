@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         lat: Number(stop?.lat),
       }))
       .filter(
-        (stop) =>
+        (stop: any) =>
           Number.isFinite(stop.lng) &&
           Number.isFinite(stop.lat) &&
           Math.abs(stop.lng) <= 180 &&
