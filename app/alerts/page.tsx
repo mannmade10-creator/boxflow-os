@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import AuthGate from '../../components/AuthGate'
+
 
 type AlertRow = {
   id: string
@@ -63,7 +63,7 @@ export default function AlertsPage() {
   }, [])
 
   return (
-    <AuthGate>
+    
       <main
         style={{
           minHeight: '100vh',
@@ -272,6 +272,6 @@ export default function AlertsPage() {
           )}
         </div>
       </main>
-    </AuthGate>
+    
   )
 }
