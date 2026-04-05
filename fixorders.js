@@ -1,0 +1,18 @@
+const fs = require('fs');
+const lines = [];
+lines.push('"use client"');
+lines.push('import React from "react"');
+lines.push('export default function HomePage() {');
+lines.push('  return (');
+lines.push('    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(180deg, #020617 0%, #0b1220 100%)" }}>');
+lines.push('      <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>');
+lines.push('        <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 280, marginBottom: 8, filter: "drop-shadow(0 0 40px rgba(37,99,235,0.7))" }} />');
+lines.push('        <h1 style={{ fontSize: 72, fontWeight: 900, color: "#fff", margin: 0 }}>BoxFlow OS</h1>');
+lines.push('        <div style={{ color: "#60a5fa", fontSize: 16, letterSpacing: 4, textTransform: "uppercase" }}>Enterprise Operations Suite</div>');
+lines.push('        <a href="/login" style={{ marginTop: 16, padding: "18px 56px", background: "#2563eb", color: "#fff", borderRadius: 16, textDecoration: "none", fontWeight: 800, fontSize: 20 }}>Enter System</a>');
+lines.push('      </div>');
+lines.push('    </div>');
+lines.push('  )');
+lines.push('}');
+fs.writeFileSync('app/page.tsx', lines.join('\n'), 'utf8');
+console.log('Splash fixed!');

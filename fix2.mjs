@@ -1,0 +1,321 @@
+import { writeFileSync, mkdirSync } from 'fs';
+try { mkdirSync('app/pitch', { recursive: true }); } catch(e) {}
+
+const code = `'use client'
+
+import React, { useState, useEffect } from 'react'
+
+const slides = [
+  {
+    id: 1,
+    type: 'cover',
+    label: 'Introduction',
+    title: 'BoxFlow OS',
+    subtitle: 'The Enterprise Operations System for Modern Logistics',
+    body: 'Dispatch · Fleet · Production · AI · HR · Client Portal',
+    note: 'One platform. Every operation.',
+    color: '#3b82f6',
+  },
+  {
+    id: 2,
+    type: 'problem',
+    label: 'The Problem',
+    title: 'Logistics Companies Are Running on 6 Different Tools',
+    points: [
+      '📋 Dispatch software — $2,000/month',
+      '🚛 Fleet tracking — $1,500/month',
+      '🏭 Production management — $1,800/month',
+      '👥 HR + Payroll — $800/month',
+      '📊 Analytics — $600/month',
+      '📱 Client portal — $500/month',
+    ],
+    total: 'Total: $7,200+/month for DISCONNECTED tools',
+    color: '#ef4444',
+  },
+  {
+    id: 3,
+    type: 'solution',
+    label: 'The Solution',
+    title: 'BoxFlow OS — Everything in One Platform',
+    points: [
+      '✅ Smart Dispatch with AI truck assignment',
+      '✅ Live Fleet Map with real-time GPS tracking',
+      '✅ Production Flow Tracker with machine status',
+      '✅ AI Control Panel with one-click optimization',
+      '✅ HR + Payroll Command Center',
+      '✅ Client Portal with live order tracking',
+      '✅ Executive Dashboard with live analytics',
+    ],
+    total: 'All of this: Starting at $599/month',
+    color: '#22c55e',
+  },
+  {
+    id: 4,
+    type: 'demo',
+    label: 'Live Demo',
+    title: 'See It In Action',
+    demos: [
+      { icon: '🚀', title: 'Demo Mode', desc: 'Watch orders update, trucks move, and alerts fire in real time' },
+      { icon: '🤖', title: 'AI Engine', desc: 'One-click optimize production, reassign drivers, reduce delays' },
+      { icon: '🗺️', title: 'Fleet Map', desc: 'Live GPS tracking with route optimization and ETA predictions' },
+      { icon: '📊', title: 'Analytics', desc: 'Real-time KPIs, efficiency charts, and revenue tracking' },
+    ],
+    color: '#8b5cf6',
+  },
+  {
+    id: 5,
+    type: 'market',
+    label: 'Market Size',
+    title: 'Massive Market. Underserved Segment.',
+    stats: [
+      { value: '$52B', label: 'Global TMS Market by 2030', color: '#3b82f6' },
+      { value: '180K+', label: 'Logistics companies in the US', color: '#8b5cf6' },
+      { value: '$7,200', label: 'Avg monthly spend on disconnected tools', color: '#f59e0b' },
+      { value: '2.3M', label: 'Commercial trucks operating in the US', color: '#22c55e' },
+    ],
+    color: '#0ea5e9',
+  },
+  {
+    id: 6,
+    type: 'revenue',
+    label: 'Revenue Model',
+    title: 'Multiple Revenue Streams',
+    streams: [
+      { name: 'Starter Plan', price: '$599/mo', desc: 'Small operations, 1 location', color: '#3b82f6' },
+      { name: 'Professional Plan', price: '$1,899/mo', desc: 'Mid-size, up to 3 locations', color: '#8b5cf6' },
+      { name: 'Enterprise Plan', price: '$4,499/mo', desc: 'Large operations, unlimited', color: '#22c55e' },
+      { name: 'Per-Truck Add-on', price: '$15/truck/mo', desc: 'Scales with fleet size', color: '#f59e0b' },
+      { name: 'White Label', price: '$799/mo', desc: 'Resellers and agencies', color: '#a855f7' },
+      { name: 'API Access', price: '$299/mo', desc: 'Custom integrations', color: '#0ea5e9' },
+    ],
+    color: '#22c55e',
+  },
+  {
+    id: 7,
+    type: 'traction',
+    label: 'Traction',
+    title: 'Built. Tested. Ready to Scale.',
+    metrics: [
+      { value: '15+', label: 'Core modules built', color: '#3b82f6' },
+      { value: '100%', label: 'Feature complete', color: '#22c55e' },
+      { value: '$0', label: 'Raised to date', color: '#f59e0b' },
+      { value: '1', label: 'Founder-built MVP', color: '#8b5cf6' },
+    ],
+    points: [
+      'Full-stack SaaS built on Next.js + Supabase',
+      'Real-time data with Mapbox GPS integration',
+      'AI engine with production + dispatch optimization',
+      'Mobile responsive — works on any device',
+      'White label ready for resellers',
+    ],
+    color: '#f59e0b',
+  },
+  {
+    id: 8,
+    type: 'ask',
+    label: 'The Ask',
+    title: "We're Raising to Scale",
+    ask: '$250,000',
+    use: [
+      { pct: '40%', label: 'Sales & Marketing', color: '#3b82f6' },
+      { pct: '30%', label: 'Engineering & AI', color: '#8b5cf6' },
+      { pct: '20%', label: 'Operations & Support', color: '#22c55e' },
+      { pct: '10%', label: 'Legal & Infrastructure', color: '#f59e0b' },
+    ],
+    goal: 'Goal: 50 paying customers in 12 months = $570K ARR',
+    color: '#a855f7',
+  },
+]
+
+export default function PitchPage() {
+  const [current, setCurrent] = useState(0)
+  const [animating, setAnimating] = useState(false)
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goNext()
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goPrev()
+      if (e.key === 'Escape') window.location.href = '/dashboard'
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [current])
+
+  function goNext() {
+    if (current < slides.length - 1 && !animating) {
+      setAnimating(true)
+      setTimeout(() => { setCurrent(c => c + 1); setAnimating(false) }, 200)
+    }
+  }
+
+  function goPrev() {
+    if (current > 0 && !animating) {
+      setAnimating(true)
+      setTimeout(() => { setCurrent(c => c - 1); setAnimating(false) }, 200)
+    }
+  }
+
+  const slide = slides[current]
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 30% 20%, rgba(37,99,235,0.2), transparent 50%), radial-gradient(circle at 70% 80%, rgba(139,92,246,0.15), transparent 50%), linear-gradient(180deg, #020617 0%, #050e1f 100%)', color: '#fff', fontFamily: 'Arial, sans-serif', display: 'flex', flexDirection: 'column' }}>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', borderBottom: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.8)', backdropFilter: 'blur(12px)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 32, height: 32 }} />
+          <span style={{ fontWeight: 900, color: '#fff', fontSize: 16 }}>BoxFlow OS</span>
+          <span style={{ color: '#334155', margin: '0 8px' }}>|</span>
+          <span style={{ color: '#93c5fd', fontSize: 13, fontWeight: 700 }}>Investor Pitch Deck</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {slides.map((_, i) => (
+              <button key={i} onClick={() => setCurrent(i)} style={{ width: i === current ? 24 : 8, height: 8, borderRadius: 999, background: i === current ? slide.color : 'rgba(148,163,184,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
+            ))}
+          </div>
+          <span style={{ color: '#64748b', fontSize: 13 }}>{current + 1} / {slides.length}</span>
+          <a href="/dashboard" style={{ padding: '6px 14px', background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>✕ Exit</a>
+        </div>
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 60px', opacity: animating ? 0 : 1, transition: 'opacity 0.2s ease' }}>
+        <div style={{ maxWidth: 1000, width: '100%' }}>
+
+          <div style={{ display: 'inline-flex', padding: '6px 14px', borderRadius: 999, background: slide.color + '20', border: '1px solid ' + slide.color + '40', color: slide.color, fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 24 }}>
+            {String(current + 1).padStart(2, '0')} — {slide.label}
+          </div>
+
+          {slide.type === 'cover' && (
+            <div style={{ textAlign: 'center' }}>
+              <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 120, marginBottom: 24, filter: 'drop-shadow(0 0 40px rgba(37,99,235,0.6))' }} />
+              <h1 style={{ fontSize: 80, fontWeight: 900, margin: '0 0 16px', letterSpacing: -2, lineHeight: 1, background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
+              <p style={{ fontSize: 22, color: '#94a3b8', margin: '0 0 16px' }}>{slide.subtitle}</p>
+              <p style={{ fontSize: 16, color: slide.color, fontWeight: 700, letterSpacing: 2 }}>{slide.body}</p>
+              <div style={{ marginTop: 40, padding: '16px 32px', background: slide.color + '15', border: '1px solid ' + slide.color + '30', borderRadius: 16, display: 'inline-block' }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{slide.note}</span>
+              </div>
+            </div>
+          )}
+
+          {(slide.type === 'problem' || slide.type === 'solution') && (
+            <div>
+              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 40px', lineHeight: 1.1 }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gap: 14, marginBottom: 32 }}>
+                {slide.points?.map((point, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(148,163,184,0.12)', borderLeft: '3px solid ' + slide.color, borderRadius: 14, padding: '16px 20px', fontSize: 18, color: '#e2e8f0', fontWeight: 600 }}>
+                    {point}
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: '20px 28px', background: slide.color + '15', border: '2px solid ' + slide.color + '40', borderRadius: 16, fontSize: 20, fontWeight: 900, color: slide.color }}>
+                {slide.total}
+              </div>
+            </div>
+          )}
+
+          {slide.type === 'demo' && (
+            <div>
+              <h1 style={{ fontSize: 56, fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
+              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40 }}>Live system — not a mockup. Real data. Real AI.</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
+                {slide.demos?.map((demo, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28 }}>
+                    <div style={{ fontSize: 40, marginBottom: 12 }}>{demo.icon}</div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', marginBottom: 8 }}>{demo.title}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.5 }}>{demo.desc}</div>
+                  </div>
+                ))}
+              </div>
+              <a href="/dashboard" style={{ display: 'inline-block', padding: '16px 36px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 16, boxShadow: '0 0 30px rgba(37,99,235,0.3)' }}>
+                🚀 Launch Live Demo →
+              </a>
+            </div>
+          )}
+
+          {slide.type === 'market' && (
+            <div>
+              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 48px', lineHeight: 1.1 }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+                {slide.stats?.map((stat, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + stat.color, borderRadius: 20, padding: 28, textAlign: 'center' }}>
+                    <div style={{ fontSize: 44, fontWeight: 900, color: stat.color, marginBottom: 8 }}>{stat.value}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.4 }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {slide.type === 'revenue' && (
+            <div>
+              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 40px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                {slide.streams?.map((stream, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderLeft: '3px solid ' + stream.color, borderRadius: 18, padding: 24 }}>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: stream.color, marginBottom: 6 }}>{stream.price}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 4 }}>{stream.name}</div>
+                    <div style={{ color: '#64748b', fontSize: 13 }}>{stream.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {slide.type === 'traction' && (
+            <div>
+              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 40px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+                {slide.metrics?.map((metric, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + metric.color, borderRadius: 18, padding: 24, textAlign: 'center' }}>
+                    <div style={{ fontSize: 40, fontWeight: 900, color: metric.color, marginBottom: 6 }}>{metric.value}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 13 }}>{metric.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'grid', gap: 12 }}>
+                {slide.points?.map((point, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#cbd5e1', fontSize: 16 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: slide.color, flexShrink: 0 }} />
+                    {point}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {slide.type === 'ask' && (
+            <div style={{ textAlign: 'center' }}>
+              <h1 style={{ fontSize: 56, fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
+              <div style={{ fontSize: 96, fontWeight: 900, margin: '20px 0', background: 'linear-gradient(135deg, #a855f7, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.ask}</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, margin: '32px 0' }}>
+                {slide.use?.map((item, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + item.color, borderRadius: 18, padding: 24 }}>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: item.color, marginBottom: 6 }}>{item.pct}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 13 }}>{item.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: '20px 32px', background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 16, display: 'inline-block', fontSize: 18, fontWeight: 800, color: '#c4b5fd' }}>
+                🎯 {slide.goal}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderTop: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.8)' }}>
+        <button onClick={goPrev} disabled={current === 0} style={{ padding: '12px 28px', background: current === 0 ? 'rgba(148,163,184,0.05)' : 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 12, color: current === 0 ? '#334155' : '#fff', fontWeight: 700, cursor: current === 0 ? 'not-allowed' : 'pointer', fontSize: 15 }}>
+          ← Previous
+        </button>
+        <div style={{ color: '#64748b', fontSize: 13 }}>Use ← → arrow keys to navigate</div>
+        <button onClick={goNext} disabled={current === slides.length - 1} style={{ padding: '12px 28px', background: current === slides.length - 1 ? 'rgba(148,163,184,0.05)' : 'linear-gradient(135deg, ' + slide.color + ', ' + slide.color + 'cc)', border: 'none', borderRadius: 12, color: current === slides.length - 1 ? '#334155' : '#fff', fontWeight: 700, cursor: current === slides.length - 1 ? 'not-allowed' : 'pointer', fontSize: 15, boxShadow: current === slides.length - 1 ? 'none' : '0 0 20px ' + slide.color + '40' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  )
+}`;
+
+writeFileSync('app/pitch/page.tsx', code, 'utf8');
+console.log('Pitch deck built!');

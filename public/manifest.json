@@ -1,0 +1,37 @@
+{
+  "name": "BoxFlow OS",
+  "short_name": "BoxFlow",
+  "description": "Enterprise Operations Suite — Dispatch, Fleet, Production, AI",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity",
+    "logistics"
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/command-center-bg.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Command Center"
+    }
+  ]
+}

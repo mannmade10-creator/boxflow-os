@@ -1,408 +1,277 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import AuthGate from '../../components/AuthGate'
 
-type EquipmentRow = {
+type AlertRow = {
   id: string
-  machine_name: string
-  status: string
-  alert?: string | null
-}
-
-type FleetRow = {
-  id: string
-  truck_name: string
-  driver_name?: string | null
-  status: string
-  current_load?: string | null
-  eta?: string | null
-}
-
-type OrderRow = {
-  id: string
-  load_name?: string | null
-  status: string | null
-  pickup_location?: string | null
-  dropoff_location?: string | null
-}
-
-type AlertDbRow = {
-  id: number
-  source_key: string | null
-  title: string | null
-  description: string | null
-  type: string | null
-  status: string | null
-}
-
-type AlertItem = {
-  id: string
-  type: 'equipment' | 'fleet' | 'order'
-  level: 'critical' | 'warning' | 'info'
-  title: string
-  message: string
-  href: string
-  sourceKey: string
+  title?: string | null
+  message?: string | null
+  severity?: string | null
+  status?: string | null
+  created_at?: string | null
 }
 
 export default function AlertsPage() {
-  const [equipment, setEquipment] = useState<EquipmentRow[]>([])
-  const [fleet, setFleet] = useState<FleetRow[]>([])
-  const [orders, setOrders] = useState<OrderRow[]>([])
-  const [alertRows, setAlertRows] = useState<AlertDbRow[]>([])
-  const sentRef = useRef<Set<string>>(new Set())
-
-  async function loadData() {
-    const { data: equipmentData } = await supabase.from('equipment').select('*')
-    const { data: fleetData } = await supabase.from('fleet').select('*')
-    const { data: ordersData } = await supabase.from('orders').select('*')
-    const { data: alertsData } = await supabase.from('alerts').select('*')
-
-    setEquipment((equipmentData || []) as EquipmentRow[])
-    setFleet((fleetData || []) as FleetRow[])
-    setOrders((ordersData || []) as OrderRow[])
-    setAlertRows((alertsData || []) as AlertDbRow[])
-  }
+  const [alerts, setAlerts] = useState<AlertRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadData()
+    let mounted = true
 
-    const equipmentChannel = supabase
-      .channel('alerts-equipment-live')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'equipment' },
-        () => loadData()
-      )
-      .subscribe()
+    async function loadAlerts() {
+      setLoading(true)
+      setError(null)
 
-    const fleetChannel = supabase
-      .channel('alerts-fleet-live')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'fleet' },
-        () => loadData()
-      )
-      .subscribe()
+      const { data, error } = await supabase
+        .from('alerts')
+        .select('*')
+        .order('created_at', { ascending: false })
 
-    const ordersChannel = supabase
-      .channel('alerts-orders-live')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'orders' },
-        () => loadData()
-      )
-      .subscribe()
+      if (!mounted) return
 
-    const alertsChannel = supabase
-      .channel('alerts-db-live')
+      if (error) {
+        console.error('Failed to load alerts:', error)
+        setError(error.message)
+        setAlerts([])
+      } else {
+        setAlerts((data as AlertRow[]) || [])
+      }
+
+      setLoading(false)
+    }
+
+    loadAlerts()
+
+    const channel = supabase
+      .channel('alerts-live')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'alerts' },
-        () => loadData()
+        () => {
+          loadAlerts()
+        }
       )
       .subscribe()
 
     return () => {
-      supabase.removeChannel(equipmentChannel)
-      supabase.removeChannel(fleetChannel)
-      supabase.removeChannel(ordersChannel)
-      supabase.removeChannel(alertsChannel)
+      mounted = false
+      supabase.removeChannel(channel)
     }
   }, [])
 
-  const hiddenKeys = useMemo(() => {
-    return new Set(
-      alertRows
-        .filter((row) => row.status === 'acknowledged')
-        .map((row) => row.source_key)
-        .filter(Boolean) as string[]
-    )
-  }, [alertRows])
-
-  const alerts = useMemo(() => {
-    const items: AlertItem[] = []
-
-    equipment.forEach((machine) => {
-      const sourceKey = `equipment-${machine.id}`
-
-      if (machine.status === 'down' && !hiddenKeys.has(sourceKey)) {
-        items.push({
-          id: sourceKey,
-          type: 'equipment',
-          level: 'critical',
-          title: `${machine.machine_name} is down`,
-          message:
-            machine.alert || 'Machine failure detected. Immediate review needed.',
-          href: '/equipment',
-          sourceKey,
-        })
-      }
-    })
-
-    fleet.forEach((truck) => {
-      const sourceKey = `fleet-${truck.id}`
-
-      if (truck.status === 'delayed' && !hiddenKeys.has(sourceKey)) {
-        items.push({
-          id: sourceKey,
-          type: 'fleet',
-          level: 'warning',
-          title: `${truck.truck_name} is delayed`,
-          message: `${truck.current_load || 'Assigned load'} may arrive late. ETA: ${truck.eta || 'Unknown'}.`,
-          href: '/fleet',
-          sourceKey,
-        })
-      }
-    })
-
-    orders.forEach((order) => {
-      const sourceKey = `order-${order.id}`
-
-      if (order.status === 'pending' && !hiddenKeys.has(sourceKey)) {
-        items.push({
-          id: sourceKey,
-          type: 'order',
-          level: 'info',
-          title: `${order.load_name || 'Load'} is pending`,
-          message: `Awaiting truck assignment for ${order.pickup_location || 'pickup'} → ${order.dropoff_location || 'dropoff'}.`,
-          href: '/orders',
-          sourceKey,
-        })
-      }
-    })
-
-    return items
-  }, [equipment, fleet, orders, hiddenKeys])
-
-  useEffect(() => {
-    async function autoSend() {
-      for (const alertItem of alerts) {
-        if (alertItem.level === 'info') continue
-        if (sentRef.current.has(alertItem.sourceKey)) continue
-
-        try {
-          const res = await fetch('/api/notify-sms', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title: alertItem.title,
-              message: alertItem.message,
-              level: alertItem.level,
-            }),
-          })
-
-          const data = await res.json()
-
-          if (data.ok) {
-            sentRef.current.add(alertItem.sourceKey)
-          }
-        } catch {
-          // keep quiet for demo
-        }
-      }
-    }
-
-    if (alerts.length) {
-      autoSend()
-    }
-  }, [alerts])
-
-  const criticalCount = alerts.filter((a) => a.level === 'critical').length
-  const warningCount = alerts.filter((a) => a.level === 'warning').length
-  const infoCount = alerts.filter((a) => a.level === 'info').length
-
-  async function handleAcknowledge(alertItem: AlertItem) {
-    await fetch('/api/alerts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sourceKey: alertItem.sourceKey,
-        title: alertItem.title,
-        description: alertItem.message,
-        type: alertItem.type,
-        action: 'acknowledge',
-      }),
-    })
-
-    sentRef.current.delete(alertItem.sourceKey)
-  }
-
-  async function handleOpen(alertItem: AlertItem) {
-    await fetch('/api/alerts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sourceKey: alertItem.sourceKey,
-        title: alertItem.title,
-        description: alertItem.message,
-        type: alertItem.type,
-        action: 'open',
-      }),
-    })
-
-    window.location.href = alertItem.href
-  }
-
-  function getAccent(level: AlertItem['level']) {
-    if (level === 'critical') return '#ef4444'
-    if (level === 'warning') return '#facc15'
-    return '#38bdf8'
-  }
-
-  function getTypeLabel(type: AlertItem['type']) {
-    if (type === 'equipment') return 'Equipment'
-    if (type === 'fleet') return 'Fleet'
-    return 'Order'
-  }
-
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #030712 0%, #0b1220 50%, #111827 100%)',
-        color: 'white',
-        padding: '24px',
-      }}
-    >
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '36px', margin: 0 }}>Alerts Center</h1>
-        <p style={{ color: '#94a3b8', marginTop: '8px' }}>
-          Live alerts for equipment failures, delayed trucks, and pending loads
-        </p>
-      </div>
-
-      <div
+    <AuthGate>
+      <main
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '16px',
-          marginBottom: '24px',
+          minHeight: '100vh',
+          background: '#0b1220',
+          color: 'white',
+          padding: '24px',
         }}
       >
-        <SummaryCard title="Critical" value={criticalCount} color="#ef4444" />
-        <SummaryCard title="Warnings" value={warningCount} color="#facc15" />
-        <SummaryCard title="Info" value={infoCount} color="#38bdf8" />
-      </div>
+        <div
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px',
+              gap: '16px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: '32px',
+                  fontWeight: 800,
+                }}
+              >
+                Alerts Center
+              </h1>
+              <p
+                style={{
+                  marginTop: '8px',
+                  color: '#94a3b8',
+                }}
+              >
+                Live operational alerts, warnings, and system issues.
+              </p>
+            </div>
 
-      <div
-        style={{
-          background: 'rgba(15,23,42,0.9)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '18px',
-          padding: '18px',
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Live Alerts</h2>
+            <div
+              style={{
+                background: '#111827',
+                border: '1px solid #1f2937',
+                borderRadius: '12px',
+                padding: '12px 16px',
+                minWidth: '180px',
+              }}
+            >
+              <div style={{ color: '#94a3b8', fontSize: '12px' }}>Total Alerts</div>
+              <div style={{ fontSize: '28px', fontWeight: 800 }}>{alerts.length}</div>
+            </div>
+          </div>
 
-        {alerts.length === 0 ? (
-          <div style={{ color: '#94a3b8' }}>No active alerts.</div>
-        ) : (
-          <div style={{ display: 'grid', gap: '14px' }}>
-            {alerts.map((alertItem) => {
-              const accent = getAccent(alertItem.level)
+          {loading && (
+            <div
+              style={{
+                background: '#111827',
+                border: '1px solid #1f2937',
+                borderRadius: '16px',
+                padding: '24px',
+              }}
+            >
+              Loading alerts...
+            </div>
+          )}
 
-              return (
-                <div
-                  key={alertItem.id}
-                  style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${accent}`,
-                    borderRadius: '14px',
-                    padding: '14px',
-                    boxShadow: `0 0 12px ${accent}22`,
-                  }}
-                >
+          {!loading && error && (
+            <div
+              style={{
+                background: '#3f1d1d',
+                border: '1px solid #7f1d1d',
+                color: '#fecaca',
+                borderRadius: '16px',
+                padding: '24px',
+              }}
+            >
+              Failed to load alerts: {error}
+            </div>
+          )}
+
+          {!loading && !error && alerts.length === 0 && (
+            <div
+              style={{
+                background: '#111827',
+                border: '1px solid #1f2937',
+                borderRadius: '16px',
+                padding: '24px',
+                color: '#94a3b8',
+              }}
+            >
+              No alerts found in the alerts table yet.
+            </div>
+          )}
+
+          {!loading && !error && alerts.length > 0 && (
+            <div
+              style={{
+                display: 'grid',
+                gap: '16px',
+              }}
+            >
+              {alerts.map((alert) => {
+                const severity = (alert.severity || 'info').toLowerCase()
+
+                let borderColor = '#1f2937'
+                let badgeBg = '#1e293b'
+                let badgeColor = '#cbd5e1'
+
+                if (severity === 'critical') {
+                  borderColor = '#7f1d1d'
+                  badgeBg = '#7f1d1d'
+                  badgeColor = '#fecaca'
+                } else if (severity === 'high' || severity === 'warning') {
+                  borderColor = '#92400e'
+                  badgeBg = '#78350f'
+                  badgeColor = '#fde68a'
+                } else if (severity === 'low' || severity === 'info') {
+                  borderColor = '#1d4ed8'
+                  badgeBg = '#1e3a8a'
+                  badgeColor = '#bfdbfe'
+                }
+
+                return (
                   <div
+                    key={alert.id}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      gap: '12px',
-                      alignItems: 'center',
-                      marginBottom: '8px',
+                      background: '#111827',
+                      border: `1px solid ${borderColor}`,
+                      borderRadius: '16px',
+                      padding: '20px',
                     }}
                   >
-                    <div style={{ fontSize: '18px', fontWeight: 800 }}>
-                      {alertItem.title}
-                    </div>
                     <div
                       style={{
-                        padding: '6px 10px',
-                        borderRadius: '999px',
-                        background: accent,
-                        color: '#020617',
-                        fontWeight: 800,
-                        fontSize: '12px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: '16px',
+                        flexWrap: 'wrap',
                       }}
                     >
-                      {getTypeLabel(alertItem.type)}
+                      <div style={{ flex: 1 }}>
+                        <h2
+                          style={{
+                            margin: 0,
+                            fontSize: '20px',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {alert.title || 'Untitled Alert'}
+                        </h2>
+
+                        <p
+                          style={{
+                            marginTop: '10px',
+                            marginBottom: '14px',
+                            color: '#cbd5e1',
+                            lineHeight: 1.6,
+                          }}
+                        >
+                          {alert.message || 'No message provided.'}
+                        </p>
+
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: '10px',
+                            flexWrap: 'wrap',
+                            fontSize: '13px',
+                            color: '#94a3b8',
+                          }}
+                        >
+                          <span>Status: {alert.status || 'open'}</span>
+                          <span>
+                            Created:{' '}
+                            {alert.created_at
+                              ? new Date(alert.created_at).toLocaleString()
+                              : 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          background: badgeBg,
+                          color: badgeColor,
+                          borderRadius: '999px',
+                          padding: '8px 12px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {severity}
+                      </div>
                     </div>
                   </div>
-
-                  <div style={{ color: '#cbd5e1', marginBottom: '12px' }}>
-                    {alertItem.message}
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                    <button
-                      onClick={() => handleOpen(alertItem)}
-                      style={btn('#2563eb', 'white')}
-                    >
-                      Open
-                    </button>
-
-                    <button
-                      onClick={() => handleAcknowledge(alertItem)}
-                      style={btn('#22c55e', '#020617')}
-                    >
-                      Acknowledge
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-    </main>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </main>
+    </AuthGate>
   )
-}
-
-function SummaryCard({
-  title,
-  value,
-  color,
-}: {
-  title: string
-  value: number
-  color: string
-}) {
-  return (
-    <div
-      style={{
-        background: 'rgba(15,23,42,0.9)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '18px',
-        padding: '18px',
-      }}
-    >
-      <div style={{ color: '#94a3b8' }}>{title}</div>
-      <div style={{ fontSize: '34px', fontWeight: 800, marginTop: '8px', color }}>
-        {value}
-      </div>
-    </div>
-  )
-}
-
-function btn(background: string, color: string): React.CSSProperties {
-  return {
-    background,
-    color,
-    border: 'none',
-    padding: '10px 12px',
-    borderRadius: '10px',
-    fontWeight: 800,
-    cursor: 'pointer',
-  }
 }

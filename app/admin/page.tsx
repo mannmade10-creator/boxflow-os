@@ -1,258 +1,248 @@
-import type { ReactNode } from 'react'
-import './globals.css'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import SignOutButton from './components/SignOutButton'
+"use client";
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
+
+export default function AdminPage() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [lines, setLines] = useState<any[]>([]);
+  const [fleet, setFleet] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+
+  async function loadAll() {
+    const [o, l, f, a] = await Promise.all([
+      supabase.from("orders").select("*"),
+      supabase.from("production_lines").select("*"),
+      supabase.from("fleet").select("*"),
+      supabase.from("machine_alerts").select("*").eq("resolved", false),
+    ]);
+
+    setOrders(o.data || []);
+    setLines(l.data || []);
+    setFleet(f.data || []);
+    setAlerts(a.data || []);
+  }
+
+  useEffect(() => {
+    loadAll();
+
+    const channel = supabase
+      .channel("admin-live")
+      .on("postgres_changes", { event: "*", schema: "public" }, () => {
+        loadAll();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // 🔥 AI GLOBAL ACTIONS
+
+  async function aiFixProduction() {
+    setMessage("AI optimizing production...");
+
+    await supabase
+      .from("production_lines")
+      .update({ status: "Running", downtime_minutes: 0 });
+
+    await supabase
+      .from("machine_alerts")
+      .update({ resolved: true })
+      .eq("resolved", false);
+
+    setMessage("Production stabilized by AI.");
+  }
+
+  async function aiDispatchAll() {
+    setMessage("AI dispatching all orders...");
+
+    const availableTruck = fleet[0];
+
+    if (!availableTruck) {
+      setMessage("No trucks available.");
+      return;
+    }
+
+    for (let order of orders) {
+      await supabase
+        .from("orders")
+        .update({
+          assigned_truck: availableTruck.truck_name,
+          dispatch_status: "Assigned",
+        })
+        .eq("id", order.id);
+    }
+
+    setMessage("All orders dispatched.");
+  }
+
+  async function aiBoostRush() {
+    setMessage("Boosting rush orders...");
+
+    await supabase
+      .from("orders")
+      .update({ priority: "Rush" })
+      .eq("priority", "High");
+
+    setMessage("Rush priority boosted.");
+  }
+
+  async function emergencyReset() {
+    setMessage("SYSTEM RESET INITIATED...");
+
+    await supabase.from("machine_alerts").update({ resolved: true });
+
+    await supabase.from("production_lines").update({
+      downtime_minutes: 0,
+      status: "Running",
+    });
+
+    await supabase.from("orders").update({
+      dispatch_status: "Pending",
+    });
+
+    setMessage("System reset complete.");
+  }
+
   return (
-    <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          fontFamily: 'Arial, sans-serif',
-          background: '#020617',
-          color: 'white',
-        }}
-      >
-        <div
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <div
-            style={{
-              borderBottom: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(2,6,23,0.96)',
-              position: 'sticky',
-              top: 0,
-              zIndex: 50,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '12px',
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 900,
-                  color: '#38bdf8',
-                  marginRight: 8,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                BoxFlow OS
-              </div>
+    <main style={styles.page}>
+      <div style={styles.container}>
+        <div style={styles.nav}>
+          <NavButton href="/command-center" label="Command Center" />
+          <NavButton href="/production" label="Production Flow" />
+          <NavButton href="/analytics" label="Analytics" />
+          <NavButton href="/fleet" label="Fleet" />
+          <NavButton href="/dispatch" label="Dispatch" />
+        </div>
 
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  overflowX: 'auto',
-                  whiteSpace: 'nowrap',
-                  flex: 1,
-                }}
-              >
-                <TopNavLink href="/login" label="Login" />
-                <TopNavLink href="/present" label="Presentation" />
-                <TopNavLink href="/dashboard" label="Dashboard" />
-                <TopNavLink href="/executive" label="Executive" />
-                <TopNavLink href="/fleet" label="Fleet" />
-                <TopNavLink href="/orders" label="Orders" />
-                <TopNavLink href="/equipment" label="Equipment" />
-                <TopNavLink href="/alerts" label="Alerts" />
-                <TopNavLink href="/hr" label="HR" />
-                <TopNavLink href="/admin" label="Admin" />
-                <TopNavLink href="/driver" label="Driver" />
-                <TopNavLink href="/client" label="Client" />
-                <TopNavLink href="/roi" label="ROI" />
-                <TopNavLink href="/close" label="Close" />
-              </div>
+        <h1 style={styles.title}>Admin Control Center</h1>
 
-              <div style={{ marginLeft: 10, flexShrink: 0 }}>
-                <SignOutButton />
-              </div>
-            </div>
-          </div>
+        {message && <Panel>{message}</Panel>}
 
-          <div style={{ display: 'flex', flex: 1 }}>
-            <aside
-              className="desktop-sidebar"
-              style={{
-                width: 260,
-                background: 'linear-gradient(180deg, #020617 0%, #0b1220 100%)',
-                borderRight: '1px solid rgba(255,255,255,0.08)',
-                padding: 20,
-                display: 'none',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: 26,
-                    fontWeight: 900,
-                    marginBottom: 6,
-                    color: '#38bdf8',
-                  }}
-                >
-                  BoxFlow OS
-                </div>
+        {/* METRICS */}
+        <div style={styles.grid}>
+          <Card title="Orders" value={orders.length} />
+          <Card title="Production Lines" value={lines.length} />
+          <Card title="Fleet Units" value={fleet.length} />
+          <Card title="Active Alerts" value={alerts.length} />
+        </div>
 
-                <div
-                  style={{
-                    color: '#94a3b8',
-                    fontSize: 13,
-                    marginBottom: 24,
-                  }}
-                >
-                  Powered by MADE Inc.
-                </div>
+        {/* AI CONTROL */}
+        <div style={styles.section}>
+          <h2>AI Control Panel</h2>
 
-                <NavSection title="Access">
-                  <SidebarLink href="/login" label="Login" />
-                  <SidebarLink href="/admin" label="Admin Panel" />
-                </NavSection>
-
-                <NavSection title="Presentation">
-                  <SidebarLink href="/present" label="Presentation Mode" />
-                  <SidebarLink href="/executive" label="Executive Dashboard" />
-                  <SidebarLink href="/roi" label="ROI Calculator" />
-                  <SidebarLink href="/close" label="Close Screen" />
-                </NavSection>
-
-                <NavSection title="Operations">
-                  <SidebarLink href="/dashboard" label="Command Center" />
-                  <SidebarLink href="/fleet" label="Fleet Map" />
-                  <SidebarLink href="/orders" label="Orders" />
-                  <SidebarLink href="/equipment" label="Equipment" />
-                  <SidebarLink href="/alerts" label="Alerts" />
-                </NavSection>
-
-                <NavSection title="Workforce">
-                  <SidebarLink href="/hr" label="HR & Payroll" />
-                  <SidebarLink href="/driver" label="Driver App" />
-                </NavSection>
-
-                <NavSection title="Experience">
-                  <SidebarLink href="/client" label="Client Portal" />
-                </NavSection>
-              </div>
-
-              <div style={{ marginTop: 20 }}>
-                <SignOutButton block />
-              </div>
-            </aside>
-
-            <main
-              style={{
-                flex: 1,
-                minWidth: 0,
-              }}
-            >
-              {children}
-            </main>
+          <div style={styles.buttonRow}>
+            <Action label="Fix Production" color="#22c55e" onClick={aiFixProduction} />
+            <Action label="Dispatch All Orders" color="#2563eb" onClick={aiDispatchAll} />
+            <Action label="Boost Rush Orders" color="#f59e0b" onClick={aiBoostRush} />
+            <Action label="Emergency Reset" color="#ef4444" onClick={emergencyReset} />
           </div>
         </div>
 
-        <style>{`
-          @media (min-width: 961px) {
-            .desktop-sidebar {
-              display: flex !important;
-            }
-          }
-        `}</style>
-      </body>
-    </html>
-  )
-}
+        {/* SYSTEM OVERVIEW */}
+        <div style={styles.section}>
+          <h2>System Overview</h2>
 
-function NavSection({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) {
-  return (
-    <div style={{ marginBottom: 22 }}>
-      <div
-        style={{
-          color: '#64748b',
-          fontSize: 12,
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          marginBottom: 10,
-          fontWeight: 800,
-        }}
-      >
-        {title}
+          <p>Total Orders: {orders.length}</p>
+          <p>Active Production Lines: {lines.length}</p>
+          <p>Fleet Size: {fleet.length}</p>
+          <p>Open Alerts: {alerts.length}</p>
+        </div>
       </div>
-      <div>{children}</div>
+    </main>
+  );
+}
+
+const styles: any = {
+  page: {
+    minHeight: "100vh",
+    background: "#04112b",
+    color: "white",
+    padding: 24,
+  },
+  container: {
+    maxWidth: 1200,
+    margin: "0 auto",
+  },
+  nav: {
+    display: "flex",
+    gap: 12,
+    marginBottom: 20,
+    flexWrap: "wrap",
+  },
+  title: {
+    fontSize: 34,
+    marginBottom: 20,
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
+    gap: 16,
+    marginBottom: 24,
+  },
+  section: {
+    background: "#091a3c",
+    padding: 18,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  buttonRow: {
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+};
+
+function NavButton({ href, label }: any) {
+  return (
+    <a href={href} style={btnStyle}>
+      {label}
+    </a>
+  );
+}
+
+function Action({ label, color, onClick }: any) {
+  return (
+    <button
+      onClick={onClick}
+      style={{ ...btnStyle, background: color }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Card({ title, value }: any) {
+  return (
+    <div style={panelStyle}>
+      <p>{title}</p>
+      <h2>{value}</h2>
     </div>
-  )
+  );
 }
 
-function SidebarLink({
-  href,
-  label,
-}: {
-  href: string
-  label: string
-}) {
-  return (
-    <a
-      href={href}
-      style={{
-        display: 'block',
-        padding: '12px 14px',
-        borderRadius: 12,
-        marginBottom: 10,
-        textDecoration: 'none',
-        color: '#cbd5e1',
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.05)',
-        fontWeight: 700,
-      }}
-    >
-      {label}
-    </a>
-  )
+function Panel({ children }: any) {
+  return <div style={panelStyle}>{children}</div>;
 }
 
-function TopNavLink({
-  href,
-  label,
-}: {
-  href: string
-  label: string
-}) {
-  return (
-    <a
-      href={href}
-      style={{
-        textDecoration: 'none',
-        color: '#cbd5e1',
-        padding: '8px 12px',
-        borderRadius: 999,
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        fontSize: 14,
-        fontWeight: 700,
-      }}
-    >
-      {label}
-    </a>
-  )
-}
+const btnStyle = {
+  padding: "10px 16px",
+  background: "#2563eb",
+  borderRadius: 8,
+  textDecoration: "none",
+  color: "white",
+  fontWeight: 600,
+  border: "none",
+  cursor: "pointer",
+};
+
+const panelStyle = {
+  background: "#091a3c",
+  border: "1px solid #334155",
+  borderRadius: 16,
+  padding: 18,
+};

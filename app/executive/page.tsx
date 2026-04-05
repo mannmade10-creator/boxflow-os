@@ -1,616 +1,229 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import React, { useState } from 'react'
+import AppSidebar from '@/components/AppSidebar'
+import { supabase } from '@/lib/supabase'
 
-type FleetRow = {
-  id: string
-  truck_name: string
-  status: string
-  eta?: string | null
-  current_load?: string | null
+const stats = [
+  { label: 'Efficiency', value: '92%', sub: 'Up 4%', color: '#22c55e' },
+  { label: 'Cost Optimization', value: '$78,240', sub: 'Tracked savings', color: '#3b82f6' },
+  { label: 'Predicted Delays', value: '2', sub: '1 critical', color: '#f59e0b' },
+  { label: 'Risk Alerts', value: '1', sub: 'Needs action', color: '#ef4444' },
+]
+
+const recommendations = [
+  'Reassign 30% of workload to Line 4 to reduce Die Cutting delay.',
+  'Adjust material order to minimize supply cost by 12%.',
+  'Optimize shipping schedule to expedite deliveries.',
+]
+
+const anomalies = [
+  'Machine #7 overheating — cooling required.',
+  'Inventory shortage detected: corrugated board.',
+]
+
+type ActionLog = {
+  id: number
+  time: string
+  action: string
+  result: string
+  level: 'success' | 'warning' | 'info'
 }
 
-type OrderRow = {
-  id: string
-  load_name?: string | null
-  status?: string | null
-  assigned_truck_id?: string | null
-  pickup_location?: string | null
-  dropoff_location?: string | null
-}
+export default function ExecutivePage() {
+  const [thinking, setThinking] = useState<string | null>(null)
+  const [actionLog, setActionLog] = useState<ActionLog[]>([])
+  const [optimized, setOptimized] = useState(false)
+  const [efficiency, setEfficiency] = useState(92)
+  const [delays, setDelays] = useState(2)
+  const [savings, setSavings] = useState(78240)
 
-type EquipmentRow = {
-  id: string
-  machine_name: string
-  status: string
-  output_percent?: number | null
-}
-
-export default function ExecutiveDashboardPage() {
-  const [fleet, setFleet] = useState<FleetRow[]>([])
-  const [orders, setOrders] = useState<OrderRow[]>([])
-  const [equipment, setEquipment] = useState<EquipmentRow[]>([])
-  const [lastUpdated, setLastUpdated] = useState('Not updated yet')
-
-  async function loadData() {
-    const { data: fleetData } = await supabase.from('fleet').select('*')
-    const { data: orderData } = await supabase.from('orders').select('*')
-    const { data: equipmentData } = await supabase.from('equipment').select('*')
-
-    setFleet((fleetData || []) as FleetRow[])
-    setOrders((orderData || []) as OrderRow[])
-    setEquipment((equipmentData || []) as EquipmentRow[])
-    setLastUpdated(new Date().toLocaleTimeString())
+  function addLog(action: string, result: string, level: ActionLog['level']) {
+    const now = new Date()
+    const time = now.toLocaleTimeString()
+    setActionLog(prev => [{ id: Date.now(), time, action, result, level }, ...prev].slice(0, 8))
   }
 
-  useEffect(() => {
-    loadData()
+  async function runAI(actionName: string, thinkingMsg: string, duration: number, onComplete: () => void) {
+    setThinking(thinkingMsg)
+    await new Promise(r => setTimeout(r, duration))
+    setThinking(null)
+    onComplete()
+  }
 
-    const fleetChannel = supabase
-      .channel('executive-fleet-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'fleet' }, () => loadData())
-      .subscribe()
-
-    const ordersChannel = supabase
-      .channel('executive-orders-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => loadData())
-      .subscribe()
-
-    const equipmentChannel = supabase
-      .channel('executive-equipment-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, () => loadData())
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(fleetChannel)
-      supabase.removeChannel(ordersChannel)
-      supabase.removeChannel(equipmentChannel)
-    }
-  }, [])
-
-  const metrics = useMemo(() => {
-    const totalFleet = fleet.length
-    const deliveringFleet = fleet.filter((t) => t.status === 'delivering').length
-    const delayedFleet = fleet.filter((t) => t.status === 'delayed').length
-    const idleFleet = fleet.filter((t) => t.status === 'idle').length
-
-    const totalOrders = orders.length
-    const activeOrders = orders.filter(
-      (o) =>
-        o.status === 'assigned' ||
-        o.status === 'in_transit' ||
-        o.status === 'at_pickup'
-    ).length
-    const deliveredOrders = orders.filter((o) => o.status === 'delivered').length
-    const pendingOrders = orders.filter((o) => o.status === 'pending').length
-
-    const machinesRunning = equipment.filter((m) => m.status === 'running').length
-    const machinesDown = equipment.filter((m) => m.status === 'down').length
-    const avgOutput =
-      equipment.length > 0
-        ? Math.round(
-            equipment.reduce((sum, item) => sum + (item.output_percent || 0), 0) /
-              equipment.length
-          )
-        : 0
-
-    const operationalHealthScore = Math.max(
-      0,
-      Math.min(
-        100,
-        100 - delayedFleet * 8 - machinesDown * 10 - pendingOrders * 2 + deliveringFleet * 2
-      )
-    )
-
-    return {
-      totalFleet,
-      deliveringFleet,
-      delayedFleet,
-      idleFleet,
-      totalOrders,
-      activeOrders,
-      deliveredOrders,
-      pendingOrders,
-      machinesRunning,
-      machinesDown,
-      avgOutput,
-      operationalHealthScore,
-    }
-  }, [fleet, orders, equipment])
-
-  const executiveSummary = useMemo(() => {
-    if (metrics.operationalHealthScore >= 85) {
-      return 'Operations appear stable with strong visibility across fleet, orders, and equipment.'
-    }
-    if (metrics.operationalHealthScore >= 65) {
-      return 'Operations are active, but delays or downtime are creating moderate risk that should be addressed.'
-    }
-    return 'Operational risk is elevated. Current delays and downtime suggest a strong need for immediate intervention and process visibility.'
-  }, [metrics.operationalHealthScore])
-
-  const topRisks = useMemo(() => {
-    const risks: string[] = []
-
-    if (metrics.delayedFleet > 0) {
-      risks.push(`${metrics.delayedFleet} delayed truck${metrics.delayedFleet > 1 ? 's are' : ' is'} impacting delivery reliability.`)
-    }
-
-    if (metrics.machinesDown > 0) {
-      risks.push(`${metrics.machinesDown} machine${metrics.machinesDown > 1 ? 's are' : ' is'} down, increasing production risk.`)
-    }
-
-    if (metrics.pendingOrders > 3) {
-      risks.push(`${metrics.pendingOrders} pending orders suggest dispatch bottlenecks or available capacity issues.`)
-    }
-
-    if (risks.length === 0) {
-      risks.push('No major operational risks detected right now.')
-    }
-
-    return risks
-  }, [metrics])
-
-  const roiSnapshot = useMemo(() => {
-    const downtimeCostMonthly = metrics.machinesDown * 12000
-    const delayCostMonthly = metrics.delayedFleet * 6000
-    const visibilityValueMonthly = metrics.activeOrders * 1800
-    const estimatedMonthlyBenefit =
-      downtimeCostMonthly * 0.2 +
-      delayCostMonthly * 0.25 +
-      visibilityValueMonthly
-
-    const boxflowMonthlyCost = 25000
-    const netMonthlyImpact = estimatedMonthlyBenefit - boxflowMonthlyCost
-    const annualImpact = netMonthlyImpact * 12
-
-    return {
-      estimatedMonthlyBenefit,
-      boxflowMonthlyCost,
-      netMonthlyImpact,
-      annualImpact,
-    }
-  }, [metrics])
-
-  function money(value: number) {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
+  async function optimizeProduction() {
+    await runAI('Optimize Production', 'Analyzing production lines... Calculating optimal workload distribution...', 2500, async () => {
+      setEfficiency(prev => Math.min(99, prev + Math.floor(Math.random() * 6 + 2)))
+      setDelays(prev => Math.max(0, prev - 1))
+      setSavings(prev => prev + Math.floor(Math.random() * 5000 + 2000))
+      setOptimized(true)
+      addLog('Optimize Production', 'Workload shifted to Line 4. Efficiency +4%. Die Cutting delay reduced by 1.8hrs.', 'success')
     })
   }
 
+  async function reassignDriver() {
+    await runAI('Reassign Driver', 'Scanning driver availability... Calculating best route fit...', 2000, async () => {
+      const { data: orders } = await supabase.from('orders').select('id, status').eq('status', 'Pending').limit(3)
+      if (orders && orders.length > 0) {
+        for (const order of orders) {
+          await supabase.from('orders').update({ status: 'Assigned', assigned_truck_id: 'TRK-305' }).eq('id', order.id)
+        }
+        addLog('Reassign Driver', `Angela Brooks assigned to ${orders.length} pending load(s). ETA improved by 22 min.`, 'success')
+      } else {
+        addLog('Reassign Driver', 'No pending orders found. All drivers optimally assigned.', 'info')
+      }
+    })
+  }
+
+  async function reduceDelay() {
+    await runAI('Reduce Delay', 'Identifying delayed orders... Calculating reroute options...', 3000, async () => {
+      const { data: orders } = await supabase.from('orders').select('id, status').limit(5)
+      if (orders) {
+        for (const order of orders) {
+          if ((order.status || '').toLowerCase().includes('transit')) {
+            await supabase.from('orders').update({ status: 'Dispatched' }).eq('id', order.id)
+          }
+        }
+      }
+      setDelays(0)
+      setSavings(prev => prev + 3200)
+      addLog('Reduce Delay', 'TRK-305 rerouted via I-35. Estimated delivery improved by 45 min. Client notified.', 'success')
+    })
+  }
+
+  async function dispatchAll() {
+    await runAI('AI Dispatch All', 'Scanning pending orders... Matching trucks to loads...', 3500, async () => {
+      const { data: orders } = await supabase.from('orders').select('id, status').eq('status', 'Pending')
+      const trucks = ['TRK-201', 'TRK-305', 'TRK-412', 'TRK-518']
+      let count = 0
+      if (orders && orders.length > 0) {
+        for (const order of orders) {
+          const truck = trucks[count % trucks.length]
+          await supabase.from('orders').update({ status: 'Assigned', assigned_truck_id: truck }).eq('id', order.id)
+          count++
+        }
+        addLog('AI Dispatch All', `${count} order(s) dispatched across ${Math.min(count, 4)} trucks. All loads moving.`, 'success')
+      } else {
+        addLog('AI Dispatch All', 'All orders already dispatched. System fully optimized.', 'info')
+      }
+    })
+  }
+
+  async function emergencyReset() {
+    await runAI('Emergency Reset', 'Initiating system reset... Clearing all alerts...', 2000, () => {
+      setEfficiency(92)
+      setDelays(2)
+      setSavings(78240)
+      setOptimized(false)
+      addLog('Emergency Reset', 'System reset complete. All metrics restored to baseline.', 'warning')
+    })
+  }
+
+  function logColor(level: ActionLog['level']) {
+    if (level === 'success') return { bg: 'rgba(20,83,45,0.3)', border: 'rgba(74,222,128,0.3)', color: '#bbf7d0', dot: '#22c55e' }
+    if (level === 'warning') return { bg: 'rgba(120,53,15,0.3)', border: 'rgba(251,191,36,0.3)', color: '#fde68a', dot: '#f59e0b' }
+    return { bg: 'rgba(30,64,175,0.3)', border: 'rgba(96,165,250,0.3)', color: '#bfdbfe', dot: '#3b82f6' }
+  }
+
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #020617 0%, #0b1220 45%, #111827 100%)',
-        color: 'white',
-        padding: '24px',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          gap: '20px',
-          flexWrap: 'wrap',
-          marginBottom: '26px',
-        }}
-      >
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 24%), linear-gradient(180deg, #050816 0%, #0b1220 100%)', padding: 20, gap: 24 }}>
+      <AppSidebar active="executive" />
+      <main style={{ flex: 1, color: '#fff', display: 'grid', gap: 22, alignContent: 'start', minWidth: 0 }}>
+
         <div>
-          <div
-            style={{
-              color: '#38bdf8',
-              fontWeight: 900,
-              fontSize: '14px',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              marginBottom: '8px',
-            }}
-          >
-            Powered by MADE Inc.
-          </div>
-
-          <h1
-            style={{
-              fontSize: '42px',
-              margin: 0,
-              fontWeight: 900,
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Executive Dashboard
-          </h1>
-
-          <p
-            style={{
-              color: '#94a3b8',
-              marginTop: '10px',
-              fontSize: '16px',
-              maxWidth: '760px',
-              lineHeight: 1.7,
-            }}
-          >
-            High-level operational visibility across fleet movement, order flow,
-            production health, financial opportunity, and pilot readiness.
-          </p>
+          <div style={{ display: 'inline-flex', width: 'fit-content', padding: '8px 14px', borderRadius: 999, background: 'rgba(37,99,235,0.14)', border: '1px solid rgba(96,165,250,0.24)', color: '#93c5fd', fontSize: 12, fontWeight: 800, marginBottom: 12 }}>BOXFLOW OS AI LAYER</div>
+          <h1 style={{ margin: '0 0 8px', fontSize: 44, fontWeight: 900, color: '#fff' }}>AI Control Panel</h1>
+          <p style={{ margin: 0, color: '#94a3b8' }}>Predictive analytics, one-click optimization, anomaly detection, and action-driven recommendations.</p>
         </div>
 
-        <div
-          style={{
-            background: 'rgba(15,23,42,0.92)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '16px',
-            padding: '14px 16px',
-            minWidth: '220px',
-          }}
-        >
-          <div style={{ color: '#94a3b8', fontSize: '13px' }}>Last Updated</div>
-          <div style={{ fontWeight: 800, marginTop: '6px' }}>{lastUpdated}</div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-          gap: '16px',
-          marginBottom: '22px',
-        }}
-      >
-        <KpiCard
-          title="Operational Health"
-          value={`${metrics.operationalHealthScore}%`}
-          accent="#22c55e"
-          subtitle="Overall live score"
-        />
-        <KpiCard
-          title="Active Orders"
-          value={String(metrics.activeOrders)}
-          accent="#38bdf8"
-          subtitle={`${metrics.totalOrders} total orders`}
-        />
-        <KpiCard
-          title="Fleet In Motion"
-          value={String(metrics.deliveringFleet)}
-          accent="#a855f7"
-          subtitle={`${metrics.totalFleet} total fleet units`}
-        />
-        <KpiCard
-          title="Machines Down"
-          value={String(metrics.machinesDown)}
-          accent="#ef4444"
-          subtitle={`${metrics.machinesRunning} running`}
-        />
-      </div>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1.15fr 0.85fr',
-          gap: '20px',
-          alignItems: 'start',
-        }}
-      >
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Executive Summary</div>
-          <p style={bodyStyle}>{executiveSummary}</p>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-              gap: '14px',
-              marginTop: '18px',
-            }}
-          >
-            <MiniStat title="Delivered Orders" value={String(metrics.deliveredOrders)} />
-            <MiniStat title="Pending Orders" value={String(metrics.pendingOrders)} />
-            <MiniStat title="Idle Fleet" value={String(metrics.idleFleet)} />
-            <MiniStat title="Average Output" value={`${metrics.avgOutput}%`} />
-          </div>
-        </section>
-
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Top Risk Indicators</div>
-
-          <div style={{ display: 'grid', gap: '12px' }}>
-            {topRisks.map((risk) => (
-              <RiskRow key={risk} text={risk} />
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '20px',
-          marginTop: '20px',
-        }}
-      >
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Live ROI Snapshot</div>
-
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <MoneyRow label="Estimated Monthly Benefit" value={money(roiSnapshot.estimatedMonthlyBenefit)} />
-            <MoneyRow label="Estimated Monthly BoxFlow Cost" value={money(roiSnapshot.boxflowMonthlyCost)} />
-            <MoneyRow label="Net Monthly Impact" value={money(roiSnapshot.netMonthlyImpact)} strong />
-            <MoneyRow label="Estimated Annual Impact" value={money(roiSnapshot.annualImpact)} strong />
-          </div>
-
-          <p style={{ ...bodyStyle, marginTop: '14px' }}>
-            This executive estimate converts operational visibility into financial value using downtime,
-            delay reduction, and improved execution assumptions.
-          </p>
-        </section>
-
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Pilot Pricing Snapshot</div>
-
-          <div
-            style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              borderRadius: '14px',
-              padding: '14px',
-            }}
-          >
-            <MoneyRow label="Pilot Setup Fee" value="$50,000" />
-            <MoneyRow label="Pilot Monthly Fee" value="$15,000" />
-            <MoneyRow label="Enterprise Rollout Range" value="$25,000+/mo" strong />
-          </div>
-
-          <p style={{ ...bodyStyle, marginTop: '14px' }}>
-            Recommended approach: deploy one facility first, measure impact, then expand to additional locations.
-          </p>
-        </section>
-      </div>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '20px',
-          marginTop: '20px',
-        }}
-      >
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Presentation Jump Links</div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-              gap: '12px',
-            }}
-          >
-            <JumpLink href="/dashboard" label="Command Center" />
-            <JumpLink href="/fleet" label="Fleet Map" />
-            <JumpLink href="/orders" label="AI Dispatch" />
-            <JumpLink href="/equipment" label="Equipment" />
-            <JumpLink href="/client" label="Client Portal" />
-            <JumpLink href="/roi" label="ROI Calculator" />
-          </div>
-        </section>
-
-        <section style={panelStyle}>
-          <div style={panelTitleStyle}>Pilot Recommendation</div>
-
-          <p style={bodyStyle}>
-            Recommended next step: run a pilot inside one facility to measure
-            improvements in downtime visibility, fleet response time, dispatch
-            efficiency, and order transparency.
-          </p>
-
-          <div
-            style={{
-              marginTop: '18px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              borderRadius: '14px',
-              padding: '14px',
-            }}
-          >
-            <div style={{ fontWeight: 800, marginBottom: '10px' }}>
-              Pilot Success Metrics
+        {thinking && (
+          <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(59,130,246,0.4)', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[0,1,2].map(i => (
+                <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6', animation: 'bounce 1s infinite', animationDelay: (i * 0.2) + 's' }} />
+              ))}
             </div>
-
-            <PilotMetric text="Reduction in operational blind spots" />
-            <PilotMetric text="Improvement in order status visibility" />
-            <PilotMetric text="Reduction in delay response time" />
-            <PilotMetric text="Executive confidence in live decision-making" />
+            <span style={{ color: '#93c5fd', fontWeight: 700, fontSize: 14 }}>🤖 AI Engine: {thinking}</span>
           </div>
-        </section>
-      </div>
+        )}
 
-      <div style={{ marginTop: '20px', ...panelStyle }}>
-        <div style={panelTitleStyle}>Boardroom Talk Track</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 14 }}>
+          {[
+            { label: 'Efficiency', value: efficiency + '%', sub: optimized ? '↑ Optimized' : 'Up 4%', color: '#22c55e' },
+            { label: 'Cost Savings', value: '$' + savings.toLocaleString(), sub: 'Tracked savings', color: '#3b82f6' },
+            { label: 'Active Delays', value: delays.toString(), sub: delays === 0 ? '✓ All clear' : '1 critical', color: delays === 0 ? '#22c55e' : '#f59e0b' },
+            { label: 'Risk Alerts', value: '1', sub: 'Needs action', color: '#ef4444' },
+          ].map(item => (
+            <div key={item.label} style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + item.color, borderRadius: 22, padding: 18 }}>
+              <div style={{ color: '#64748b', fontSize: 12, marginBottom: 10, fontWeight: 700, textTransform: 'uppercase' }}>{item.label}</div>
+              <div style={{ fontSize: 30, fontWeight: 900, marginBottom: 6, color: item.color }}>{item.value}</div>
+              <div style={{ fontSize: 12, color: '#93c5fd', fontWeight: 700 }}>{item.sub}</div>
+            </div>
+          ))}
+        </div>
 
-        <p style={bodyStyle}>
-          “BoxFlow OS gives leadership one place to see the health of production,
-          logistics, and order execution in real time.”
-        </p>
+        <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 26, padding: 20 }}>
+          <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, marginBottom: 6 }}>AI Action Controls</div>
+          <div style={{ fontSize: 13, color: '#64748b', marginBottom: 18 }}>One-click AI actions that affect production, dispatch, and delivery in real time</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
+            <AIButton label="⚡ Optimize Production" desc="Rebalance workload across all lines" color="#22c55e" onClick={optimizeProduction} disabled={!!thinking} />
+            <AIButton label="🚛 Reassign Driver" desc="Match best driver to urgent loads" color="#3b82f6" onClick={reassignDriver} disabled={!!thinking} />
+            <AIButton label="⏱ Reduce Delay" desc="Reroute and notify affected clients" color="#f59e0b" onClick={reduceDelay} disabled={!!thinking} />
+            <AIButton label="🚀 AI Dispatch All" desc="Assign all pending orders to trucks" color="#8b5cf6" onClick={dispatchAll} disabled={!!thinking} />
+          </div>
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(148,163,184,0.1)' }}>
+            <AIButton label="🔄 Emergency Reset" desc="Reset all AI actions to baseline" color="#ef4444" onClick={emergencyReset} disabled={!!thinking} fullWidth />
+          </div>
+        </div>
 
-        <p style={bodyStyle}>
-          “Instead of reacting late, this creates earlier visibility, faster
-          decisions, and a stronger customer experience.”
-        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 26, padding: 18 }}>
+            <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, marginBottom: 14 }}>AI Action Log</div>
+            {actionLog.length === 0 ? (
+              <div style={{ color: '#64748b', fontSize: 14 }}>No actions taken yet. Use the controls above to start.</div>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {actionLog.map(log => {
+                  const c = logColor(log.level)
+                  return (
+                    <div key={log.id} style={{ background: c.bg, border: '1px solid ' + c.border, borderRadius: 12, padding: '10px 14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ color: c.color, fontWeight: 800, fontSize: 13 }}>{log.action}</span>
+                        <span style={{ color: '#64748b', fontSize: 11 }}>{log.time}</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', fontSize: 12, lineHeight: 1.5 }}>{log.result}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
 
-        <p style={bodyStyle}>
-          “The next step is not a massive rollout. The next step is one pilot
-          facility to prove value and scale from there.”
-        </p>
-      </div>
-    </main>
-  )
-}
-
-function KpiCard({
-  title,
-  value,
-  accent,
-  subtitle,
-}: {
-  title: string
-  value: string
-  accent: string
-  subtitle: string
-}) {
-  return (
-    <div
-      style={{
-        background: 'rgba(15,23,42,0.92)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '18px',
-        padding: '18px',
-        boxShadow: `0 0 20px ${accent}18`,
-      }}
-    >
-      <div style={{ color: '#94a3b8', fontSize: '13px' }}>{title}</div>
-      <div
-        style={{
-          fontSize: '34px',
-          fontWeight: 900,
-          color: accent,
-          marginTop: '8px',
-        }}
-      >
-        {value}
-      </div>
-      <div style={{ color: '#94a3b8', fontSize: '13px', marginTop: '8px' }}>
-        {subtitle}
-      </div>
+          <div style={{ display: 'grid', gap: 20 }}>
+            <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 26, padding: 18 }}>
+              <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, marginBottom: 14 }}>AI Recommendations</div>
+              {recommendations.map(item => (
+                <div key={item} style={{ color: '#cbd5e1', lineHeight: 1.6, background: 'rgba(2,6,23,0.45)', border: '1px solid rgba(148,163,184,0.12)', borderRadius: 16, padding: 14, marginBottom: 12, fontSize: 13 }}>• {item}</div>
+              ))}
+            </div>
+            <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 26, padding: 18 }}>
+              <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, marginBottom: 14 }}>Anomaly Detection</div>
+              {anomalies.map(item => (
+                <div key={item} style={{ color: '#fee2e2', lineHeight: 1.6, background: 'rgba(127,29,29,0.26)', border: '1px solid rgba(248,113,113,0.24)', borderRadius: 16, padding: 14, marginBottom: 12, fontSize: 13 }}>⚠ {item}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
 
-function MiniStat({
-  title,
-  value,
-}: {
-  title: string
-  value: string
-}) {
+function AIButton({ label, desc, color, onClick, disabled, fullWidth }: { label: string; desc: string; color: string; onClick: () => void; disabled: boolean; fullWidth?: boolean }) {
   return (
-    <div
-      style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: '14px',
-        padding: '14px',
-      }}
-    >
-      <div style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '6px' }}>
-        {title}
-      </div>
-      <div style={{ fontSize: '22px', fontWeight: 800 }}>{value}</div>
-    </div>
+    <button onClick={onClick} disabled={disabled} style={{ background: 'rgba(2,6,23,0.6)', border: '1px solid ' + color + '40', borderLeft: '3px solid ' + color, borderRadius: 14, padding: '16px 18px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.6 : 1, textAlign: 'left', gridColumn: fullWidth ? '1 / -1' : 'auto', transition: 'all 0.2s ease' }}>
+      <div style={{ color, fontWeight: 800, fontSize: 15, marginBottom: 4 }}>{label}</div>
+      <div style={{ color: '#64748b', fontSize: 12 }}>{desc}</div>
+    </button>
   )
-}
-
-function RiskRow({ text }: { text: string }) {
-  return (
-    <div
-      style={{
-        background: 'rgba(239,68,68,0.08)',
-        border: '1px solid rgba(239,68,68,0.22)',
-        borderRadius: '12px',
-        padding: '12px 14px',
-        color: '#fecaca',
-        lineHeight: 1.6,
-      }}
-    >
-      {text}
-    </div>
-  )
-}
-
-function MoneyRow({
-  label,
-  value,
-  strong = false,
-}: {
-  label: string
-  value: string
-  strong?: boolean
-}) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '10px 0',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        fontWeight: strong ? 800 : 500,
-      }}
-    >
-      <span style={{ color: strong ? 'white' : '#cbd5e1' }}>{label}</span>
-      <span>{value}</span>
-    </div>
-  )
-}
-
-function JumpLink({
-  href,
-  label,
-}: {
-  href: string
-  label: string
-}) {
-  return (
-    <a
-      href={href}
-      style={{
-        textDecoration: 'none',
-        color: 'white',
-        background: 'rgba(37,99,235,0.16)',
-        border: '1px solid rgba(59,130,246,0.35)',
-        borderRadius: '12px',
-        padding: '14px',
-        fontWeight: 800,
-        textAlign: 'center',
-      }}
-    >
-      {label}
-    </a>
-  )
-}
-
-function PilotMetric({ text }: { text: string }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '10px',
-        marginBottom: '8px',
-        color: '#e2e8f0',
-      }}
-    >
-      <span style={{ color: '#38bdf8', fontWeight: 900 }}>•</span>
-      <span>{text}</span>
-    </div>
-  )
-}
-
-const panelStyle: React.CSSProperties = {
-  background: 'rgba(15,23,42,0.92)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: '18px',
-  padding: '20px',
-}
-
-const panelTitleStyle: React.CSSProperties = {
-  fontSize: '22px',
-  fontWeight: 900,
-  marginBottom: '14px',
-}
-
-const bodyStyle: React.CSSProperties = {
-  color: '#cbd5e1',
-  lineHeight: 1.8,
-  fontSize: '16px',
 }
