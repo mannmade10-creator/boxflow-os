@@ -1,27 +1,11 @@
-import { writeFileSync } from 'fs';
-
-// Disable TypeScript strict checking for build
-const tsconfig = {
-  "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "noImplicitAny": false,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./*"] }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
-};
-
-writeFileSync('tsconfig.json', JSON.stringify(tsconfig, null, 2), 'utf8');
-console.log('TypeScript strict mode disabled!');
+import { readFileSync, writeFileSync } from 'fs';
+let c = readFileSync('app/layout.tsx', 'utf8');
+// Remove ALL Metadata/Viewport imports and re-add clean ones
+c = c.replace(/import type \{ Metadata \} from 'next'\n/g, '');
+c = c.replace(/import type \{ Metadata, Viewport \} from 'next'\n/g, '');
+c = c.replace(/import '\.\/globals\.css'\n/g, '');
+// Add clean imports at the top
+c = "import './globals.css'\nimport type { Metadata, Viewport } from 'next'\n" + c;
+writeFileSync('app/layout.tsx', c, 'utf8');
+console.log('Layout rewritten! First 5 lines:');
+c.split('\n').slice(0,5).forEach(l => console.log(l));
