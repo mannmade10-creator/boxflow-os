@@ -66,7 +66,10 @@ export default function EquipmentPage() {
             {machines.map(machine => (
               <div key={machine.id} onClick={() => setSelectedId(machine.id)} style={{ background: 'linear-gradient(180deg, rgba(10,24,58,0.98) 0%, rgba(8,20,47,0.98) 100%)', padding: 18, borderRadius: 18, border: '1px solid ' + statusColor(machine.status), cursor: 'pointer', boxShadow: selectedId === machine.id ? '0 0 28px ' + statusColor(machine.status) + '45' : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                  <img src={'/machines/' + machine.id.toLowerCase() + '.png'} alt={machine.lineName} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(148,163,184,0.2)' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                   <h3 style={{ margin: 0, fontSize: 22, color: '#fff' }}>{machine.lineName}</h3>
+                </div>
                   <div style={{ background: statusColor(machine.status), color: machine.status === 'DOWN' ? 'white' : '#04112b', padding: '6px 12px', borderRadius: 999, fontWeight: 900, fontSize: 12 }}>{machine.status}</div>
                 </div>
                 <div style={{ lineHeight: 1.85, color: '#dbe5f4' }}>
