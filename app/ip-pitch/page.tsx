@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useEffect } from 'react'
 
 const slides = [
@@ -8,144 +7,147 @@ const slides = [
     type: 'cover',
     label: 'Confidential',
     title: 'International Paper',
-    subtitle: 'A $14,000,000 Opportunity',
-    body: 'Prepared exclusively for International Paper Executive Leadership',
-    note: 'Confidential — Not for Distribution',
+    subtitle: 'A $14,500,000 Annual Savings Opportunity',
+    note: 'Confidential — Prepared Exclusively for International Paper Executive Leadership',
     color: '#3b82f6',
   },
   {
     id: 2,
-    type: 'attention',
-    label: 'The Opportunity',
-    title: 'What If You Could Cut Your Software Bill by 96%?',
-    body: 'International Paper is one of the most sophisticated paper and packaging companies in the world. Yet like most Fortune 500 companies, you are paying premium prices to multiple vendors for software that was never designed to work together.',
-    highlight: 'This presentation shows you exactly where the money is going — and how to get most of it back.',
-    color: '#f59e0b',
+    type: 'facts',
+    label: 'Company Profile',
+    title: 'International Paper By The Numbers',
+    stats: [
+      { value: '$18.6B', label: 'Annual Revenue', color: '#3b82f6' },
+      { value: '$500M+', label: 'Annual IT & Software Spend', color: '#8b5cf6' },
+      { value: '65,000+', label: 'Employees Worldwide', color: '#0ea5e9' },
+      { value: '350+', label: 'Facilities Globally', color: '#22c55e' },
+    ],
+    body: 'International Paper is the world's largest paper and packaging company. Yet despite its scale and sophistication, IP is paying premium prices to multiple disconnected software vendors — none of which were built for paper and box manufacturing.',
+    color: '#3b82f6',
   },
   {
     id: 3,
     type: 'spend',
-    label: 'Current Spend',
+    label: 'Current Software Spend',
     title: 'What International Paper Pays Today',
     vendors: [
-      { name: 'McLeod Software', category: 'Dispatch & TMS', cost: '$2,000,000+', color: '#ef4444' },
-      { name: 'Samsara', category: 'Fleet Tracking', cost: '$1,500,000+', color: '#ef4444' },
-      { name: 'SAP', category: 'ERP & Operations', cost: '$5,000,000+', color: '#ef4444' },
-      { name: 'Oracle', category: 'Business Intelligence', cost: '$3,000,000+', color: '#ef4444' },
-      { name: 'TMW Systems', category: 'Transportation Mgmt', cost: '$2,000,000+', color: '#ef4444' },
-      { name: 'Fishbowl', category: 'Inventory Management', cost: '$1,000,000+', color: '#ef4444' },
-      { name: 'Additional Platforms', category: '10+ other systems', cost: '$1,500,000+', color: '#ef4444' },
+      { name: 'SAP', category: 'ERP & Enterprise Operations', cost: '$5,000,000+', annual: true },
+      { name: 'Oracle', category: 'Business Intelligence & Analytics', cost: '$3,000,000+', annual: true },
+      { name: 'McLeod Software', category: 'Dispatch & Transportation Management', cost: '$2,000,000+', annual: true },
+      { name: 'TMW Systems', category: 'Transportation Management System', cost: '$2,000,000+', annual: true },
+      { name: 'Samsara', category: 'Fleet Tracking & GPS', cost: '$1,500,000+', annual: true },
+      { name: 'Fishbowl', category: 'Inventory & Production Management', cost: '$1,000,000+', annual: true },
+      { name: '10+ Additional Platforms', category: 'HR, Analytics, Client Tools, Reporting', cost: '$1,500,000+', annual: true },
     ],
-    total: 'Estimated Annual Software Spend: $16,000,000+',
+    total: '$16,000,000+ Per Year',
+    subtitle: 'Estimated Annual Software & Licensing Costs',
     color: '#ef4444',
   },
   {
     id: 4,
-    type: 'problem',
-    label: 'The Real Cost',
-    title: 'But The Money Is Only Half The Problem',
+    type: 'hidden',
+    label: 'The Hidden Costs',
+    title: 'But The Invoice Is Only Half The Story',
     points: [
-      '🔄 Your teams switch between 6+ systems every single day',
-      '⏱ Hours wasted daily on manual data re-entry between platforms',
-      '📊 No single source of truth for operations leadership',
-      '🚨 Production delays caused by disconnected dispatch and floor data',
-      '👥 HR and operations managed on completely separate systems',
-      '📍 No unified visibility across multiple facilities',
-      '🤖 Zero AI optimization — everything is still manual',
-      '💸 Vendors charge renewal fees knowing you are locked in',
+      { icon: '⏱', text: 'Employees spend 2-3 hours daily switching between 10+ platforms' },
+      { icon: '📊', text: 'No single source of truth — leadership flies blind on real-time operations' },
+      { icon: '🔄', text: 'Manual data re-entry between systems creates errors and delays' },
+      { icon: '🚨', text: 'Production delays caused by disconnected dispatch and floor data' },
+      { icon: '💸', text: 'Vendor lock-in means renewal fees increase every year' },
+      { icon: '🤖', text: 'Zero AI optimization — every decision is still made manually' },
+      { icon: '👥', text: 'HR and operations on completely separate systems with no integration' },
+      { icon: '📍', text: 'No unified visibility across all 350+ facilities' },
     ],
-    total: 'The hidden cost of disconnected software is measured in millions more — in lost productivity, delays, and missed optimization.',
+    bottom: 'Conservative estimate: $3-5M in additional annual losses from inefficiency, delays, and manual processes.',
     color: '#f59e0b',
   },
   {
     id: 5,
-    type: 'solution',
-    label: 'The Solution',
-    title: 'One Platform Replaces All of It',
-    points: [
-      '✅ Replaces McLeod & TMW — Smart Dispatch + Route Optimization',
-      '✅ Replaces Samsara — Live GPS Fleet Map + Driver Management',
-      '✅ Replaces SAP & Oracle — Executive Dashboard + Full Analytics',
-      '✅ Replaces Fishbowl — Production Flow Tracker + Inventory',
-      '✅ Replaces HR Systems — Full HR + Payroll Module',
-      '✅ Adds What None of Them Have — AI Control Panel',
-      '✅ Adds What None of Them Have — Client Portal with Live Tracking',
-      '✅ Adds What None of Them Have — Real-time Alerts + Notifications',
+    type: 'comparison',
+    label: 'Side by Side',
+    title: 'Current Stack vs BoxFlow OS',
+    rows: [
+      { feature: 'Dispatch & TMS', current: 'McLeod + TMW ($4M/yr)', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'Fleet GPS Tracking', current: 'Samsara ($1.5M/yr)', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'ERP & Operations', current: 'SAP ($5M/yr)', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'Business Intelligence', current: 'Oracle ($3M/yr)', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'Production Tracking', current: 'Fishbowl ($1M/yr)', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'HR & Payroll', current: 'Standalone systems', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'AI Optimization', current: '❌ Not available', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'Client Portal', current: '❌ Not available', boxflow: '✅ Built In', color: '#22c55e' },
+      { feature: 'Real-time Alerts', current: '❌ Not available', boxflow: '✅ Built In', color: '#22c55e' },
     ],
-    total: 'BoxFlow OS — Built specifically for paper manufacturing and logistics operations.',
     color: '#22c55e',
   },
   {
     id: 6,
     type: 'demo',
     label: 'Live System',
-    title: 'This Is Built. Right Now. Live.',
+    title: 'This Is Not A Concept. It Is Live Right Now.',
     demos: [
-      { icon: '🏭', title: 'Production Floor Tracker', desc: 'Machine status, output per hour, downtime alerts, efficiency tracking — built for box and paper manufacturing' },
-      { icon: '🚛', title: 'Live Fleet Dispatch', desc: 'Real GPS tracking, AI route optimization, driver assignment, delivery status — all in one screen' },
-      { icon: '🤖', title: 'AI Control Panel', desc: 'One click to optimize production, reassign drivers, reduce delays — AI that actually takes action' },
-      { icon: '📊', title: 'Executive Dashboard', desc: 'The single source of truth leadership needs — orders, fleet, production, HR, all live in one view' },
+      { icon: '🏭', title: 'Production Floor Tracker', desc: 'Real-time machine status, output per hour, downtime alerts — built specifically for box and paper manufacturing operations' },
+      { icon: '🚛', title: 'Live Fleet Dispatch', desc: 'GPS tracking, AI route optimization, driver management — replaces Samsara and McLeod in one screen' },
+      { icon: '🤖', title: 'AI Control Panel', desc: 'One-click production optimization, driver reassignment, delay reduction — the AI layer IP does not currently have' },
+      { icon: '📊', title: 'Executive Dashboard', desc: 'Single source of truth for leadership — orders, fleet, production, HR, all live in one unified view' },
     ],
     color: '#8b5cf6',
   },
   {
     id: 7,
-    type: 'savings',
+    type: 'roi',
     label: 'The Math',
-    title: 'The Numbers Speak for Themselves',
-    stats: [
-      { value: '$16M+', label: 'Current estimated annual software spend', color: '#ef4444' },
-      { value: '10+', label: 'Disconnected platforms currently in use', color: '#f59e0b' },
-      { value: '$14M+', label: 'Potential annual savings with BoxFlow OS', color: '#22c55e' },
-      { value: '96%', label: 'Cost reduction vs current software stack', color: '#3b82f6' },
+    title: 'The Financial Case Is Undeniable',
+    current: [
+      { label: 'SAP Annual License', value: '$5,000,000' },
+      { label: 'Oracle Annual License', value: '$3,000,000' },
+      { label: 'McLeod + TMW', value: '$4,000,000' },
+      { label: 'Samsara Fleet Tracking', value: '$1,500,000' },
+      { label: 'Fishbowl + Others', value: '$2,500,000' },
     ],
-    bottom: 'Every year International Paper continues with the current setup is another $14,000,000 that does not have to be spent.',
+    currentTotal: '$16,000,000/year',
+    savings: '$14,500,000+',
+    savingsPct: '90%+',
     color: '#22c55e',
   },
   {
     id: 8,
-    type: 'custom',
-    label: 'Built for IP',
-    title: 'This Would Be Built Around International Paper',
+    type: 'insider',
+    label: 'The Insider',
+    title: 'I Did Not Build This From The Outside',
+    body: 'I work at International Paper. I have seen these inefficiencies firsthand — every day. I know which systems teams hate. I know where data gets lost between platforms. I know the frustration of switching between 6 different tools to get one answer.',
     points: [
-      '🎨 Fully branded as International Paper internal software',
-      '🔗 Integrated with your existing legacy systems via API',
-      '🏭 Production stages customized for corrugated manufacturing',
-      '🚛 Fleet management built around IP vehicle specifications',
-      '📍 Multi-facility support for every IP location nationwide',
-      '🔒 Enterprise security meeting all IP compliance requirements',
-      '👥 HR module mapped to IP workforce structure and policies',
-      '📞 Dedicated development team for ongoing customization',
+      'I built BoxFlow OS specifically around the problems I see at IP daily',
+      'I understand IP's operations, workflows, and pain points from the inside',
+      'I am not a vendor trying to sell you something you don't need',
+      'I am an IP employee who built the solution IP actually needs',
     ],
-    color: '#0ea5e9',
+    closing: 'No outside vendor could understand your operations the way I do. That insider knowledge is built into every feature of this platform.',
+    color: '#f59e0b',
   },
   {
     id: 9,
     type: 'offer',
-    label: 'The Conversation',
-    title: 'I Am Not Here to Sell You Software',
-    body: 'I am here because I have worked at International Paper. I have seen firsthand how much time and money is lost every day to disconnected systems. I built the solution — not as an outside vendor trying to close a deal — but as someone who genuinely understands this company and wants to see it operate at its full potential.',
+    label: 'The Ask',
+    title: 'I Am Not Naming A Price',
+    body: 'BoxFlow OS can replace every major software platform International Paper currently uses. The savings speak for themselves at $14,500,000+ per year.',
+    question: 'What I am asking is simple:',
     points: [
-      'I am not asking for a purchase order today',
-      'I am asking for 30 minutes and an NDA',
-      'Let me show you what I built',
-      'Then you tell me what it is worth to International Paper',
+      '🤝 Sign a mutual NDA to protect both parties',
+      '👁 Give me 30 minutes for a live demo',
+      '🧪 Run a pilot at one facility to prove the ROI',
+      '💰 Then YOU tell me what this is worth to International Paper',
     ],
-    question: 'What would saving $14,000,000 per year be worth to this company?',
+    closing: 'I am not here to sell you software. I am here because I know this company can operate better — and I built the tool to make it happen.',
     color: '#22c55e',
   },
   {
     id: 10,
-    type: 'next',
-    label: 'Next Steps',
-    title: 'Four Simple Steps',
-    steps: [
-      { num: '01', title: 'Sign an NDA', desc: 'Protect both parties during the evaluation process — standard mutual NDA' },
-      { num: '02', title: 'Live Demo', desc: '30-minute walkthrough of the full platform — all modules, live data, real AI' },
-      { num: '03', title: 'Pilot Program', desc: 'Start with one facility or one department — prove the ROI before full commitment' },
-      { num: '04', title: 'You Make the Call', desc: 'After seeing the savings, International Paper decides what this partnership looks like' },
-    ],
-    goal: 'One conversation. $14,000,000 in potential annual savings.',
+    type: 'closing',
+    label: 'One Question',
+    title: 'One Question For Leadership',
+    question: 'If BoxFlow OS saves International Paper $14,500,000 per year — what is that worth to this company?',
+    subtext: 'Every year this conversation does not happen is another $14,500,000 spent unnecessarily.',
+    contact: 'Ready to talk: schedule a demo at boxflow-os.vercel.app/contact',
     color: '#3b82f6',
   },
 ]
@@ -183,7 +185,7 @@ export default function IPPitchPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 30% 20%, rgba(37,99,235,0.15), transparent 50%), linear-gradient(180deg, #020617 0%, #050e1f 100%)', color: '#fff', fontFamily: 'Arial, sans-serif', display: 'flex', flexDirection: 'column' }}>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', borderBottom: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.9)', backdropFilter: 'blur(12px)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', borderBottom: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 32, height: 32 }} />
           <span style={{ fontWeight: 900, color: '#fff', fontSize: 16 }}>BoxFlow OS</span>
@@ -209,58 +211,87 @@ export default function IPPitchPage() {
 
           {slide.type === 'cover' && (
             <div style={{ textAlign: 'center' }}>
-              <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 100, marginBottom: 24, filter: 'drop-shadow(0 0 40px rgba(37,99,235,0.6))' }} />
-              <h1 style={{ fontSize: 80, fontWeight: 900, margin: '0 0 8px', letterSpacing: -2, lineHeight: 1, background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
-              <div style={{ fontSize: 48, fontWeight: 900, color: '#22c55e', margin: '16px 0 24px' }}>{slide.subtitle}</div>
-              <p style={{ fontSize: 16, color: '#94a3b8', marginBottom: 32 }}>{slide.body}</p>
-              <div style={{ padding: '16px 32px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 16, display: 'inline-block' }}>
+              <img src="/assets/logo.png" style={{ width: 100, marginBottom: 24, filter: 'drop-shadow(0 0 40px rgba(37,99,235,0.6))' }} alt="logo" />
+              <h1 style={{ fontSize: 80, fontWeight: 900, margin: '0 0 8px', background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
+              <div style={{ fontSize: 36, fontWeight: 900, color: '#22c55e', margin: '16px 0 24px', lineHeight: 1.2 }}>{slide.subtitle}</div>
+              <div style={{ padding: '14px 28px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 14, display: 'inline-block' }}>
                 <span style={{ color: '#f59e0b', fontWeight: 800 }}>🔒 {slide.note}</span>
               </div>
             </div>
           )}
 
-          {slide.type === 'attention' && (
-            <div style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <p style={{ fontSize: 20, color: '#94a3b8', lineHeight: 1.8, marginBottom: 40 }}>{slide.body}</p>
-              <div style={{ padding: '24px 36px', background: 'rgba(245,158,11,0.1)', border: '2px solid rgba(245,158,11,0.3)', borderRadius: 20 }}>
-                <p style={{ fontSize: 20, color: '#fde68a', fontWeight: 700, margin: 0, lineHeight: 1.6 }}>{slide.highlight}</p>
+          {slide.type === 'facts' && (
+            <div>
+              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+                {slide.stats?.map((stat, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + stat.color, borderRadius: 18, padding: 24, textAlign: 'center' }}>
+                    <div style={{ fontSize: 40, fontWeight: 900, color: stat.color, marginBottom: 8 }}>{stat.value}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 14 }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 18, padding: 24 }}>
+                <p style={{ color: '#cbd5e1', fontSize: 17, lineHeight: 1.7, margin: 0 }}>{slide.body}</p>
               </div>
             </div>
           )}
 
           {slide.type === 'spend' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
+              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 8px' }}>{slide.title}</h1>
+              <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15 }}>{slide.subtitle}</p>
+              <div style={{ display: 'grid', gap: 8, marginBottom: 20 }}>
                 {slide.vendors?.map((vendor, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(127,29,29,0.15)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 14, padding: '14px 24px' }}>
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(127,29,29,0.15)', border: '1px solid rgba(239,68,68,0.2)', borderLeft: '3px solid #ef4444', borderRadius: 12, padding: '12px 20px' }}>
                     <div>
                       <div style={{ fontWeight: 800, color: '#fff', fontSize: 16 }}>{vendor.name}</div>
                       <div style={{ color: '#64748b', fontSize: 13 }}>{vendor.category}</div>
                     </div>
-                    <div style={{ color: '#ef4444', fontWeight: 900, fontSize: 20 }}>{vendor.cost}</div>
+                    <div style={{ color: '#ef4444', fontWeight: 900, fontSize: 22 }}>{vendor.cost}</div>
                   </div>
                 ))}
               </div>
-              <div style={{ padding: '20px 28px', background: 'rgba(239,68,68,0.15)', border: '2px solid rgba(239,68,68,0.4)', borderRadius: 16, fontSize: 22, fontWeight: 900, color: '#ef4444', textAlign: 'center' }}>
-                {slide.total}
+              <div style={{ padding: '18px 24px', background: 'rgba(239,68,68,0.15)', border: '2px solid rgba(239,68,68,0.5)', borderRadius: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>Total Annual Software Spend</span>
+                <span style={{ color: '#ef4444', fontWeight: 900, fontSize: 28 }}>{slide.total}</span>
               </div>
             </div>
           )}
 
-          {(slide.type === 'problem' || slide.type === 'solution') && (
+          {slide.type === 'hidden' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
+              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
                 {slide.points?.map((point, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: slide.color + '10', border: '1px solid ' + slide.color + '25', borderLeft: '3px solid ' + slide.color, borderRadius: 12, padding: '12px 20px', fontSize: 16, color: '#e2e8f0', fontWeight: 600 }}>
-                    {point}
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 12, padding: '14px 16px' }}>
+                    <span style={{ fontSize: 24, flexShrink: 0 }}>{point.icon}</span>
+                    <span style={{ color: '#e2e8f0', fontSize: 14, lineHeight: 1.5, fontWeight: 600 }}>{point.text}</span>
                   </div>
                 ))}
               </div>
-              <div style={{ padding: '18px 24px', background: slide.color + '15', border: '2px solid ' + slide.color + '40', borderRadius: 14, fontSize: 16, fontWeight: 700, color: slide.color }}>
-                {slide.total}
+              <div style={{ padding: '18px 24px', background: 'rgba(245,158,11,0.12)', border: '2px solid rgba(245,158,11,0.3)', borderRadius: 14, color: '#fde68a', fontWeight: 700, fontSize: 16 }}>
+                ⚠️ {slide.bottom}
+              </div>
+            </div>
+          )}
+
+          {slide.type === 'comparison' && (
+            <div>
+              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
+              <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 18, overflow: 'hidden' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: 'rgba(2,6,23,0.5)', padding: '12px 20px', gap: 20 }}>
+                  <div style={{ color: '#94a3b8', fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>Feature</div>
+                  <div style={{ color: '#ef4444', fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>Current (Costs Millions)</div>
+                  <div style={{ color: '#22c55e', fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>BoxFlow OS</div>
+                </div>
+                {slide.rows?.map((row, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '12px 20px', gap: 20, borderTop: '1px solid rgba(148,163,184,0.08)' }}>
+                    <div style={{ color: '#cbd5e1', fontWeight: 700, fontSize: 14 }}>{row.feature}</div>
+                    <div style={{ color: '#ef4444', fontSize: 13 }}>{row.current}</div>
+                    <div style={{ color: '#22c55e', fontWeight: 700, fontSize: 14 }}>{row.boxflow}</div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -268,84 +299,97 @@ export default function IPPitchPage() {
           {slide.type === 'demo' && (
             <div>
               <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
-              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32 }}>Not a mockup. Not a concept. A fully deployed enterprise platform — live today.</p>
+              <p style={{ color: '#94a3b8', fontSize: 17, marginBottom: 32 }}>Fully deployed. Real data. Real AI. Available for demo today.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
                 {slide.demos?.map((demo, i) => (
-                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28 }}>
-                    <div style={{ fontSize: 36, marginBottom: 12 }}>{demo.icon}</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 8 }}>{demo.title}</div>
-                    <div style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.5 }}>{demo.desc}</div>
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 18, padding: 24 }}>
+                    <div style={{ fontSize: 36, marginBottom: 10 }}>{demo.icon}</div>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: '#fff', marginBottom: 6 }}>{demo.title}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.5 }}>{demo.desc}</div>
                   </div>
                 ))}
               </div>
-              <a href="/dashboard" style={{ display: 'inline-block', padding: '14px 32px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
-                🚀 Launch Live Demo →
-              </a>
+              <a href="/dashboard" style={{ display: 'inline-block', padding: '14px 32px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>🚀 Launch Live Demo →</a>
             </div>
           )}
 
-          {slide.type === 'savings' && (
+          {slide.type === 'roi' && (
             <div>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 48px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 32 }}>
-                {slide.stats?.map((stat, i) => (
-                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + stat.color, borderRadius: 20, padding: 28, textAlign: 'center' }}>
-                    <div style={{ fontSize: 44, fontWeight: 900, color: stat.color, marginBottom: 8 }}>{stat.value}</div>
-                    <div style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.4 }}>{stat.label}</div>
+              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+                <div style={{ background: 'rgba(127,29,29,0.15)', border: '2px solid rgba(239,68,68,0.3)', borderRadius: 20, padding: 24 }}>
+                  <div style={{ color: '#ef4444', fontWeight: 800, fontSize: 14, textTransform: 'uppercase', marginBottom: 16 }}>Current Annual Spend</div>
+                  {slide.current?.map((item, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(239,68,68,0.1)' }}>
+                      <span style={{ color: '#cbd5e1', fontSize: 14 }}>{item.label}</span>
+                      <span style={{ color: '#ef4444', fontWeight: 700 }}>{item.value}</span>
+                    </div>
+                  ))}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, paddingTop: 16, borderTop: '2px solid rgba(239,68,68,0.3)' }}>
+                    <span style={{ color: '#fff', fontWeight: 800, fontSize: 16 }}>Total</span>
+                    <span style={{ color: '#ef4444', fontWeight: 900, fontSize: 22 }}>{slide.currentTotal}</span>
                   </div>
-                ))}
-              </div>
-              <div style={{ background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)', borderRadius: 20, padding: 24, textAlign: 'center' }}>
-                <div style={{ color: '#cbd5e1', fontSize: 18, lineHeight: 1.6, fontWeight: 600 }}>{slide.bottom}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div style={{ background: 'rgba(34,197,94,0.12)', border: '2px solid rgba(34,197,94,0.4)', borderRadius: 20, padding: 28, textAlign: 'center', flex: 1 }}>
+                    <div style={{ color: '#94a3b8', fontSize: 14, marginBottom: 8 }}>Annual Savings with BoxFlow OS</div>
+                    <div style={{ fontSize: 56, fontWeight: 900, color: '#22c55e', lineHeight: 1 }}>{slide.savings}</div>
+                    <div style={{ color: '#86efac', fontSize: 16, fontWeight: 700, marginTop: 8 }}>Per Year</div>
+                  </div>
+                  <div style={{ background: 'rgba(37,99,235,0.12)', border: '2px solid rgba(59,130,246,0.3)', borderRadius: 20, padding: 24, textAlign: 'center' }}>
+                    <div style={{ color: '#94a3b8', fontSize: 14, marginBottom: 8 }}>Cost Reduction</div>
+                    <div style={{ fontSize: 48, fontWeight: 900, color: '#3b82f6' }}>{slide.savingsPct}</div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {slide.type === 'custom' && (
-            <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gap: 10 }}>
+          {slide.type === 'insider' && (
+            <div style={{ maxWidth: 800, margin: '0 auto' }}>
+              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
+              <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 20, padding: 28, marginBottom: 24 }}>
+                <p style={{ color: '#fde68a', fontSize: 18, lineHeight: 1.8, margin: 0, fontWeight: 600 }}>{slide.body}</p>
+              </div>
+              <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
                 {slide.points?.map((point, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', borderLeft: '3px solid #0ea5e9', borderRadius: 12, padding: '12px 20px', fontSize: 16, color: '#e2e8f0', fontWeight: 600 }}>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(148,163,184,0.12)', borderLeft: '3px solid #f59e0b', borderRadius: 12, padding: '12px 18px', color: '#e2e8f0', fontSize: 15, fontWeight: 600 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', flexShrink: 0 }} />
                     {point}
                   </div>
                 ))}
               </div>
+              <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.7, fontStyle: 'italic' }}>{slide.closing}</p>
             </div>
           )}
 
           {slide.type === 'offer' && (
             <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <p style={{ fontSize: 18, color: '#94a3b8', lineHeight: 1.8, marginBottom: 40 }}>{slide.body}</p>
-              <div style={{ display: 'grid', gap: 12, marginBottom: 40, textAlign: 'left' }}>
+              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 16px' }}>{slide.title}</h1>
+              <p style={{ color: '#94a3b8', fontSize: 18, lineHeight: 1.7, marginBottom: 32 }}>{slide.body}</p>
+              <div style={{ fontSize: 18, color: '#60a5fa', fontWeight: 700, marginBottom: 20 }}>{slide.question}</div>
+              <div style={{ display: 'grid', gap: 12, marginBottom: 32, textAlign: 'left' }}>
                 {slide.points?.map((point, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: '14px 20px', fontSize: 17, color: '#e2e8f0', fontWeight: 700 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: '16px 20px', fontSize: 17, color: '#e2e8f0', fontWeight: 700 }}>
                     {point}
                   </div>
                 ))}
               </div>
-              <div style={{ padding: '24px 36px', background: 'rgba(34,197,94,0.12)', border: '2px solid rgba(34,197,94,0.4)', borderRadius: 20 }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: '#22c55e' }}>{slide.question}</div>
+              <div style={{ padding: '20px 28px', background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)', borderRadius: 16, color: '#86efac', fontSize: 16, lineHeight: 1.6 }}>
+                {slide.closing}
               </div>
             </div>
           )}
 
-          {slide.type === 'next' && (
-            <div>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 48px', textAlign: 'center' }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 40 }}>
-                {slide.steps?.map((step, i) => (
-                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + slide.color, borderRadius: 18, padding: 24 }}>
-                    <div style={{ fontSize: 36, fontWeight: 900, color: slide.color, marginBottom: 12 }}>{step.num}</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 8 }}>{step.title}</div>
-                    <div style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.5 }}>{step.desc}</div>
-                  </div>
-                ))}
+          {slide.type === 'closing' && (
+            <div style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
+              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 48px' }}>{slide.title}</h1>
+              <div style={{ padding: '40px', background: 'rgba(37,99,235,0.1)', border: '2px solid rgba(59,130,246,0.3)', borderRadius: 24, marginBottom: 32 }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1.4, marginBottom: 24 }}>{slide.question}</div>
+                <div style={{ fontSize: 16, color: '#ef4444', fontWeight: 700 }}>{slide.subtext}</div>
               </div>
-              <div style={{ padding: '24px', background: 'rgba(37,99,235,0.12)', border: '2px solid rgba(59,130,246,0.3)', borderRadius: 20, textAlign: 'center' }}>
-                <div style={{ fontSize: 22, fontWeight: 900, color: '#60a5fa' }}>💰 {slide.goal}</div>
+              <div style={{ padding: '20px', background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 16, color: '#60a5fa', fontSize: 16, fontWeight: 700 }}>
+                📧 {slide.contact}
               </div>
             </div>
           )}
@@ -353,7 +397,7 @@ export default function IPPitchPage() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderTop: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.9)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderTop: '1px solid rgba(148,163,184,0.1)', background: 'rgba(5,8,22,0.95)' }}>
         <button onClick={goPrev} disabled={current === 0} style={{ padding: '12px 28px', background: current === 0 ? 'rgba(148,163,184,0.05)' : 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 12, color: current === 0 ? '#334155' : '#fff', fontWeight: 700, cursor: current === 0 ? 'not-allowed' : 'pointer', fontSize: 15 }}>← Previous</button>
         <div style={{ color: '#64748b', fontSize: 13 }}>← → to navigate • 🔒 Confidential — International Paper Only</div>
         <button onClick={goNext} disabled={current === slides.length - 1} style={{ padding: '12px 28px', background: current === slides.length - 1 ? 'rgba(148,163,184,0.05)' : 'linear-gradient(135deg, ' + slide.color + ', ' + slide.color + 'cc)', border: 'none', borderRadius: 12, color: current === slides.length - 1 ? '#334155' : '#fff', fontWeight: 700, cursor: current === slides.length - 1 ? 'not-allowed' : 'pointer', fontSize: 15 }}>Next →</button>
