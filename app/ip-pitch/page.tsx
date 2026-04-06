@@ -22,7 +22,7 @@ const slides = [
       { value: '65,000+', label: 'Employees Worldwide', color: '#0ea5e9' },
       { value: '350+', label: 'Facilities Globally', color: '#22c55e' },
     ],
-    body: 'International Paper is the world's largest paper and packaging company. Yet despite its scale and sophistication, IP is paying premium prices to multiple disconnected software vendors — none of which were built for paper and box manufacturing.',
+    body: "International Paper is the world's largest paper and packaging company. Yet despite its scale and sophistication, IP is paying premium prices to multiple disconnected software vendors — none of which were built for paper and box manufacturing.",
     color: '#3b82f6',
   },
   {
@@ -117,8 +117,8 @@ const slides = [
     body: 'I work at International Paper. I have seen these inefficiencies firsthand — every day. I know which systems teams hate. I know where data gets lost between platforms. I know the frustration of switching between 6 different tools to get one answer.',
     points: [
       'I built BoxFlow OS specifically around the problems I see at IP daily',
-      'I understand IP's operations, workflows, and pain points from the inside',
-      'I am not a vendor trying to sell you something you don't need',
+      'I understand IP operations, workflows, and pain points from the inside',
+      'I am not a vendor trying to sell you something you do not need',
       'I am an IP employee who built the solution IP actually needs',
     ],
     closing: 'No outside vendor could understand your operations the way I do. That insider knowledge is built into every feature of this platform.',

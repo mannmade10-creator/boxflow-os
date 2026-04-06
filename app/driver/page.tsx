@@ -1,516 +1,574 @@
-﻿'use client'
+'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
-import AppSidebar from '@/components/AppSidebar'
-import { supabase } from '@/lib/supabase'
+import AuthGate from '@/components/AuthGate'
 
-type OrderRow = {
-  id: string
-  load_name?: string | null
-  client_name?: string | null
-  assigned_truck_id?: string | null
-  truck_lat?: number | null
-  truck_lng?: number | null
-  status?: string | null
-  pickup_location?: string | null
-  dropoff_location?: string | null
-}
-
-type DriverTruck = {
-  id: string
-  name: string
-  lat: number
-  lng: number
-}
-
-const TRUCKS: DriverTruck[] = [
-  { id: 'TRK-201', name: 'Blue Truck 201', lat: 35.4676, lng: -97.5164 },
-  { id: 'TRK-305', name: 'Yellow Truck 305', lat: 35.4822, lng: -97.4301 },
-  { id: 'TRK-412', name: 'Silver Truck 412', lat: 35.5901, lng: -97.5487 },
-  { id: 'TRK-518', name: 'Black Truck 518', lat: 35.3912, lng: -97.5234 },
-]
-
-function normalizeNumber(value: unknown) {
-  if (typeof value === 'number') return value
-  if (value === null || value === undefined || value === '') return null
-  const parsed = Number(value)
-  return Number.isNaN(parsed) ? null : parsed
-}
-
-function normalizeOrder(row: any): OrderRow {
-  return {
-    id: String(row?.id ?? ''),
-    load_name:
-      row?.load_name ||
-      row?.order_name ||
-      row?.name ||
-      row?.title ||
-      `Order ${row?.id ?? ''}`,
-    client_name: row?.client_name || row?.client || null,
-    assigned_truck_id:
-      row?.assigned_truck_id ||
-      row?.truck_id ||
-      row?.assigned_truck ||
-      row?.truck ||
-      null,
-    truck_lat: normalizeNumber(row?.truck_lat),
-    truck_lng: normalizeNumber(row?.truck_lng),
-    status: row?.status || 'Pending',
-    pickup_location:
-      row?.pickup_location || row?.pickup || row?.origin || row?.from_location || null,
-    dropoff_location:
-      row?.dropoff_location || row?.dropoff || row?.destination || row?.to_location || null,
-  }
+type AlertItem = {
+  title: string
+  detail: string
+  tone: 'warning' | 'info' | 'success'
 }
 
 export default function DriverPage() {
-  const [orders, setOrders] = useState<OrderRow[]>([])
-  const [selectedOrderId, setSelectedOrderId] = useState('')
-  const [selectedTruckId, setSelectedTruckId] = useState('TRK-201')
-  const [driverName, setDriverName] = useState('Angela Brooks')
-  const [tracking, setTracking] = useState(false)
-  const [sending, setSending] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [manualLat, setManualLat] = useState('35.4676')
-  const [manualLng, setManualLng] = useState('-97.5164')
+  const topStats = [
+    { label: 'Assigned Loads', value: '6', sub: '2 high priority' },
+    { label: 'Active Drivers', value: '8', sub: 'All checked in' },
+    { label: 'Avg ETA Accuracy', value: '97%', sub: 'Within target' },
+    { label: 'Exceptions', value: '2', sub: 'Needs review' },
+  ]
 
-  const selectedTruck = useMemo(
-    () => TRUCKS.find((t) => t.id === selectedTruckId) || TRUCKS[0],
-    [selectedTruckId]
-  )
+  const alerts: AlertItem[] = [
+    {
+      title: 'Route deviation detected',
+      detail: 'TRK-201 moved 1.2 miles off planned route.',
+      tone: 'warning',
+    },
+    {
+      title: 'Driver check-in complete',
+      detail: 'Angela Brooks is active and ready for dispatch.',
+      tone: 'success',
+    },
+    {
+      title: 'Urgent load alert',
+      detail: 'Retail Packaging Co delivery is priority-ranked.',
+      tone: 'info',
+    },
+  ]
 
-  const selectedOrder = useMemo(
-    () => orders.find((o) => o.id === selectedOrderId) || null,
-    [orders, selectedOrderId]
-  )
-
-  async function loadOrders() {
-    try {
-      setError(null)
-
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-
-      const rows = ((data as any[]) || []).map(normalizeOrder)
-      setOrders(rows)
-
-      if (!selectedOrderId && rows.length > 0) {
-        setSelectedOrderId(rows[0].id)
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load driver orders.')
-    }
-  }
-
-  useEffect(() => {
-    loadOrders()
-  }, [])
-
-  useEffect(() => {
-    const channel = supabase
-      .channel('driver-orders-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
-        loadOrders()
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [selectedOrderId])
-
-  async function pushLocation(lat: number, lng: number, status = 'In Transit') {
-    if (!selectedOrderId) {
-      setError('Select an order first.')
-      return
-    }
-
-    setSending(true)
-    setError(null)
-    setMessage(null)
-
-    try {
-      const response = await fetch('/api/fleet/update-location', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: selectedOrderId,
-          truckId: selectedTruckId,
-          lat,
-          lng,
-          status,
-        }),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result?.error || 'Failed to update location.')
-      }
-
-      setMessage(`Location sent for ${selectedTruckId}.`)
-      await loadOrders()
-    } catch (err: any) {
-      setError(err?.message || 'Failed to send location.')
-    } finally {
-      setSending(false)
-    }
-  }
-
-  function startBrowserGpsTracking() {
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported on this device/browser.')
-      return
-    }
-
-    setTracking(true)
-    setError(null)
-    setMessage('GPS tracking started.')
-
-    const watchId = navigator.geolocation.watchPosition(
-      async (position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
-        setManualLat(String(lat))
-        setManualLng(String(lng))
-        await pushLocation(lat, lng, 'In Transit')
-      },
-      (geoError) => {
-        setError(geoError.message || 'Failed to read GPS position.')
-        setTracking(false)
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 3000,
-        timeout: 10000,
-      }
-    )
-
-    ;(window as any).__boxflowWatchId = watchId
-  }
-
-  function stopBrowserGpsTracking() {
-    const watchId = (window as any).__boxflowWatchId
-    if (watchId !== undefined && watchId !== null) {
-      navigator.geolocation.clearWatch(watchId)
-      ;(window as any).__boxflowWatchId = null
-    }
-    setTracking(false)
-    setMessage('GPS tracking stopped.')
-  }
-
-  async function sendManualLocation() {
-    const lat = Number(manualLat)
-    const lng = Number(manualLng)
-
-    if (Number.isNaN(lat) || Number.isNaN(lng)) {
-      setError('Enter valid latitude and longitude.')
-      return
-    }
-
-    await pushLocation(lat, lng, 'In Transit')
-  }
+  const driverTimeline = [
+    { time: '08:10 AM', event: 'Driver checked in' },
+    { time: '08:18 AM', event: 'Load accepted' },
+    { time: '08:32 AM', event: 'Departed pickup location' },
+    { time: '09:05 AM', event: 'In transit with GPS active' },
+  ]
 
   return (
-    
+    <AuthGate>
       <main
         style={{
-          minHeight: '100vh',
+          minHeight: 'calc(100vh - 40px)',
           background:
-            'radial-gradient(circle at top left, rgba(29,78,216,0.18), transparent 22%), linear-gradient(180deg, #050816 0%, #0b1220 100%)',
+            'radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 24%), linear-gradient(180deg, #050816 0%, #0b1220 100%)',
           color: '#fff',
-          padding: 20,
+          borderRadius: 28,
+          padding: 28,
         }}
       >
-        <div
-          style={{
-            maxWidth: 1500,
-            margin: '0 auto',
-            display: 'grid',
-            gridTemplateColumns: '260px 1fr',
-            gap: 18,
-          }}
-        >
+        <div style={{ display: 'grid', gap: 22 }}>
+          <section style={{ display: 'grid', gap: 10 }}>
+            <div style={pillStyle}>Driver GPS Mode</div>
+            <h1 style={titleStyle}>Driver Live Tracking</h1>
+            <p style={subtitleStyle}>
+              Track driver readiness, truck assignment, live route status, ETA accuracy, and delivery progress from one screen.
+            </p>
+          </section>
 
-          <section>
-            <div style={{ marginBottom: 18 }}>
-              <div style={pillStyle}>Driver GPS Mode</div>
-              <h1 style={{ margin: '14px 0 8px', fontSize: 32 }}>Driver Live Tracking</h1>
-              <p style={{ margin: 0, color: '#94a3b8' }}>
-                Send real truck location updates from device GPS or manual coordinates.
-              </p>
+          <section
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+              gap: 14,
+            }}
+          >
+            {topStats.map((item) => (
+              <div key={item.label} style={statCardStyle}>
+                <div style={statLabelStyle}>{item.label}</div>
+                <div style={statValueStyle}>{item.value}</div>
+                <div style={statSubStyle}>{item.sub}</div>
+              </div>
+            ))}
+          </section>
+
+          <section
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 0.95fr',
+              gap: 20,
+              alignItems: 'start',
+            }}
+          >
+            <div style={panelStyle}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 12,
+                  marginBottom: 14,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <div style={sectionTitleStyle}>Driver Control Panel</div>
+
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                  <button style={miniBtnActive}>Live GPS</button>
+                  <button style={miniBtn}>Manual Backup</button>
+                  <button style={miniBtn}>History</button>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gap: 14 }}>
+                <Field label="Driver Name" value="Angela Brooks" />
+                <Field label="Truck" value="TRK-201 - Blue Truck 201" />
+                <Field label="Assigned Load" value="ORD-1011" />
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: 14,
+                  }}
+                >
+                  <Field label="Current Status" value="In Transit" />
+                  <Field label="Route ETA" value="2h 05m" />
+                </div>
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: 14,
+                  }}
+                >
+                  <Field label="Latitude" value="35.4676" />
+                  <Field label="Longitude" value="-97.5164" />
+                </div>
+
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 4 }}>
+                  <button style={primaryBtnStyle}>Start Real GPS</button>
+                  <button style={secondaryBtnStyle}>Advance Status</button>
+                  <button style={ghostBtnStyle}>Pause Tracking</button>
+                </div>
+              </div>
             </div>
 
-            {error && <div style={errorStyle}>{error}</div>}
-            {message && <div style={successStyle}>{message}</div>}
+            <div style={{ display: 'grid', gap: 20 }}>
+              <div style={panelStyle}>
+                <div style={sectionTitleStyle}>Current Assignment</div>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '420px 1fr',
-                gap: 18,
-                alignItems: 'start',
-              }}
-            >
-              <section style={panelStyle}>
-                <div style={sectionLabel}>Driver Control</div>
+                <div style={assignmentCardStyle}>
+                  <div style={{ fontSize: 22, fontWeight: 900, marginBottom: 10 }}>ORD-1011</div>
 
-                <div style={{ display: 'grid', gap: 14 }}>
-                  <div>
-                    <label style={labelStyle}>Driver Name</label>
-                    <input
-                      value={driverName}
-                      onChange={(e) => setDriverName(e.target.value)}
-                      style={inputStyle}
-                    />
+                  <div style={assignmentRowStyle}>
+                    <span style={assignmentLabelStyle}>Client</span>
+                    <span style={assignmentValueStyle}>Retail Packaging Co</span>
                   </div>
 
-                  <div>
-                    <label style={labelStyle}>Truck</label>
-                    <select
-                      value={selectedTruckId}
-                      onChange={(e) => setSelectedTruckId(e.target.value)}
-                      style={inputStyle}
-                    >
-                      {TRUCKS.map((truck) => (
-                        <option key={truck.id} value={truck.id}>
-                          {truck.id} - {truck.name}
-                        </option>
-                      ))}
-                    </select>
+                  <div style={assignmentRowStyle}>
+                    <span style={assignmentLabelStyle}>Truck</span>
+                    <span style={assignmentValueStyle}>TRK-201</span>
                   </div>
 
-                  <div>
-                    <label style={labelStyle}>Assigned Order</label>
-                    <select
-                      value={selectedOrderId}
-                      onChange={(e) => setSelectedOrderId(e.target.value)}
-                      style={inputStyle}
-                    >
-                      {orders.map((order) => (
-                        <option key={order.id} value={order.id}>
-                          {order.load_name || order.id}
-                        </option>
-                      ))}
-                    </select>
+                  <div style={assignmentRowStyle}>
+                    <span style={assignmentLabelStyle}>Pickup</span>
+                    <span style={assignmentValueStyle}>Nashville, Tennessee</span>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                    <button
-                      onClick={startBrowserGpsTracking}
-                      disabled={tracking || sending}
-                      style={primaryBtn}
-                    >
-                      Start Real GPS
-                    </button>
-
-                    <button
-                      onClick={stopBrowserGpsTracking}
-                      disabled={!tracking}
-                      style={secondaryBtn}
-                    >
-                      Stop GPS
-                    </button>
+                  <div style={assignmentRowStyle}>
+                    <span style={assignmentLabelStyle}>Dropoff</span>
+                    <span style={assignmentValueStyle}>Dallas Distribution Center</span>
                   </div>
 
-                  <div style={{ marginTop: 8, borderTop: '1px solid rgba(148,163,184,0.12)', paddingTop: 14 }}>
-                    <div style={sectionLabel}>Manual Backup Mode</div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                      <div>
-                        <label style={labelStyle}>Latitude</label>
-                        <input
-                          value={manualLat}
-                          onChange={(e) => setManualLat(e.target.value)}
-                          style={inputStyle}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={labelStyle}>Longitude</label>
-                        <input
-                          value={manualLng}
-                          onChange={(e) => setManualLng(e.target.value)}
-                          style={inputStyle}
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={sendManualLocation}
-                      disabled={sending}
-                      style={{ ...primaryBtn, marginTop: 12 }}
-                    >
-                      {sending ? 'Sending...' : 'Send Manual Location'}
-                    </button>
+                  <div style={assignmentRowStyle}>
+                    <span style={assignmentLabelStyle}>Priority</span>
+                    <span style={{ ...assignmentValueStyle, color: '#fca5a5' }}>Rush</span>
                   </div>
                 </div>
-              </section>
+              </div>
 
-              <section style={panelStyle}>
-                <div style={sectionLabel}>Current Assignment</div>
+              <div style={panelStyle}>
+                <div style={sectionTitleStyle}>Driver Timeline</div>
 
-                {!selectedOrder ? (
-                  <div style={{ color: '#94a3b8' }}>No order selected.</div>
-                ) : (
-                  <div style={{ display: 'grid', gap: 12 }}>
-                    <div style={infoCard}>
-                      <div style={{ fontSize: 20, fontWeight: 800 }}>
-                        {selectedOrder.load_name || selectedOrder.id}
-                      </div>
-                      <div style={{ color: '#94a3b8', marginTop: 6 }}>
-                        {selectedOrder.client_name || 'No client'}
-                      </div>
+                <div style={{ display: 'grid', gap: 12 }}>
+                  {driverTimeline.map((item) => (
+                    <div key={item.time + item.event} style={timelineRowStyle}>
+                      <div style={timelineTimeStyle}>{item.time}</div>
+                      <div style={timelineEventStyle}>{item.event}</div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
-                    <div style={infoCard}>
-                      <div style={miniLabel}>Truck</div>
-                      <div style={miniValue}>
-                        {selectedTruck.id} - {selectedTruck.name}
-                      </div>
-                    </div>
+          <section
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1.1fr 0.9fr',
+              gap: 20,
+              alignItems: 'start',
+            }}
+          >
+            <div style={panelStyle}>
+              <div style={sectionTitleStyle}>Driver Map Snapshot</div>
 
-                    <div style={infoCard}>
-                      <div style={miniLabel}>Pickup</div>
-                      <div style={miniValue}>{selectedOrder.pickup_location || 'N/A'}</div>
-                    </div>
-
-                    <div style={infoCard}>
-                      <div style={miniLabel}>Dropoff</div>
-                      <div style={miniValue}>{selectedOrder.dropoff_location || 'N/A'}</div>
-                    </div>
-
-                    <div style={infoCard}>
-                      <div style={miniLabel}>Last Saved Coordinates</div>
-                      <div style={miniValue}>
-                        {selectedOrder.truck_lat ?? 'N/A'}, {selectedOrder.truck_lng ?? 'N/A'}
-                      </div>
-                    </div>
-
-                    <div style={infoCard}>
-                      <div style={miniLabel}>Status</div>
-                      <div style={miniValue}>{selectedOrder.status || 'Pending'}</div>
+              <div style={mapCardStyle}>
+                <div style={mapHeaderStyle}>
+                  <div>
+                    <div style={{ fontWeight: 900, fontSize: 18 }}>TRK-201 Live Route</div>
+                    <div style={{ color: '#94a3b8', fontSize: 13, marginTop: 4 }}>
+                      OKC corridor tracking with active delivery telemetry
                     </div>
                   </div>
-                )}
-              </section>
+
+                  <span style={liveBadgeStyle}>GPS LIVE</span>
+                </div>
+
+                <div style={mapMockStyle}>
+                  <div style={mapGlowStyle} />
+                  <div style={truckBadgeStyle}>TRK-201</div>
+                </div>
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                    gap: 12,
+                    marginTop: 14,
+                  }}
+                >
+                  <MiniMetric label="Speed" value="62 mph" />
+                  <MiniMetric label="Stop Count" value="1" />
+                  <MiniMetric label="Arrival Window" value="On Time" />
+                </div>
+              </div>
+            </div>
+
+            <div style={panelStyle}>
+              <div style={sectionTitleStyle}>Exceptions & Alerts</div>
+
+              <div style={{ display: 'grid', gap: 12 }}>
+                {alerts.map((alert) => (
+                  <div key={alert.title} style={alertStyle(alert.tone)}>
+                    <div style={{ fontWeight: 900, marginBottom: 6 }}>{alert.title}</div>
+                    <div style={{ lineHeight: 1.5 }}>{alert.detail}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </div>
       </main>
-    
+    </AuthGate>
   )
 }
 
-const panelStyle: React.CSSProperties = {
-  background: 'rgba(15,23,42,0.86)',
-  border: '1px solid rgba(148,163,184,0.16)',
-  borderRadius: 24,
-  padding: 18,
-  boxShadow: '0 18px 48px rgba(0,0,0,0.25)',
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div style={fieldLabelStyle}>{label}</div>
+      <div style={fieldBoxStyle}>{value}</div>
+    </div>
+  )
+}
+
+function MiniMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={miniMetricCardStyle}>
+      <div style={miniMetricLabelStyle}>{label}</div>
+      <div style={miniMetricValueStyle}>{value}</div>
+    </div>
+  )
+}
+
+function alertStyle(tone: AlertItem['tone']): React.CSSProperties {
+  if (tone === 'warning') {
+    return {
+      color: '#fef2f2',
+      background: 'rgba(127,29,29,0.32)',
+      border: '1px solid rgba(248,113,113,0.24)',
+      borderRadius: 16,
+      padding: 14,
+    }
+  }
+
+  if (tone === 'success') {
+    return {
+      color: '#ecfdf5',
+      background: 'rgba(20,83,45,0.3)',
+      border: '1px solid rgba(74,222,128,0.2)',
+      borderRadius: 16,
+      padding: 14,
+    }
+  }
+
+  return {
+    color: '#eff6ff',
+    background: 'rgba(30,64,175,0.28)',
+    border: '1px solid rgba(96,165,250,0.2)',
+    borderRadius: 16,
+    padding: 14,
+  }
 }
 
 const pillStyle: React.CSSProperties = {
   display: 'inline-flex',
+  width: 'fit-content',
   alignItems: 'center',
   gap: 8,
+  padding: '8px 14px',
   borderRadius: 999,
-  padding: '8px 12px',
-  background: 'rgba(59,130,246,0.14)',
-  border: '1px solid rgba(59,130,246,0.3)',
+  background: 'rgba(37,99,235,0.14)',
+  border: '1px solid rgba(96,165,250,0.24)',
   color: '#93c5fd',
   fontSize: 12,
   fontWeight: 800,
+  letterSpacing: 0.9,
   textTransform: 'uppercase',
-  letterSpacing: 0.8,
 }
 
-const sectionLabel: React.CSSProperties = {
+const titleStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 44,
+  lineHeight: 1.02,
+  fontWeight: 900,
+  letterSpacing: -0.8,
+}
+
+const subtitleStyle: React.CSSProperties = {
+  margin: 0,
+  color: '#94a3b8',
+  fontSize: 16,
+  lineHeight: 1.6,
+  maxWidth: 900,
+}
+
+const statCardStyle: React.CSSProperties = {
+  background: 'linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(8,15,30,0.95) 100%)',
+  border: '1px solid rgba(148,163,184,0.14)',
+  borderRadius: 22,
+  padding: 18,
+}
+
+const statLabelStyle: React.CSSProperties = {
+  color: '#64748b',
+  fontSize: 12,
+  marginBottom: 10,
+  textTransform: 'uppercase',
+  letterSpacing: 0.6,
+  fontWeight: 700,
+}
+
+const statValueStyle: React.CSSProperties = {
+  fontSize: 30,
+  fontWeight: 900,
+  marginBottom: 6,
+}
+
+const statSubStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: '#93c5fd',
+  fontWeight: 700,
+}
+
+const panelStyle: React.CSSProperties = {
+  background: 'rgba(15,23,42,0.92)',
+  border: '1px solid rgba(148,163,184,0.14)',
+  borderRadius: 26,
+  padding: 18,
+}
+
+const sectionTitleStyle: React.CSSProperties = {
   fontSize: 12,
   color: '#94a3b8',
   textTransform: 'uppercase',
   letterSpacing: 0.7,
-  marginBottom: 14,
-  fontWeight: 700,
+  fontWeight: 800,
 }
 
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  marginBottom: 8,
+const fieldLabelStyle: React.CSSProperties = {
   color: '#cbd5e1',
   fontSize: 13,
+  marginBottom: 6,
   fontWeight: 700,
 }
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
+const fieldBoxStyle: React.CSSProperties = {
+  background: 'rgba(2,6,23,0.45)',
+  border: '1px solid rgba(148,163,184,0.12)',
   borderRadius: 14,
-  border: '1px solid rgba(148,163,184,0.18)',
-  background: 'rgba(2,6,23,0.55)',
+  padding: '14px 16px',
   color: '#fff',
-  padding: '12px 14px',
-  outline: 'none',
-  fontSize: 14,
 }
 
-const primaryBtn: React.CSSProperties = {
+const primaryBtnStyle: React.CSSProperties = {
   border: '1px solid rgba(59,130,246,0.35)',
   background: '#2563eb',
   color: '#fff',
   borderRadius: 12,
-  padding: '12px 16px',
+  padding: '12px 18px',
   fontWeight: 800,
   cursor: 'pointer',
 }
 
-const secondaryBtn: React.CSSProperties = {
-  border: '1px solid rgba(148,163,184,0.22)',
-  background: 'rgba(15,23,42,0.88)',
-  color: '#fff',
+const secondaryBtnStyle: React.CSSProperties = {
+  border: '1px solid rgba(59,130,246,0.25)',
+  background: 'rgba(59,130,246,0.12)',
+  color: '#dbeafe',
   borderRadius: 12,
-  padding: '12px 16px',
+  padding: '12px 18px',
+  fontWeight: 800,
+  cursor: 'pointer',
+}
+
+const ghostBtnStyle: React.CSSProperties = {
+  border: '1px solid rgba(148,163,184,0.2)',
+  background: 'rgba(2,6,23,0.32)',
+  color: '#e2e8f0',
+  borderRadius: 12,
+  padding: '12px 18px',
   fontWeight: 700,
   cursor: 'pointer',
 }
 
-const errorStyle: React.CSSProperties = {
-  background: 'rgba(127,29,29,0.28)',
-  border: '1px solid rgba(248,113,113,0.36)',
-  color: '#fecaca',
-  borderRadius: 16,
-  padding: 14,
-  marginBottom: 14,
+const miniBtnActive: React.CSSProperties = {
+  border: '1px solid rgba(59,130,246,0.35)',
+  background: '#2563eb',
+  color: '#fff',
+  borderRadius: 10,
+  padding: '8px 12px',
+  fontWeight: 800,
+  cursor: 'pointer',
 }
 
-const successStyle: React.CSSProperties = {
-  background: 'rgba(20,83,45,0.32)',
-  border: '1px solid rgba(74,222,128,0.28)',
-  color: '#bbf7d0',
-  borderRadius: 16,
-  padding: 14,
-  marginBottom: 14,
+const miniBtn: React.CSSProperties = {
+  border: '1px solid rgba(148,163,184,0.16)',
+  background: 'rgba(2,6,23,0.4)',
+  color: '#cbd5e1',
+  borderRadius: 10,
+  padding: '8px 12px',
+  fontWeight: 700,
+  cursor: 'pointer',
 }
 
-const infoCard: React.CSSProperties = {
-  background: 'rgba(2,6,23,0.5)',
+const assignmentCardStyle: React.CSSProperties = {
+  color: '#cbd5e1',
+  lineHeight: 1.6,
+  background: 'rgba(2,6,23,0.45)',
   border: '1px solid rgba(148,163,184,0.12)',
-  borderRadius: 16,
-  padding: 14,
+  borderRadius: 18,
+  padding: 16,
 }
 
-const miniLabel: React.CSSProperties = {
+const assignmentRowStyle: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 10,
+  padding: '10px 0',
+  borderBottom: '1px solid rgba(148,163,184,0.08)',
+  alignItems: 'center',
+}
+
+const assignmentLabelStyle: React.CSSProperties = {
   color: '#64748b',
   fontSize: 12,
+  textTransform: 'uppercase',
+  letterSpacing: 0.5,
+  fontWeight: 700,
+}
+
+const assignmentValueStyle: React.CSSProperties = {
+  color: '#f8fafc',
+  fontWeight: 800,
+  textAlign: 'right',
+}
+
+const timelineRowStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '110px 1fr',
+  gap: 14,
+  alignItems: 'start',
+  background: 'rgba(2,6,23,0.45)',
+  border: '1px solid rgba(148,163,184,0.12)',
+  borderRadius: 14,
+  padding: 14,
+}
+
+const timelineTimeStyle: React.CSSProperties = {
+  color: '#93c5fd',
+  fontWeight: 800,
+  fontSize: 13,
+}
+
+const timelineEventStyle: React.CSSProperties = {
+  color: '#e2e8f0',
+  fontWeight: 700,
+}
+
+const mapCardStyle: React.CSSProperties = {
+  color: '#cbd5e1',
+  background: 'rgba(2,6,23,0.45)',
+  border: '1px solid rgba(148,163,184,0.12)',
+  borderRadius: 20,
+  padding: 16,
+}
+
+const mapHeaderStyle: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 12,
+  alignItems: 'start',
+  marginBottom: 14,
+}
+
+const liveBadgeStyle: React.CSSProperties = {
+  background: 'rgba(20,83,45,0.32)',
+  border: '1px solid rgba(74,222,128,0.22)',
+  color: '#bbf7d0',
+  borderRadius: 999,
+  padding: '6px 10px',
+  fontSize: 11,
+  fontWeight: 800,
+}
+
+const mapMockStyle: React.CSSProperties = {
+  position: 'relative',
+  minHeight: 260,
+  borderRadius: 18,
+  overflow: 'hidden',
+  background:
+    'linear-gradient(180deg, rgba(15,23,42,0.96) 0%, rgba(11,18,32,0.98) 100%)',
+  border: '1px solid rgba(148,163,184,0.1)',
+}
+
+const mapGlowStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  background:
+    'radial-gradient(circle at 40% 45%, rgba(59,130,246,0.28), transparent 18%), linear-gradient(135deg, transparent 30%, rgba(59,130,246,0.16) 50%, transparent 70%)',
+}
+
+const truckBadgeStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '42%',
+  left: '46%',
+  transform: 'translate(-50%, -50%)',
+  background: '#2563eb',
+  color: '#fff',
+  borderRadius: 999,
+  padding: '10px 14px',
+  fontSize: 12,
+  fontWeight: 900,
+  boxShadow: '0 10px 24px rgba(37,99,235,0.3)',
+}
+
+const miniMetricCardStyle: React.CSSProperties = {
+  background: 'rgba(15,23,42,0.92)',
+  border: '1px solid rgba(148,163,184,0.12)',
+  borderRadius: 14,
+  padding: 12,
+}
+
+const miniMetricLabelStyle: React.CSSProperties = {
+  color: '#64748b',
+  fontSize: 11,
+  textTransform: 'uppercase',
+  letterSpacing: 0.5,
+  fontWeight: 700,
   marginBottom: 6,
 }
 
-const miniValue: React.CSSProperties = {
-  color: '#e2e8f0',
-  fontSize: 14,
-  fontWeight: 700,
+const miniMetricValueStyle: React.CSSProperties = {
+  color: '#f8fafc',
+  fontSize: 18,
+  fontWeight: 900,
 }
