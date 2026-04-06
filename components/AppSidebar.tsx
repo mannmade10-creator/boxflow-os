@@ -20,7 +20,6 @@ const navItems = [
   { key: 'equipment', label: 'Equipment', href: '/equipment' },
   { key: 'hr', label: 'HR', href: '/hr' },
   { key: 'analytics', label: 'Analytics', href: '/analytics' },
-  { key: 'pricing', label: 'Pricing', href: '/pricing' },
   { key: 'contact', label: '📧 Contact', href: '/contact' },
   { key: 'pitch', label: 'Pitch Deck', href: '/pitch' },
   { key: 'settings', label: 'Settings', href: '/settings' },

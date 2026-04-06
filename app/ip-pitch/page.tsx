@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-try { mkdirSync('app/ip-pitch', { recursive: true }); } catch(e) {}
-
-const code = `'use client'
+'use client'
 
 import React, { useState, useEffect } from 'react'
 
@@ -363,7 +360,4 @@ export default function IPPitchPage() {
       </div>
     </div>
   )
-}`;
-
-writeFileSync('app/ip-pitch/page.tsx', code, 'utf8');
-console.log('IP Pitch rebuilt - Let them make the offer!');
+}
