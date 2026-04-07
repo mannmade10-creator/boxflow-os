@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-try { mkdirSync('app/roi', { recursive: true }); } catch(e) {}
-
-writeFileSync('app/roi/page.tsx', `'use client'
+'use client'
 import React, { useState } from 'react'
 
 export default function ROIPage() {
@@ -207,6 +204,4 @@ export default function ROIPage() {
       </div>
     </div>
   )
-}`, 'utf8');
-
-console.log('ROI Calculator built!');
+}
