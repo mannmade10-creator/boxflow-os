@@ -97,3 +97,9 @@ html {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
+@media (max-width: 768px) {
+  .map-toggle-btn {
+    display: block !important;
+  }
+}
