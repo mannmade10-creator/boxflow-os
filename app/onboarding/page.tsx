@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-try { mkdirSync('app/onboarding', { recursive: true }); } catch(e) {}
-
-writeFileSync('app/onboarding/page.tsx', `'use client'
+'use client'
 import React, { useState } from 'react'
 
 const phases = [
@@ -245,6 +242,4 @@ export default function OnboardingPage() {
       </div>
     </div>
   )
-}`, 'utf8');
-
-console.log('Client onboarding checklist built!');
+}
