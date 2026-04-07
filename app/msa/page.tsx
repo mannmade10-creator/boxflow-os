@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-try { mkdirSync('app/msa', { recursive: true }); } catch(e) {}
-
-writeFileSync('app/msa/page.tsx', `'use client'
+'use client'
 import React, { useState } from 'react'
 
 export default function MSAPage() {
@@ -94,7 +91,7 @@ export default function MSAPage() {
 
           <div style={{ marginTop: 24, padding: 20, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ color: '#86efac', fontWeight: 700, fontSize: 16 }}>Year 1 Total Contract Value</span>
-            <span style={{ color: '#22c55e', fontWeight: 900, fontSize: 28 }}>\${totalYear1}</span>
+            <span style={{ color: '#22c55e', fontWeight: 900, fontSize: 28 }}>${totalYear1}</span>
           </div>
         </div>
 
@@ -204,7 +201,7 @@ export default function MSAPage() {
               </div>
             </div>
             <div style={{ marginTop: 40, padding: '16px 20px', background: '#f8f9fa', borderRadius: 8, fontSize: 12, color: '#666' }}>
-              <strong>EXHIBIT A — Service Plan:</strong> {plan} | <strong>Annual License:</strong> \${annualFee} | <strong>Implementation:</strong> \${implementationFee} | <strong>Annual Support:</strong> \${supportFee} | <strong>Term:</strong> {term} Year(s) | <strong>Year 1 Total:</strong> \${totalYear1}
+              <strong>EXHIBIT A — Service Plan:</strong> {plan} | <strong>Annual License:</strong> ${annualFee} | <strong>Implementation:</strong> ${implementationFee} | <strong>Annual Support:</strong> ${supportFee} | <strong>Term:</strong> {term} Year(s) | <strong>Year 1 Total:</strong> ${totalYear1}
             </div>
           </div>
 
@@ -220,6 +217,4 @@ export default function MSAPage() {
       </div>
     </div>
   )
-}`, 'utf8');
-
-console.log('MSA Contract template built!');
+}
