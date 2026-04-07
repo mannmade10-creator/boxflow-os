@@ -1,7 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
-try { mkdirSync('app/investors', { recursive: true }); } catch(e) {}
-
-writeFileSync('app/investors/page.tsx', `'use client'
+'use client'
 import React, { useState } from 'react'
 
 export default function InvestorsPage() {
@@ -323,6 +320,4 @@ export default function InvestorsPage() {
       </div>
     </div>
   )
-}`, 'utf8');
-
-console.log('Investor page built!');
+}

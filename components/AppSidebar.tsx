@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import NotificationSystem from '@/components/NotificationSystem'
 
 type AppSidebarProps = {
@@ -66,7 +67,28 @@ export default function AppSidebar({ active }: AppSidebarProps) {
                 <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 2 }}>Enterprise Operations Suite</div>
               </div>
             </a>
-            <div style={{ color: '#64748b', fontSize: 11, fontWeight: 800, letterSpacing: 1, marginBottom: 12, textTransform: 'uppercase' }}>Operations</div>
+            <button
+          onClick={() => window.history.back()}
+          style={{
+            width: '100%',
+            padding: '10px 14px',
+            background: 'rgba(148,163,184,0.08)',
+            border: '1px solid rgba(148,163,184,0.12)',
+            borderRadius: 12,
+            color: '#94a3b8',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontSize: 13,
+            textAlign: 'left',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginBottom: 12,
+          }}
+        >
+          ← Back
+        </button>
+        <div style={{ color: '#64748b', fontSize: 11, fontWeight: 800, letterSpacing: 1, marginBottom: 12, textTransform: 'uppercase' }}>Operations</div>
             <nav style={{ display: 'grid', gap: 8 }}>
               {navItems.map(item => {
                 const isActive = active === item.key
@@ -103,6 +125,31 @@ export default function AppSidebar({ active }: AppSidebarProps) {
         <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(148,163,184,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ color: '#64748b', fontSize: 11, fontWeight: 700 }}>NOTIFICATIONS</div>
         <NotificationSystem />
+      </div>
+      <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(148,163,184,0.12)' }}>
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut()
+            window.location.href = '/'
+          }}
+          style={{
+            width: '100%',
+            padding: '12px 14px',
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid rgba(239,68,68,0.2)',
+            borderRadius: 14,
+            color: '#fca5a5',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontSize: 14,
+            textAlign: 'left',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          🚪 Sign Out
+        </button>
       </div>
     </aside>
     </>
