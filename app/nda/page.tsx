@@ -83,7 +83,7 @@ export default function NDAPage() {
             {
               num: '3',
               title: 'Obligations of Receiving Party',
-              content: 'Each Party agrees to: (a) hold the other Party's Confidential Information in strict confidence; (b) not disclose such Confidential Information to any third party without the prior written consent of the disclosing Party; (c) use the Confidential Information solely for the Purpose described herein; (d) protect the Confidential Information using the same degree of care it uses to protect its own confidential information, but in no event less than reasonable care; and (e) limit access to Confidential Information to those employees, contractors, or agents who have a need to know and who are bound by confidentiality obligations no less restrictive than those contained herein.'
+              content: 'Each Party agrees to: (a) hold the other Party Confidential Information in strict confidence; (b) not disclose such Confidential Information to any third party without the prior written consent of the disclosing Party; (c) use the Confidential Information solely for the Purpose described herein; (d) protect the Confidential Information using the same degree of care it uses to protect its own confidential information, but in no event less than reasonable care; and (e) limit access to Confidential Information to those employees, contractors, or agents who have a need to know and who are bound by confidentiality obligations no less restrictive than those contained herein.'
             },
             {
               num: '4',
