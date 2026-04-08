@@ -54,14 +54,14 @@ export default function AnalyticsPage() {
         <h1 style={{ margin: '0 0 8px', fontSize: 40, fontWeight: 900, color: '#fff' }}>Analytics Dashboard</h1>
         <p style={{ margin: '0 0 24px', color: '#94a3b8', fontSize: 15 }}>Performance metrics, efficiency tracking, and revenue insights.</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 16, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16, marginBottom: 24 }}>
           <KPICard label="On-Time Rate" value={onTimeRate + '%'} sub="Delivery performance" color="#22c55e" trend="+2.4%" up />
           <KPICard label="Efficiency" value={efficiency + '%'} sub="Production output" color="#3b82f6" trend="+1.8%" up />
           <KPICard label="Est. Revenue" value={'$' + (revenue/1000).toFixed(0) + 'K'} sub="This cycle" color="#a855f7" trend="+12%" up />
           <KPICard label="Avg Delivery" value={avgDelivery + ' days'} sub="End to end" color="#f59e0b" trend="-0.3 days" up />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 20, marginBottom: 20 }}>
           <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 24, padding: 20 }}>
             <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 800, marginBottom: 4, textTransform: 'uppercase' }}>Weekly Orders vs Delivered</div>
             <div style={{ fontSize: 13, color: '#64748b', marginBottom: 20 }}>7-day order fulfillment tracking</div>

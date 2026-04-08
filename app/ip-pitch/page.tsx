@@ -203,7 +203,7 @@ export default function IPPitchPage() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 60px', opacity: animating ? 0 : 1, transition: 'opacity 0.2s ease' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(16px, 4vw, 60px)', opacity: animating ? 0 : 1, transition: 'opacity 0.2s ease' }}>
         <div style={{ maxWidth: 1000, width: '100%' }}>
           <div style={{ display: 'inline-flex', padding: '6px 14px', borderRadius: 999, background: slide.color + '20', border: '1px solid ' + slide.color + '40', color: slide.color, fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 24 }}>
             {String(current + 1).padStart(2, '0')} — {slide.label}
@@ -212,7 +212,7 @@ export default function IPPitchPage() {
           {slide.type === 'cover' && (
             <div style={{ textAlign: 'center' }}>
               <img src="/assets/logo.png" style={{ width: 100, marginBottom: 24, filter: 'drop-shadow(0 0 40px rgba(37,99,235,0.6))' }} alt="logo" />
-              <h1 style={{ fontSize: 80, fontWeight: 900, margin: '0 0 8px', background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(28px, 6vw, 80px)', fontWeight: 900, margin: '0 0 8px', background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
               <div style={{ fontSize: 36, fontWeight: 900, color: '#22c55e', margin: '16px 0 24px', lineHeight: 1.2 }}>{slide.subtitle}</div>
               <div style={{ padding: '14px 28px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 14, display: 'inline-block' }}>
                 <span style={{ color: '#f59e0b', fontWeight: 800 }}>🔒 {slide.note}</span>
@@ -222,8 +222,8 @@ export default function IPPitchPage() {
 
           {slide.type === 'facts' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 44px)', fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, marginBottom: 32 }}>
                 {slide.stats?.map((stat, i) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + stat.color, borderRadius: 18, padding: 24, textAlign: 'center' }}>
                     <div style={{ fontSize: 40, fontWeight: 900, color: stat.color, marginBottom: 8 }}>{stat.value}</div>
@@ -239,7 +239,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'spend' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 8px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 44px)', fontWeight: 900, margin: '0 0 8px' }}>{slide.title}</h1>
               <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15 }}>{slide.subtitle}</p>
               <div style={{ display: 'grid', gap: 8, marginBottom: 20 }}>
                 {slide.vendors?.map((vendor, i) => (
@@ -261,8 +261,8 @@ export default function IPPitchPage() {
 
           {slide.type === 'hidden' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 44px)', fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12, marginBottom: 24 }}>
                 {slide.points?.map((point, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 12, padding: '14px 16px' }}>
                     <span style={{ fontSize: 24, flexShrink: 0 }}>{point.icon}</span>
@@ -278,7 +278,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'comparison' && (
             <div>
-              <h1 style={{ fontSize: 44, fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 44px)', fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
               <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 18, overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: 'rgba(2,6,23,0.5)', padding: '12px 20px', gap: 20 }}>
                   <div style={{ color: '#94a3b8', fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>Feature</div>
@@ -298,7 +298,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'demo' && (
             <div>
-              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 48px)', fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
               <p style={{ color: '#94a3b8', fontSize: 17, marginBottom: 32 }}>Fully deployed. Real data. Real AI. Available for demo today.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
                 {slide.demos?.map((demo, i) => (
@@ -315,7 +315,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'roi' && (
             <div>
-              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 48px)', fontWeight: 900, margin: '0 0 32px' }}>{slide.title}</h1>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
                 <div style={{ background: 'rgba(127,29,29,0.15)', border: '2px solid rgba(239,68,68,0.3)', borderRadius: 20, padding: 24 }}>
                   <div style={{ color: '#ef4444', fontWeight: 800, fontSize: 14, textTransform: 'uppercase', marginBottom: 16 }}>Current Annual Spend</div>
@@ -333,12 +333,12 @@ export default function IPPitchPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div style={{ background: 'rgba(34,197,94,0.12)', border: '2px solid rgba(34,197,94,0.4)', borderRadius: 20, padding: 28, textAlign: 'center', flex: 1 }}>
                     <div style={{ color: '#94a3b8', fontSize: 14, marginBottom: 8 }}>Annual Savings with BoxFlow OS</div>
-                    <div style={{ fontSize: 56, fontWeight: 900, color: '#22c55e', lineHeight: 1 }}>{slide.savings}</div>
+                    <div style={{ fontSize: 'clamp(22px, 4vw, 56px)', fontWeight: 900, color: '#22c55e', lineHeight: 1 }}>{slide.savings}</div>
                     <div style={{ color: '#86efac', fontSize: 16, fontWeight: 700, marginTop: 8 }}>Per Year</div>
                   </div>
                   <div style={{ background: 'rgba(37,99,235,0.12)', border: '2px solid rgba(59,130,246,0.3)', borderRadius: 20, padding: 24, textAlign: 'center' }}>
                     <div style={{ color: '#94a3b8', fontSize: 14, marginBottom: 8 }}>Cost Reduction</div>
-                    <div style={{ fontSize: 48, fontWeight: 900, color: '#3b82f6' }}>{slide.savingsPct}</div>
+                    <div style={{ fontSize: 'clamp(18px, 4vw, 48px)', fontWeight: 900, color: '#3b82f6' }}>{slide.savingsPct}</div>
                   </div>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'insider' && (
             <div style={{ maxWidth: 800, margin: '0 auto' }}>
-              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 48px)', fontWeight: 900, margin: '0 0 24px' }}>{slide.title}</h1>
               <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 20, padding: 28, marginBottom: 24 }}>
                 <p style={{ color: '#fde68a', fontSize: 18, lineHeight: 1.8, margin: 0, fontWeight: 600 }}>{slide.body}</p>
               </div>
@@ -365,7 +365,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'offer' && (
             <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 16px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(20px, 4vw, 52px)', fontWeight: 900, margin: '0 0 16px' }}>{slide.title}</h1>
               <p style={{ color: '#94a3b8', fontSize: 18, lineHeight: 1.7, marginBottom: 32 }}>{slide.body}</p>
               <div style={{ fontSize: 18, color: '#60a5fa', fontWeight: 700, marginBottom: 20 }}>{slide.question}</div>
               <div style={{ display: 'grid', gap: 12, marginBottom: 32, textAlign: 'left' }}>
@@ -383,7 +383,7 @@ export default function IPPitchPage() {
 
           {slide.type === 'closing' && (
             <div style={{ textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
-              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 48px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(18px, 4vw, 48px)', fontWeight: 900, margin: '0 0 48px' }}>{slide.title}</h1>
               <div style={{ padding: '40px', background: 'rgba(37,99,235,0.1)', border: '2px solid rgba(59,130,246,0.3)', borderRadius: 24, marginBottom: 32 }}>
                 <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1.4, marginBottom: 24 }}>{slide.question}</div>
                 <div style={{ fontSize: 16, color: '#ef4444', fontWeight: 700 }}>{slide.subtext}</div>

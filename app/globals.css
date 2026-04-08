@@ -1,46 +1,64 @@
-@import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
-
-:root {
-  --background: #020617;
-  --foreground: #f8fafc;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #020617;
+  color: #f8fafc;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 html {
   background: #020617;
 }
 
-/* MOBILE RESPONSIVE */
+/* ============================================
+   MOBILE RESPONSIVE — Full Override
+   ============================================ */
+
 @media (max-width: 768px) {
+
+  /* Hide desktop sidebar */
+  .sidebar-desktop {
+    display: none !important;
+  }
+
+  /* Show mobile header */
+  .mobile-header {
+    display: flex !important;
+  }
+
   /* Add top padding for mobile header */
-  .page-wrapper {
+  main {
     padding-top: 70px !important;
-    flex-direction: column !important;
   }
 
   /* Stack all flex layouts */
-  div[style*="display: flex"] {
+  div[style*="display: flex"][style*="gap"] {
     flex-wrap: wrap;
   }
 
-  /* Make grids single column on mobile */
+  /* Full width main content */
+  main[style] {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 70px 12px 80px !important;
+  }
+
+  /* 4-column grids become 2-column */
   div[style*="gridTemplateColumns: 'repeat(4"] {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
+  /* 3-column grids become 1-column */
+  div[style*="gridTemplateColumns: 'repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 2-column grids become 1-column */
   div[style*="gridTemplateColumns: '1fr 1fr'"] {
     grid-template-columns: 1fr !important;
   }
@@ -49,7 +67,7 @@ html {
     grid-template-columns: 1fr !important;
   }
 
-  div[style*="gridTemplateColumns: '320px 1fr'"] {
+  div[style*="gridTemplateColumns: '280px 1fr'"] {
     grid-template-columns: 1fr !important;
   }
 
@@ -57,24 +75,101 @@ html {
     grid-template-columns: 1fr !important;
   }
 
-  /* Reduce font sizes on mobile */
+  div[style*="gridTemplateColumns: '1fr 340px'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  div[style*="gridTemplateColumns: '260px 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  div[style*="gridTemplateColumns: '320px 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce font sizes */
   h1 {
-    font-size: 28px !important;
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
   }
 
   /* Make tables scrollable */
   table {
-    min-width: 600px;
+    min-width: 500px;
   }
 
-  /* Full width buttons on mobile */
-  button, a[style*="borderRadius"] {
+  div[style*="overflow"] table {
+    min-width: 500px;
+  }
+
+  /* Overflow scroll for tables */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* KPI cards full width on tiny screens */
+  div[style*="gridTemplateColumns: 'repeat(4, minmax(0, 1fr))'"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Pitch deck slides */
+  div[style*="padding: '40px 60px'"] {
+    padding: 20px 16px !important;
+  }
+
+  /* Fix oversized text in pitch */
+  div[style*="fontSize: 80"] {
+    font-size: 36px !important;
+  }
+
+  div[style*="fontSize: 72"] {
+    font-size: 32px !important;
+  }
+
+  div[style*="fontSize: 64"] {
+    font-size: 28px !important;
+  }
+
+  div[style*="fontSize: 56"] {
+    font-size: 26px !important;
+  }
+
+  div[style*="fontSize: 48"] {
+    font-size: 24px !important;
+  }
+
+  /* Fix button widths */
+  a[style*="padding: '18px"], 
+  button[style*="padding: '18px"] {
     width: 100%;
     text-align: center;
   }
+
+  /* Fix fleet map */
+  div[style*="height: '82vh'"] {
+    height: 50vh !important;
+  }
+
+  div[style*="height: '80vh'"] {
+    height: 50vh !important;
+  }
+
+  /* Fix page wrappers */
+  div[style*="display: 'flex'"][style*="minHeight: '100vh'"][style*="padding: 20"] {
+    flex-direction: column !important;
+    padding: 70px 12px 20px !important;
+  }
+
 }
 
 @media (max-width: 480px) {
+
+  /* Single column everything */
   div[style*="gridTemplateColumns: 'repeat(4"] {
     grid-template-columns: 1fr !important;
   }
@@ -83,10 +178,23 @@ html {
     grid-template-columns: 1fr !important;
   }
 
-  h1 {
-    font-size: 24px !important;
+  div[style*="gridTemplateColumns: '1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
   }
+
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h2 {
+    font-size: 18px !important;
+  }
+
 }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -96,6 +204,15 @@ html {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.map-toggle-btn {
+  display: none;
 }
 
 @media (max-width: 768px) {

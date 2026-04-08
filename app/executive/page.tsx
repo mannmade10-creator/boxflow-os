@@ -147,7 +147,7 @@ export default function ExecutivePage() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14 }}>
           {[
             { label: 'Efficiency', value: efficiency + '%', sub: optimized ? '↑ Optimized' : 'Up 4%', color: '#22c55e' },
             { label: 'Cost Savings', value: '$' + savings.toLocaleString(), sub: 'Tracked savings', color: '#3b82f6' },
@@ -176,7 +176,7 @@ export default function ExecutivePage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20 }}>
           <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 26, padding: 18 }}>
             <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 800, marginBottom: 14 }}>AI Action Log</div>
             {actionLog.length === 0 ? (

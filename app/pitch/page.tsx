@@ -175,7 +175,7 @@ export default function PitchPage() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 60px', opacity: animating ? 0 : 1, transition: 'opacity 0.2s ease' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(16px, 4vw, 60px)', opacity: animating ? 0 : 1, transition: 'opacity 0.2s ease' }}>
         <div style={{ maxWidth: 1000, width: '100%' }}>
 
           <div style={{ display: 'inline-flex', padding: '6px 14px', borderRadius: 999, background: slide.color + '20', border: '1px solid ' + slide.color + '40', color: slide.color, fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 24 }}>
@@ -185,7 +185,7 @@ export default function PitchPage() {
           {slide.type === 'cover' && (
             <div style={{ textAlign: 'center' }}>
               <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 120, marginBottom: 24, filter: 'drop-shadow(0 0 40px rgba(37,99,235,0.6))' }} />
-              <h1 style={{ fontSize: 80, fontWeight: 900, margin: '0 0 16px', letterSpacing: -2, lineHeight: 1, background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(32px, 7vw, 80px)', fontWeight: 900, margin: '0 0 16px', letterSpacing: -2, lineHeight: 1, background: 'linear-gradient(135deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{slide.title}</h1>
               <p style={{ fontSize: 22, color: '#94a3b8', margin: '0 0 16px' }}>{slide.subtitle}</p>
               <p style={{ fontSize: 16, color: slide.color, fontWeight: 700, letterSpacing: 2 }}>{slide.body}</p>
               <div style={{ marginTop: 40, padding: '16px 32px', background: slide.color + '15', border: '1px solid ' + slide.color + '30', borderRadius: 16, display: 'inline-block' }}>
@@ -196,7 +196,7 @@ export default function PitchPage() {
 
           {(slide.type === 'problem' || slide.type === 'solution') && (
             <div>
-              <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 40px', lineHeight: 1.1 }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(20px, 4vw, 48px)', fontWeight: 900, margin: '0 0 40px', lineHeight: 1.1 }}>{slide.title}</h1>
               <div style={{ display: 'grid', gap: 14, marginBottom: 32 }}>
                 {slide.points?.map((point, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(148,163,184,0.12)', borderLeft: '3px solid ' + slide.color, borderRadius: 14, padding: '16px 20px', fontSize: 18, color: '#e2e8f0', fontWeight: 600 }}>
@@ -212,9 +212,9 @@ export default function PitchPage() {
 
           {slide.type === 'demo' && (
             <div>
-              <h1 style={{ fontSize: 56, fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
+              <h1 style={{ fontSize: 'clamp(24px, 5vw, 56px)', fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
               <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40 }}>Live system — not a mockup. Real data. Real AI.</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20, marginBottom: 32 }}>
                 {slide.demos?.map((demo, i) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28 }}>
                     <div style={{ fontSize: 40, marginBottom: 12 }}>{demo.icon}</div>
@@ -231,8 +231,8 @@ export default function PitchPage() {
 
           {slide.type === 'market' && (
             <div>
-              <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 48px', lineHeight: 1.1 }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+              <h1 style={{ fontSize: 'clamp(22px, 4vw, 52px)', fontWeight: 900, margin: '0 0 48px', lineHeight: 1.1 }}>{slide.title}</h1>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
                 {slide.stats?.map((stat, i) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderTop: '3px solid ' + stat.color, borderRadius: 20, padding: 28, textAlign: 'center' }}>
                     <div style={{ fontSize: 44, fontWeight: 900, color: stat.color, marginBottom: 8 }}>{stat.value}</div>
@@ -246,7 +246,7 @@ export default function PitchPage() {
           {slide.type === 'revenue' && (
             <div>
               <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 40px' }}>{slide.title}</h1>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
                 {slide.streams?.map((stream, i) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderLeft: '3px solid ' + stream.color, borderRadius: 18, padding: 24 }}>
                     <div style={{ fontSize: 22, fontWeight: 900, color: stream.color, marginBottom: 6 }}>{stream.price}</div>
