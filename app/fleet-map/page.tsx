@@ -76,7 +76,7 @@ export default function FleetMapPage() {
       )}
 
       <main style={{ marginLeft: fullscreen ? 0 : 200, paddingTop: 56, minHeight: '100vh' }} className="kinetic-main">
-        <div style={{ display: 'grid', gridTemplateColumns: fullscreen ? '1fr' : '1fr 280px', height: 'calc(100vh - 56px)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: fullscreen ? '1fr' : '1fr 280px', height: 'calc(100vh - 56px)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
             {!fullscreen && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#0c1324', flexShrink: 0 }}>
@@ -99,7 +99,7 @@ export default function FleetMapPage() {
               </div>
             )}
 
-            <div style={{ position: 'relative', flex: 1, overflow: 'hidden', background: '#191f31' }}>
+            <div style={{ position: 'relative', flex: 1, minHeight: 0, overflow: 'hidden', background: '#191f31' }}>
               <FleetMapInner />
               <div style={{ position: 'absolute', inset: 0, zIndex: 5, pointerEvents: 'none', backgroundImage: 'linear-gradient(to bottom, transparent 50%, rgba(37,99,235,0.015) 50%)', backgroundSize: '100% 3px' }} />
               <div style={{ position: 'absolute', bottom: 16, left: 16, zIndex: 10, pointerEvents: 'none', background: 'rgba(21,27,45,0.82)', backdropFilter: 'blur(20px)', padding: '10px 14px', borderRadius: 3, border: '1px solid rgba(180,197,255,0.08)' }}>
