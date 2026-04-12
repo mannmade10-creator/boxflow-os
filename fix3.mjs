@@ -1,1 +1,1 @@
-import { readFileSync, writeFileSync } from 'fs'; const code = readFileSync('fix_fleet.txt', 'utf8'); writeFileSync('app/production/page.tsx', code, 'utf8'); console.log('Production page rebuilt!');
+import { readFileSync, writeFileSync } from 'fs'; const fs = await import('fs'); const { mkdirSync } = fs; try { mkdirSync('app/leads', { recursive: true }); } catch(e) {} const code = readFileSync('fix_fleet.txt', 'utf8'); writeFileSync('app/leads/page.tsx', code, 'utf8'); console.log('Lead Tracker built!');
