@@ -474,13 +474,13 @@ export default function LeadsPage() {
                     fontSize: 15,
                     cursor: emailSending ? 'not-allowed' : 'pointer',
                     letterSpacing: 1,
-                    opacity: !emailLead.email ? 0.5 : 1,
+                    opacity: !emailLead.website ? 0.5 : 1,
                   }}
                 >
                   {emailSending ? '⏳ Sending to Instantly...' : '⚡ ADD TO INSTANTLY CAMPAIGN'}
                 </button>
 
-                {!emailLead.email && (
+                {!emailLead.website && (
                   <div style={{ marginTop: 10, textAlign: 'center', fontSize: 12, color: '#ef4444' }}>
                     ⚠️ This lead has no email address on record. Add one to their profile first.
                   </div>
