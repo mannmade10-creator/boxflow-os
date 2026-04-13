@@ -114,6 +114,56 @@ export default function LeadsPage() {
   const inProgress = leads.filter(l => !['Not Contacted', 'Closed Won', 'Closed Lost'].includes(l.status)).length
   const selectedLead = leads.find(l => l.id === selected)
 
+  const sendAllToInstantly = async () => {
+    if (!confirm("Add all leads to Instantly.ai campaign? This will send " + leads.length + " leads.")) return
+    let success = 0
+    let failed = 0
+    for (const lead of leads) {
+      try {
+        const nameParts = (lead.contact || "").trim().split(" ")
+        const res = await fetch("/api/instantly", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            campaign_id: "03855a25-fb18-40e1-9aea-dd58f4cf5a32",
+            email: lead.contact.toLowerCase().replace(/ /g, ".") + "@" + lead.website,
+            first_name: nameParts[0] || "",
+            last_name: nameParts.slice(1).join(" ") || "",
+            company_name: lead.company,
+          }),
+        })
+        if (res.ok) { updateStatus(lead.id, "Emailed"); success++ }
+        else { failed++ }
+      } catch { failed++ }
+      await new Promise(r => setTimeout(r, 300))
+    }
+    alert("Done! " + success + " leads added, " + failed + " failed.")
+  }
+
+  const sendAllToInstantly = async () => {
+    if (!confirm("Add all " + leads.length + " leads to Instantly.ai campaign?")) return
+    let success = 0; let failed = 0
+    for (const lead of leads) {
+      try {
+        const nameParts = (lead.contact || "").trim().split(" ")
+        const res = await fetch("/api/instantly", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            campaign_id: "03855a25-fb18-40e1-9aea-dd58f4cf5a32",
+            email: lead.contact.toLowerCase().replace(/ /g, ".") + "@" + lead.website,
+            first_name: nameParts[0] || "",
+            last_name: nameParts.slice(1).join(" ") || "",
+            company_name: lead.company,
+          }),
+        })
+        if (res.ok) { updateStatus(lead.id, "Emailed"); success++ } else { failed++ }
+      } catch { failed++ }
+      await new Promise(r => setTimeout(r, 400))
+    }
+    alert("Done! " + success + " leads added to Instantly, " + failed + " failed.")
+  }
+
   const sendViaInstantly = async (lead: typeof initialLeads[0], body: string) => {
     setEmailSending(true)
     setEmailError('')
@@ -222,7 +272,7 @@ export default function LeadsPage() {
             { id: 'hot', label: '🔥 HOT LEADS' },
             { id: 'stats', label: '📊 STATS' },
           ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: '14px 24px', background: 'transparent', border: 'none', borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent', color: activeTab === tab.id ? '#b4c5ff' : 'rgba(195,198,215,0.35)', fontWeight: activeTab === tab.id ? 800 : 500, fontSize: 13, cursor: 'pointer', letterSpacing: 1, textTransform: 'uppercase' }}>
+            <button key={tab.id} onClick={() => tab.id === 'bulk' ? sendAllToInstantly() : setActiveTab(tab.id)} style={{ padding: '14px 24px', background: 'transparent', border: 'none', borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent', color: activeTab === tab.id ? '#b4c5ff' : 'rgba(195,198,215,0.35)', fontWeight: activeTab === tab.id ? 800 : 500, fontSize: 13, cursor: 'pointer', letterSpacing: 1, textTransform: 'uppercase' }}>
               {tab.label}
             </button>
           ))}
