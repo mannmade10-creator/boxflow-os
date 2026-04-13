@@ -123,7 +123,7 @@ export default function LeadsPage() {
       const lastName = nameParts.slice(1).join(' ') || ''
 
       const payload = {
-        api_key: 'N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OkZUV1hrZVhxb2dCQg==',
+        
         campaign_id: '03855a25-fb18-40e1-9aea-dd58f4cf5a32',
         email: lead.contact.toLowerCase().replace(/ /g, ".") + "@" + lead.website,
         first_name: firstName,
@@ -132,9 +132,9 @@ export default function LeadsPage() {
         personalization: body,
       }
 
-      const res = await fetch('https://api.instantly.ai/api/v1/lead/add', {
+      const res = await fetch('https://api.instantly.ai/api/v2/leads', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OkZUV1hrZVhxb2dCQg==' },
         body: JSON.stringify(payload),
       })
 
