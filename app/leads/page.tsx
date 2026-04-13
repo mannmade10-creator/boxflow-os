@@ -85,6 +85,8 @@ export default function LeadsPage() {
   const [filterPriority, setFilterPriority] = useState<string | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const [editNotes, setEditNotes] = useState('')
+  const [emailLead, setEmailLead] = useState(null)
+  const [emailSent, setEmailSent] = useState(false)
   const [activeTab, setActiveTab] = useState('pipeline')
 
   function updateStatus(id: number, status: string) {
