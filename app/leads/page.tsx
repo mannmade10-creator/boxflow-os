@@ -418,7 +418,7 @@ export default function LeadsPage() {
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: 11, color: 'rgba(195,198,215,0.4)', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>To</div>
                   <div style={{ padding: '10px 14px', background: 'rgba(12,19,36,0.5)', borderRadius: 3, fontSize: 14, color: '#dce1fb', border: '1px solid rgba(180,197,255,0.1)' }}>
-                    {emailLead.contact} — <span style={{ color: '#b4c5ff' }}>{emailLead.email || <em style={{ color: '#ef4444' }}>No email on record</em>}</span>
+                    {emailLead.contact} — <span style={{ color: '#b4c5ff' }}>{emailLead.website}</span>
                   </div>
                 </div>
 
