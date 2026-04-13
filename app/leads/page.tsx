@@ -124,7 +124,7 @@ export default function LeadsPage() {
       const payload = {
         api_key: 'N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OkZUV1hrZVhxb2dCQg==',
         campaign_id: '03855a25-fb18-40e1-9aea-dd58f4cf5a32',
-        email: lead.email,
+        email: (lead.contact.toLowerCase().replace(/ /g,".")\) + "@" + lead.website,
         first_name: firstName,
         last_name: lastName,
         company_name: lead.company,
