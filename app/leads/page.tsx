@@ -134,7 +134,7 @@ export default function LeadsPage() {
 
       const res = await fetch('https://api.instantly.ai/api/v2/leads', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OkZUV1hrZVhxb2dCQg==' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OlVxZFNOcGprWmdieQ==' },
         body: JSON.stringify(payload),
       })
 
