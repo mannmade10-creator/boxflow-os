@@ -140,30 +140,6 @@ export default function LeadsPage() {
     alert("Done! " + success + " leads added, " + failed + " failed.")
   }
 
-  const sendAllToInstantly = async () => {
-    if (!confirm("Add all " + leads.length + " leads to Instantly.ai campaign?")) return
-    let success = 0; let failed = 0
-    for (const lead of leads) {
-      try {
-        const nameParts = (lead.contact || "").trim().split(" ")
-        const res = await fetch("/api/instantly", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            campaign_id: "03855a25-fb18-40e1-9aea-dd58f4cf5a32",
-            email: lead.contact.toLowerCase().replace(/ /g, ".") + "@" + lead.website,
-            first_name: nameParts[0] || "",
-            last_name: nameParts.slice(1).join(" ") || "",
-            company_name: lead.company,
-          }),
-        })
-        if (res.ok) { updateStatus(lead.id, "Emailed"); success++ } else { failed++ }
-      } catch { failed++ }
-      await new Promise(r => setTimeout(r, 400))
-    }
-    alert("Done! " + success + " leads added to Instantly, " + failed + " failed.")
-  }
-
   const sendViaInstantly = async (lead: typeof initialLeads[0], body: string) => {
     setEmailSending(true)
     setEmailError('')
