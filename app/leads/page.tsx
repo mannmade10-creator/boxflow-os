@@ -458,7 +458,7 @@ export default function LeadsPage() {
 
                 {/* Send Button */}
                 <button
-                  disabled={emailSending || !emailLead.email}
+                  disabled={emailSending || !emailLead.website}
                   onClick={() => {
                     const body = (document.getElementById('emailBody') as HTMLTextAreaElement)?.value || ''
                     sendViaInstantly(emailLead, body)
