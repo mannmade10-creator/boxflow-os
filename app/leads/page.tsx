@@ -87,10 +87,7 @@ export default function LeadsPage() {
   const [editNotes, setEditNotes] = useState('')
   const [emailLead, setEmailLead] = useState<typeof initialLeads[0] | null>(null)
   const [emailSending, setEmailSending] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
   const [emailError, setEmailError] = useState('')
-  const [emailLead, setEmailLead] = useState(null)
-  const [emailSent, setEmailSent] = useState(false)
   const [activeTab, setActiveTab] = useState('pipeline')
 
   function updateStatus(id: number, status: string) {
