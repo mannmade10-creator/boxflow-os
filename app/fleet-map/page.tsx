@@ -90,7 +90,7 @@ export default function FleetMapPage() {
                       <span style={{ fontWeight: 800, color: '#dce1fb', fontSize: 13 }}>{d.name.toUpperCase()}</span>
                       <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 2, background: d.bg, color: d.color }}>{d.status}</span>
                     </div>
-                    <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.4)' }}>{d.id} · {d.location}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.4)' }}>{d.id}  {d.location}</div>
                   </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 8 }}>
