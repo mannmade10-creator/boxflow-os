@@ -48,8 +48,8 @@ export default function CommandCenterPage() {
             <img src="/assets/logo.png" style={{ width: 28, height: 28 }} alt="logo" />
             <span style={{ fontSize: 13, fontWeight: 900, color: '#2563eb', letterSpacing: 2, textTransform: 'uppercase' }}>BOXFLOW</span>
           </a>
-          <div style={{ fontSize: 8, color: 'rgba(195,198,215,0.35)', fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>Operations Hub</div>
-          <div style={{ fontSize: 11, fontWeight: 900, color: '#dce1fb', letterSpacing: 1 }}>COMMAND_CENTER</div>
+          <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.35)', fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>Operations Hub</div>
+          <div style={{ fontSize: 14, fontWeight: 900, color: '#dce1fb', letterSpacing: 1 }}>COMMAND_CENTER</div>
         </div>
         <nav style={{ flex: 1, padding: '8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
           {[
@@ -63,14 +63,14 @@ export default function CommandCenterPage() {
             { icon: '📈', label: 'ANALYTICS', href: '/analytics' },
             { icon: '📦', label: 'ORDERS', href: '/orders' },
           ].map(item => (
-            <a key={item.label} href={item.href} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 2, background: item.active ? 'linear-gradient(135deg, rgba(37,99,235,0.85), rgba(29,78,216,0.75))' : 'transparent', color: item.active ? '#fff' : 'rgba(195,198,215,0.45)', textDecoration: 'none', fontWeight: item.active ? 800 : 500, fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', boxShadow: item.active ? '0 0 16px rgba(37,99,235,0.2)' : 'none' }}>
+            <a key={item.label} href={item.href} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 2, background: item.active ? 'linear-gradient(135deg, rgba(37,99,235,0.85), rgba(29,78,216,0.75))' : 'transparent', color: item.active ? '#fff' : 'rgba(195,198,215,0.45)', textDecoration: 'none', fontWeight: item.active ? 800 : 500, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', boxShadow: item.active ? '0 0 16px rgba(37,99,235,0.2)' : 'none' }}>
               <span style={{ fontSize: 12 }}>{item.icon}</span>
               {item.label}
             </a>
           ))}
         </nav>
         <div style={{ padding: '12px 8px', borderTop: '1px solid rgba(180,197,255,0.04)' }}>
-          <button onClick={async () => { const { supabase } = await import('@/lib/supabase'); await supabase.auth.signOut(); window.location.href = '/'; }} style={{ width: '100%', padding: '8px', background: 'transparent', border: '1px solid rgba(239,68,68,0.12)', borderRadius: 2, color: 'rgba(252,165,165,0.5)', fontWeight: 700, cursor: 'pointer', fontSize: 8, letterSpacing: 2, textTransform: 'uppercase' }}>🚪 SIGN_OUT</button>
+          <button onClick={async () => { const { supabase } = await import('@/lib/supabase'); await supabase.auth.signOut(); window.location.href = '/'; }} style={{ width: '100%', padding: '8px', background: 'transparent', border: '1px solid rgba(239,68,68,0.12)', borderRadius: 2, color: 'rgba(252,165,165,0.5)', fontWeight: 700, cursor: 'pointer', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase' }}>🚪 SIGN_OUT</button>
         </div>
       </aside>
 
@@ -80,14 +80,14 @@ export default function CommandCenterPage() {
         {/* TOP BAR */}
         <header style={{ position: 'sticky', top: 0, zIndex: 40, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', background: 'rgba(12,19,36,0.96)', backdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(180,197,255,0.06)', flexShrink: 0 }}>
           <div>
-            <div style={{ fontSize: 8, color: '#b4c5ff', fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>Operations Hub</div>
-            <h1 style={{ fontSize: 18, fontWeight: 900, color: '#dce1fb', letterSpacing: 2, textTransform: 'uppercase', margin: 0 }}>COMMAND_CENTER</h1>
+            <div style={{ fontSize: 12, color: '#b4c5ff', fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>Operations Hub</div>
+            <h1 style={{ fontSize: 22, fontWeight: 900, color: '#dce1fb', letterSpacing: 2, textTransform: 'uppercase', margin: 0 }}>COMMAND_CENTER</h1>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <span style={{ fontSize: 11, color: 'rgba(195,198,215,0.4)', fontFamily: 'monospace' }}>{time.toLocaleTimeString()}</span>
+            <span style={{ fontSize: 14, color: 'rgba(195,198,215,0.4)', fontFamily: 'monospace' }}>{time.toLocaleTimeString()}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.15)', borderRadius: 3, padding: '3px 10px' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e' }} />
-              <span style={{ color: '#22c55e', fontSize: 9, fontWeight: 700, letterSpacing: 2 }}>ALL SYSTEMS ONLINE</span>
+              <span style={{ color: '#22c55e', fontSize: 13, fontWeight: 700, letterSpacing: 2 }}>ALL SYSTEMS ONLINE</span>
             </div>
           </div>
         </header>
@@ -105,7 +105,7 @@ export default function CommandCenterPage() {
             <div key={kpi.label} style={{ background: '#151b2d', padding: '14px 16px' }}>
               <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>{kpi.label}</div>
               <div style={{ fontSize: 22, fontWeight: 900, color: kpi.color, fontFamily: 'monospace', lineHeight: 1, marginBottom: 3 }}>{kpi.value}</div>
-              <div style={{ fontSize: 8, color: 'rgba(195,198,215,0.3)' }}>{kpi.sub}</div>
+              <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.3)' }}>{kpi.sub}</div>
             </div>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default function CommandCenterPage() {
             { id: 'production', label: 'PRODUCTION' },
             { id: 'alerts', label: 'ALERTS' },
           ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: '12px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent', color: activeTab === tab.id ? '#b4c5ff' : 'rgba(195,198,215,0.35)', fontWeight: activeTab === tab.id ? 800 : 500, fontSize: 9, cursor: 'pointer', letterSpacing: 2, textTransform: 'uppercase' }}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: '12px 20px', background: 'transparent', border: 'none', borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent', color: activeTab === tab.id ? '#b4c5ff' : 'rgba(195,198,215,0.35)', fontWeight: activeTab === tab.id ? 800 : 500, fontSize: 13, cursor: 'pointer', letterSpacing: 2, textTransform: 'uppercase' }}>
               {tab.label}
             </button>
           ))}
@@ -135,16 +135,16 @@ export default function CommandCenterPage() {
               {/* Fleet Summary */}
               <div style={{ background: '#151b2d', borderRadius: 3, overflow: 'hidden' }}>
                 <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(180,197,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Fleet Status</span>
-                  <a href="/fleet-map" style={{ fontSize: 8, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW MAP →</a>
+                  <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Fleet Status</span>
+                  <a href="/fleet-map" style={{ fontSize: 12, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW MAP →</a>
                 </div>
                 {trucks.map(t => (
                   <div key={t.id} style={{ padding: '10px 16px', borderBottom: '1px solid rgba(180,197,255,0.03)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: '#dce1fb', fontFamily: 'monospace' }}>{t.id}</span>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: '#dce1fb', fontFamily: 'monospace' }}>{t.id}</span>
                       <span style={{ fontSize: 7, fontWeight: 700, padding: '2px 6px', borderRadius: 2, background: t.color + '20', color: t.color }}>{t.status}</span>
                     </div>
-                    <div style={{ fontSize: 9, color: 'rgba(195,198,215,0.4)', marginBottom: 4 }}>{t.driver} · {t.route}</div>
+                    <div style={{ fontSize: 13, color: 'rgba(195,198,215,0.4)', marginBottom: 4 }}>{t.driver} · {t.route}</div>
                     <div style={{ height: 2, background: 'rgba(12,19,36,0.6)', borderRadius: 999, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: t.progress + '%', background: t.color, borderRadius: 999 }} />
                     </div>
@@ -155,8 +155,8 @@ export default function CommandCenterPage() {
               {/* Orders Summary */}
               <div style={{ background: '#151b2d', borderRadius: 3, overflow: 'hidden' }}>
                 <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(180,197,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Live Orders</span>
-                  <a href="/orders" style={{ fontSize: 8, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW ALL →</a>
+                  <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Live Orders</span>
+                  <a href="/orders" style={{ fontSize: 12, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW ALL →</a>
                 </div>
                 {orders.map(o => (
                   <div key={o.id} style={{ padding: '10px 16px', borderBottom: '1px solid rgba(180,197,255,0.03)' }}>
@@ -164,8 +164,8 @@ export default function CommandCenterPage() {
                       <span style={{ fontSize: 10, fontWeight: 800, color: '#dce1fb', fontFamily: 'monospace' }}>{o.id}</span>
                       <span style={{ fontSize: 7, fontWeight: 700, padding: '2px 6px', borderRadius: 2, background: o.color + '20', color: o.color }}>{o.status}</span>
                     </div>
-                    <div style={{ fontSize: 9, color: 'rgba(195,198,215,0.4)', marginBottom: 2 }}>{o.client}</div>
-                    <div style={{ fontSize: 8, color: 'rgba(195,198,215,0.25)' }}>{o.route}</div>
+                    <div style={{ fontSize: 13, color: 'rgba(195,198,215,0.4)', marginBottom: 2 }}>{o.client}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.25)' }}>{o.route}</div>
                   </div>
                 ))}
               </div>
@@ -174,8 +174,8 @@ export default function CommandCenterPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div style={{ background: '#151b2d', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(180,197,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Production Lines</span>
-                    <a href="/production" style={{ fontSize: 8, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW →</a>
+                    <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Production Lines</span>
+                    <a href="/production" style={{ fontSize: 12, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>VIEW →</a>
                   </div>
                   {production.map(p => (
                     <div key={p.line} style={{ padding: '10px 16px', borderBottom: '1px solid rgba(180,197,255,0.03)' }}>
@@ -183,7 +183,7 @@ export default function CommandCenterPage() {
                         <span style={{ fontSize: 10, fontWeight: 800, color: '#dce1fb', fontFamily: 'monospace' }}>{p.line}</span>
                         <span style={{ fontSize: 7, fontWeight: 700, padding: '2px 6px', borderRadius: 2, background: p.color + '20', color: p.color }}>{p.status}</span>
                       </div>
-                      <div style={{ fontSize: 9, color: 'rgba(195,198,215,0.4)', marginBottom: 6 }}>{p.product} · {p.efficiency}% eff</div>
+                      <div style={{ fontSize: 13, color: 'rgba(195,198,215,0.4)', marginBottom: 6 }}>{p.product} · {p.efficiency}% eff</div>
                       <div style={{ height: 2, background: 'rgba(12,19,36,0.6)', borderRadius: 999, overflow: 'hidden' }}>
                         <div style={{ height: '100%', width: (p.output / p.target * 100) + '%', background: p.color, borderRadius: 999 }} />
                       </div>
@@ -197,14 +197,14 @@ export default function CommandCenterPage() {
 
                 <div style={{ background: '#151b2d', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(180,197,255,0.04)' }}>
-                    <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Live Alerts</span>
+                    <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Live Alerts</span>
                   </div>
                   {alerts.map((a, i) => (
                     <div key={i} style={{ padding: '8px 16px', borderBottom: '1px solid rgba(180,197,255,0.03)', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                       <div style={{ width: 4, height: 4, borderRadius: '50%', background: a.color, marginTop: 4, flexShrink: 0 }} />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 7, color: a.color, fontWeight: 700, letterSpacing: 1, marginBottom: 2 }}>{a.type}</div>
-                        <div style={{ fontSize: 9, color: 'rgba(195,198,215,0.6)', lineHeight: 1.4 }}>{a.msg}</div>
+                        <div style={{ fontSize: 13, color: 'rgba(195,198,215,0.6)', lineHeight: 1.4 }}>{a.msg}</div>
                       </div>
                       <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.25)', flexShrink: 0 }}>{a.time}</div>
                     </div>
@@ -225,18 +225,18 @@ export default function CommandCenterPage() {
                   </div>
                   <div>
                     <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 3 }}>Route</div>
-                    <div style={{ fontSize: 11, color: '#dce1fb', fontWeight: 700 }}>{t.route}</div>
+                    <div style={{ fontSize: 14, color: '#dce1fb', fontWeight: 700 }}>{t.route}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 3 }}>ETA</div>
-                    <div style={{ fontSize: 11, color: '#22c55e', fontWeight: 700, fontFamily: 'monospace' }}>{t.eta}</div>
+                    <div style={{ fontSize: 14, color: '#22c55e', fontWeight: 700, fontFamily: 'monospace' }}>{t.eta}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 3 }}>Fuel</div>
-                    <div style={{ fontSize: 11, color: t.fuel < 60 ? '#ef4444' : '#22c55e', fontWeight: 700, fontFamily: 'monospace' }}>{t.fuel}%</div>
+                    <div style={{ fontSize: 14, color: t.fuel < 60 ? '#ef4444' : '#22c55e', fontWeight: 700, fontFamily: 'monospace' }}>{t.fuel}%</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: 8, fontWeight: 700, padding: '4px 10px', borderRadius: 2, background: t.color + '20', color: t.color, letterSpacing: 1 }}>{t.status}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 2, background: t.color + '20', color: t.color, letterSpacing: 1 }}>{t.status}</span>
                   </div>
                 </div>
               ))}
@@ -257,17 +257,17 @@ export default function CommandCenterPage() {
                   </div>
                   <div>
                     <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 3 }}>Route</div>
-                    <div style={{ fontSize: 11, color: '#dce1fb', fontWeight: 700 }}>{o.route}</div>
+                    <div style={{ fontSize: 14, color: '#dce1fb', fontWeight: 700 }}>{o.route}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 3 }}>Priority</div>
-                    <div style={{ fontSize: 11, color: o.color, fontWeight: 700 }}>{o.priority}</div>
+                    <div style={{ fontSize: 14, color: o.color, fontWeight: 700 }}>{o.priority}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: 8, fontWeight: 700, padding: '4px 10px', borderRadius: 2, background: o.color + '20', color: o.color, letterSpacing: 1 }}>{o.status}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 2, background: o.color + '20', color: o.color, letterSpacing: 1 }}>{o.status}</span>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <a href="/dispatch" style={{ fontSize: 8, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>DISPATCH →</a>
+                    <a href="/dispatch" style={{ fontSize: 12, color: '#b4c5ff', textDecoration: 'none', fontWeight: 700, letterSpacing: 1 }}>DISPATCH →</a>
                   </div>
                 </div>
               ))}
@@ -281,10 +281,10 @@ export default function CommandCenterPage() {
                 <div key={p.line} style={{ background: '#151b2d', borderRadius: 3, padding: 24 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
                     <div>
-                      <div style={{ fontSize: 18, fontWeight: 900, color: '#dce1fb', fontFamily: 'monospace', marginBottom: 4 }}>{p.line}</div>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: '#dce1fb', fontFamily: 'monospace', marginBottom: 4 }}>{p.line}</div>
                       <div style={{ fontSize: 12, color: 'rgba(195,198,215,0.5)' }}>{p.product}</div>
                     </div>
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: '4px 12px', borderRadius: 2, background: p.color + '20', color: p.color, letterSpacing: 1 }}>{p.status}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, padding: '4px 12px', borderRadius: 2, background: p.color + '20', color: p.color, letterSpacing: 1 }}>{p.status}</span>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 16 }}>
                     {[
@@ -316,11 +316,11 @@ export default function CommandCenterPage() {
                 <div key={i} style={{ background: '#151b2d', borderRadius: 3, padding: 20, display: 'flex', alignItems: 'flex-start', gap: 16, borderLeft: '3px solid ' + a.color }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: a.color, boxShadow: '0 0 8px ' + a.color, marginTop: 2, flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 9, color: a.color, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>{a.type}</div>
+                    <div style={{ fontSize: 13, color: a.color, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>{a.type}</div>
                     <div style={{ fontSize: 14, color: '#dce1fb', fontWeight: 700, marginBottom: 4 }}>{a.msg}</div>
                     <div style={{ fontSize: 10, color: 'rgba(195,198,215,0.35)' }}>{a.time}</div>
                   </div>
-                  <button style={{ padding: '6px 14px', background: 'rgba(180,197,255,0.08)', border: '1px solid rgba(180,197,255,0.12)', borderRadius: 2, color: '#b4c5ff', fontSize: 8, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>RESOLVE</button>
+                  <button style={{ padding: '6px 14px', background: 'rgba(180,197,255,0.08)', border: '1px solid rgba(180,197,255,0.12)', borderRadius: 2, color: '#b4c5ff', fontSize: 12, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer' }}>RESOLVE</button>
                 </div>
               ))}
             </div>
