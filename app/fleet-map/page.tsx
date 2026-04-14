@@ -13,6 +13,7 @@ export default function FleetMapPage() {
   const [selected, setSelected] = useState(null)
   const [time, setTime] = useState(new Date())
   const [showPanel, setShowPanel] = useState(true)
+  const [fullscreen, setFullscreen] = useState(false)
 
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000)
