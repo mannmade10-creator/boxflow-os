@@ -181,7 +181,7 @@ export default function LeadsPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0c1324', color: '#dce1fb', fontFamily: 'Inter, Arial, sans-serif', display: 'flex' }}>
 
-      <div className="leads-mobile-header"><a href="/dashboard" style={{ color: "#b4c5ff", fontSize: 14, fontWeight: 700, textDecoration: "none" }}>? BACK</a><span style={{ fontSize: 14, fontWeight: 900, color: "#dce1fb", letterSpacing: 2 }}>LEAD TRACKER</span><div style={{ width: 60 }} /></div><aside style={{ width: 200, background: "#151b2d", position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 50, display: "flex", flexDirection: "column" }} className="leads-sidebar">
+      <aside style={{ width: 200, background: '#151b2d', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50, display: 'flex', flexDirection: 'column' }} className="leads-sidebar">
         <div style={{ padding: '20px 16px', borderBottom: '1px solid rgba(180,197,255,0.04)' }}>
           <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 16 }}>
             <img src="/assets/logo.png" style={{ width: 28, height: 28 }} alt="logo" />
@@ -538,7 +538,10 @@ export default function LeadsPage() {
       )}
 
       <style>{`
-        @media (max-width: 768px) { .leads-sidebar { display: none !important; } .leads-main { margin-left: 0 !important; } .mobile-header-leads { display: block !important; } }
+        @media (max-width: 768px) {
+          .leads-sidebar { display: none !important; }
+          .leads-main { margin-left: 0 !important; }
+        }
       `}</style>
     </div>
   )
