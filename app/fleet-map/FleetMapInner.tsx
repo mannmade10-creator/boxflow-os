@@ -237,7 +237,7 @@ function alertBadgeStyle(label: string): React.CSSProperties {
   }
 }
 
-export default function FleetMapInner({ embedded = false }: { embedded?: boolean }) {
+export default function FleetMapInner() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<Record<string, mapboxgl.Marker>>({})
@@ -586,16 +586,129 @@ export default function FleetMapInner({ embedded = false }: { embedded?: boolean
       : 'All Operations'
 
   return (
-    <main style={{ height: "100%", background: "#020617", color: "#fff", padding: 0, overflow: "hidden", position: "relative" }}
+    <main
+      style={{
+        minHeight: '100vh',
+        background: '#020617',
+        color: '#fff',
+        padding: 20,
+      }}
     >
-      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-        
+      <div style={{ maxWidth: 1720, margin: '0 auto' }}>
+        <div
+          style={{
+            marginBottom: 16,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: 16,
+            flexWrap: 'wrap',
+          }}
+        >
+          <div>
+            <div style={pillStyle}>Phase 20 Demo Control Layer</div>
+            <h1 style={{ margin: '12px 0 8px', fontSize: 32, fontWeight: 800 }}>Fleet Map</h1>
+            <p style={{ margin: 0, color: '#94a3b8' }}>
+              Admin, client, and driver demo switching with AI route optimization.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setViewMode('local')}
+              style={viewMode === 'local' ? activeTopBtn : topBtn}
+            >
+              Local View
+            </button>
+            <button
+              onClick={() => setViewMode('national')}
+              style={viewMode === 'national' ? activeTopBtn : topBtn}
+            >
+              National View
+            </button>
+            <button onClick={handleOptimizeRoute} style={optimizeBtn}>
+              AI Optimize Route
+            </button>
+          </div>
+        </div>
 
         <div
-          style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
-            
-            
-            
+          style={{
+            display: 'flex',
+            gap: 10,
+            flexWrap: 'wrap',
+            marginBottom: 14,
+          }}
+        >
+          <button
+            onClick={() => setDemoMode('admin')}
+            style={demoMode === 'admin' ? activeModeBtn : modeBtn}
+          >
+            Admin Mode
+          </button>
+          <button
+            onClick={() => setDemoMode('client')}
+            style={demoMode === 'client' ? activeModeBtn : modeBtn}
+          >
+            Client Mode
+          </button>
+          <button
+            onClick={() => setDemoMode('driver')}
+            style={demoMode === 'driver' ? activeModeBtn : modeBtn}
+          >
+            Driver Mode
+          </button>
+
+          {demoMode === 'client' ? (
+            <select
+              value={clientFilter}
+              onChange={(e) => setClientFilter(e.target.value)}
+              style={selectStyle}
+            >
+              {uniqueClients.map((client) => (
+                <option key={client} value={client}>
+                  {client}
+                </option>
+              ))}
+            </select>
+          ) : null}
+
+          {demoMode === 'driver' ? (
+            <select
+              value={driverFilter}
+              onChange={(e) => setDriverFilter(e.target.value)}
+              style={selectStyle}
+            >
+              {uniqueDrivers.map((driver) => (
+                <option key={driver} value={driver}>
+                  {driver}
+                </option>
+              ))}
+            </select>
+          ) : null}
+        </div>
+
+        {optimizeMessage ? <div style={successStyle}>{optimizeMessage}</div> : null}
+
+        {error ? <div style={errorStyle}>{error}</div> : null}
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: demoMode === 'driver' ? '1fr 320px' : '1fr 390px',
+            gap: 18,
+            alignItems: 'start',
+          }}
+        >
+          <div
+            style={{
+              height: demoMode === 'driver' ? '82vh' : '80vh',
+              borderRadius: 24,
+              overflow: 'hidden',
+              border: '1px solid rgba(148,163,184,0.16)',
+              background: '#0f172a',
+            }}
+          >
             <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
           </div>
 
