@@ -47,7 +47,7 @@ export default function FleetMapPage() {
       </header>
 
       {!fullscreen && (
-        <aside style={{ position: 'fixed', left: 0, top: 56, bottom: 0, width: 200, background: '#151b2d', zIndex: 50, display: 'flex', flexDirection: 'column' }} className="kinetic-sidebar">
+        <aside style={{ position: "fixed", left: 0, top: 56, bottom: 0, width: 200, background: "#151b2d", zIndex: 50, display: "flex", flexDirection: "column", "@media (max-width: 768px)": { display: "none" } }} className="kinetic-sidebar">
           <div style={{ padding: '20px 16px 12px' }}>
             <div style={{ fontSize: 8, color: 'rgba(195,198,215,0.35)', fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Navigation</div>
             <div style={{ fontSize: 12, fontWeight: 900, color: '#dce1fb', letterSpacing: 1 }}>KINETIC COMMAND</div>
@@ -75,8 +75,8 @@ export default function FleetMapPage() {
         </aside>
       )}
 
-      <main style={{ marginLeft: fullscreen ? 0 : 200, paddingTop: 56, minHeight: '100vh' }} className="kinetic-main">
-        <div style={{ display: 'grid', gridTemplateColumns: fullscreen ? '1fr' : '1fr 280px', height: 'calc(100vh - 56px)', overflow: 'hidden' }}>
+      <main style={{ marginLeft: fullscreen ? 0 : "clamp(0px, 200px, 200px)", paddingTop: 56, minHeight: "100vh" }} className="kinetic-main">
+        <div className="fleet-grid" style={{ display: "grid", gridTemplateColumns: fullscreen ? '1fr' : '1fr 280px', height: 'calc(100vh - 56px)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
             {!fullscreen && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#0c1324', flexShrink: 0 }}>
@@ -117,7 +117,7 @@ export default function FleetMapPage() {
             </div>
 
             {!fullscreen && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'rgba(180,197,255,0.04)', flexShrink: 0 }}>
+              <div className="fleet-grid" style={{ display: "grid", gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'rgba(180,197,255,0.04)', flexShrink: 0 }}>
                 {[
                   { label: 'ENGINE HEALTH', value: '98.2%', pct: 98, color: '#b4c5ff', change: '+0.4%' },
                   { label: 'FUEL RESERVES', value: '12.4k L', pct: 65, color: '#7bd0ff', change: 'AVG 82%' },
@@ -157,7 +157,7 @@ export default function FleetMapPage() {
                         <div style={{ fontSize: 8, color: 'rgba(195,198,215,0.4)' }}>{d.id} · {d.location}</div>
                       </div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
+                    <div className="fleet-grid" style={{ display: "grid", gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
                       <div style={{ background: 'rgba(12,19,36,0.5)', borderRadius: 2, padding: '4px 8px' }}>
                         <div style={{ fontSize: 7, color: 'rgba(195,198,215,0.35)', marginBottom: 1 }}>ETA</div>
                         <div style={{ fontSize: 10, fontWeight: 700, color: '#dce1fb' }}>{d.eta}</div>
