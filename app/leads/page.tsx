@@ -538,10 +538,7 @@ export default function LeadsPage() {
       )}
 
       <style>{`
-        @media (max-width: 768px) {
-          .leads-sidebar { display: none !important; }
-          .leads-main { margin-left: 0 !important; }
-        }
+        @media (max-width: 768px) { .leads-sidebar { display: none !important; } .leads-main { margin-left: 0 !important; } .mobile-header-leads { display: block !important; } }
       `}</style>
     </div>
   )
