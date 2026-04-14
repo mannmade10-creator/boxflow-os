@@ -86,7 +86,7 @@ export default function FleetMapPage() {
             {drivers.map(d => (
               <div key={d.id} onClick={() => setSelected(selected === d.id ? null : d.id)} style={{ padding: '14px 16px', cursor: 'pointer', background: selected === d.id ? 'rgba(37,99,235,0.1)' : 'transparent', borderBottom: '1px solid rgba(180,197,255,0.04)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 3, background: 'rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>??</div>
+                  <div style={{ width: 36, height: 36, borderRadius: 3, background: 'rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}></div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
                       <span style={{ fontWeight: 800, color: '#dce1fb', fontSize: 13 }}>{d.name.toUpperCase()}</span>
@@ -115,7 +115,7 @@ export default function FleetMapPage() {
           </div>
           <div style={{ borderTop: '1px solid rgba(180,197,255,0.06)', flexShrink: 0 }}>
             <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>??</span>
+              <span></span>
               <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', color: '#dce1fb' }}>AI Optimization</span>
             </div>
             {[{ title: 'ROUTE ALPHA 9', badge: '+12% EFF', desc: 'Traffic on I-35. Alt via HWY-270. Saves 18 min.', color: '#b4c5ff' }, { title: 'BATCH MERGE', badge: 'OPT READY', desc: 'Merge TRK-201 + TRK-412 return. Saves 22L.', color: '#7bd0ff' }].map(a => (
@@ -132,7 +132,7 @@ export default function FleetMapPage() {
         </div>
       )}
       <nav className="kinetic-mobile-nav" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, display: 'none', justifyContent: 'space-around', alignItems: 'center', padding: '8px 0 20px', background: 'rgba(12,19,36,0.96)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(180,197,255,0.06)', zIndex: 100 }}>
-        {[{ icon: '??', label: 'OPS', href: '/dashboard' }, { icon: '??', label: 'LOGS', href: '/orders' }, { icon: '??', label: 'FLEET', href: '/fleet-map', active: true }, { icon: '??', label: 'PROD', href: '/production' }, { icon: '??', label: 'AI', href: '/executive' }].map(item => (
+        {[{ icon: '', label: 'OPS', href: '/dashboard' }, { icon: '', label: 'LOGS', href: '/orders' }, { icon: '', label: 'FLEET', href: '/fleet-map', active: true }, { icon: '', label: 'PROD', href: '/production' }, { icon: '', label: 'AI', href: '/executive' }].map(item => (
           <a key={item.label} href={item.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, color: item.active ? '#b4c5ff' : 'rgba(195,198,215,0.35)', textDecoration: 'none', padding: '6px 16px', borderRadius: 2 }}>
             <span style={{ fontSize: 20 }}>{item.icon}</span>
             <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2 }}>{item.label}</span>
