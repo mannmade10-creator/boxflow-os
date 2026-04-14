@@ -588,49 +588,11 @@ export default function FleetMapInner() {
   return (
     <main
       style={{
-        minHeight: '100vh',
-        background: '#020617',
-        color: '#fff',
-        padding: 20,
+        height: "100%", background: "#020617", color: "#fff", padding: 0, overflow: "hidden",
       }}
     >
-      <div style={{ maxWidth: 1720, margin: '0 auto' }}>
-        <div
-          style={{
-            marginBottom: 16,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            gap: 16,
-            flexWrap: 'wrap',
-          }}
-        >
-          <div>
-            <div style={pillStyle}>Phase 20 Demo Control Layer</div>
-            <h1 style={{ margin: '12px 0 8px', fontSize: 32, fontWeight: 800 }}>Fleet Map</h1>
-            <p style={{ margin: 0, color: '#94a3b8' }}>
-              Admin, client, and driver demo switching with AI route optimization.
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setViewMode('local')}
-              style={viewMode === 'local' ? activeTopBtn : topBtn}
-            >
-              Local View
-            </button>
-            <button
-              onClick={() => setViewMode('national')}
-              style={viewMode === 'national' ? activeTopBtn : topBtn}
-            >
-              National View
-            </button>
-            <button onClick={handleOptimizeRoute} style={optimizeBtn}>
-              AI Optimize Route
-            </button>
-          </div>
-        </div>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        
 
         <div
           style={{
