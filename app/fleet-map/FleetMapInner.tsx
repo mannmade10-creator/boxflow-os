@@ -692,7 +692,7 @@ export default function FleetMapInner() {
 
         {error ? <div style={errorStyle}>{error}</div> : null}
 
-        <div
+        <div className="fleet-inner-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: demoMode === 'driver' ? '1fr 320px' : '1fr 390px',
