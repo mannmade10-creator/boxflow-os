@@ -481,11 +481,6 @@ export default function ProductionPage() {
           .prod-mobile-nav { display: flex !important; }
         }
       `}</style>
-          <nav className="mobile-bottom-nav">
-        <a href="/dashboard"><span className="icon">??</span>HOME</a>
-        <a href="/command-center"><span className="icon">??</span>CMD</a>
-        <a href="/fleet-map"><span className="icon">??</span>FLEET</a>
-        <a href="/production" className="active"><span className="icon">??</span>PROD</a>
-        <a href="/executive"><span className="icon">??</span>AI</a>
-      </nav>
-          <nav className="mobile-bottom-nav"><a href="/dashboard"><span>??</span>HOME</a><a href="/command-center"><span>??</span>CMD</a><a href="/fleet-map"><span>??</span>FLEET</a><a href="/production" className="active"><span>??</span>PROD</a><a href="/executive"><span>??</span>AI</a></nav></div>)}
+    </div>
+  )
+}
