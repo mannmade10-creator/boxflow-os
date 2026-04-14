@@ -222,3 +222,5 @@ html {
 }
 
 /* Fleet Map Mobile */@media (max-width: 768px) { .kinetic-sidebar { display: none !important; } .kinetic-main { margin-left: 0 !important; } .fleet-grid { grid-template-columns: 1fr !important; } .fleet-right-panel { display: none !important; } .fleet-stats-bar { grid-template-columns: 1fr 1fr !important; } }
+
+@media (max-width: 768px) { .kinetic-sidebar { display: none !important; } .kinetic-main { margin-left: 0 !important; } .fleet-grid { grid-template-columns: 1fr !important; } .fleet-right-panel { display: none !important; } }
