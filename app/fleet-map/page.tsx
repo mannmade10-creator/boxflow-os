@@ -48,8 +48,8 @@ export default function FleetMapPage() {
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
             <span style={{ color: '#22c55e', fontSize: 12, fontWeight: 700, letterSpacing: 2 }}>GEO SYNC ACTIVE</span>
           </div>
-          <a href="/dashboard" style={{ fontSize: 13, color: 'rgba(180,197,255,0.6)', textDecoration: 'none', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', padding: '6px 14px', background: 'rgba(180,197,255,0.06)', borderRadius: 3, border: '1px solid rgba(180,197,255,0.1)' }}>? BACK</a>
-          <button onClick={() => setFullscreen(!fullscreen)} style={{ fontSize: 12, color: "#b4c5ff", fontWeight: 700, letterSpacing: 1, padding: "6px 14px", background: "rgba(37,99,235,0.15)", borderRadius: 3, border: "1px solid rgba(37,99,235,0.3)", cursor: "pointer" }}>{fullscreen ? "? EXIT FULLSCREEN" : "? FULLSCREEN"}</button>
+          <a href="/dashboard" style={{ fontSize: 13, color: 'rgba(180,197,255,0.6)', textDecoration: 'none', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', padding: '6px 14px', background: 'rgba(180,197,255,0.06)', borderRadius: 3, border: '1px solid rgba(180,197,255,0.1)' }}><- BACK</a>
+          <button onClick={() => setFullscreen(!fullscreen)} style={{ fontSize: 12, color: "#b4c5ff", fontWeight: 700, letterSpacing: 1, padding: "6px 14px", background: "rgba(37,99,235,0.15)", borderRadius: 3, border: "1px solid rgba(37,99,235,0.3)", cursor: "pointer" }}>{fullscreen ? "? EXIT FULLSCREEN" : "FULLSCREEN"}</button>
         </div>
       </header>
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: showPanel && !fullscreen ? 320 : 0, zIndex: fullscreen ? -1 : 10, display: fullscreen ? "none" : "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: 'rgba(12,19,36,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(180,197,255,0.08)' }}>
