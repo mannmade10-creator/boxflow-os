@@ -226,3 +226,7 @@ html {
 /* Hide FleetMapInner internal UI - map fills full page */ .fleet-map-page > div:first-child > main { padding: 0 !important; } .fleet-map-page > div:first-child > main > div > div:first-child { display: none !important; } .fleet-map-page > div:first-child > main > div { height: 100vh !important; }
 
 @media (max-width: 768px) { .fleet-inner-right-panel { display: none !important; } }
+
+@media (max-width: 768px) { .fleet-inner-trip-panel { display: none !important; } }
+
+@media (max-width: 768px) { .fleet-inner-right-col { display: none !important; } }
