@@ -220,3 +220,5 @@ html {
     display: block !important;
   }
 }
+
+@media (max-width: 768px) { .kinetic-sidebar { display: none !important; } .kinetic-main { margin-left: 0 !important; } }
