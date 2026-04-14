@@ -720,7 +720,7 @@ export default function FleetMapInner() {
               overflowY: 'auto',
             }}
           >
-            <div style={panelStyle}>
+            <div className="fleet-snapshot-panel" style={panelStyle}>
               <div style={sectionLabel}>Mode Snapshot</div>
               <div style={{ display: 'grid', gap: 10 }}>
                 <div style={summaryRow}>
