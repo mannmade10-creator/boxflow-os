@@ -592,10 +592,10 @@ export default function FleetMapInner({ embedded = false }: { embedded?: boolean
         
 
         <div
-          style={{
-            display: 'flex',
-            gap: 10,
-          >
+          style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
+            
+            
+            
             <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
           </div>
 
