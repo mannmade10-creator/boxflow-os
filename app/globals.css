@@ -226,3 +226,55 @@ html {
 /* Hide FleetMapInner internal UI - map fills full page */ .fleet-map-page > div:first-child > main { padding: 0 !important; } .fleet-map-page > div:first-child > main > div > div:first-child { display: none !important; } .fleet-map-page > div:first-child > main > div { height: 100vh !important; }
 
 @media (max-width: 768px) { .fleet-snapshot-panel { display: none !important; } .fleet-trip-panel { display: none !important; } }
+
+/* Universal Mobile Bottom Nav */
+.mobile-bottom-nav {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(12,19,36,0.98);
+    border-top: 1px solid rgba(180,197,255,0.08);
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0 20px;
+  }
+  .mobile-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: rgba(195,198,215,0.4);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+  }
+  .mobile-bottom-nav a.active {
+    color: #b4c5ff;
+  }
+  .mobile-bottom-nav a span.icon {
+    font-size: 22px;
+  }
+  /* Hide sidebars on mobile */
+  .prod-sidebar, .leads-sidebar, .cmd-sidebar, .kinetic-sidebar, .hr-sidebar, .dispatch-sidebar, .analytics-sidebar, .orders-sidebar, .exec-sidebar {
+    display: none !important;
+  }
+  /* Remove left margin on mobile */
+  .prod-main, .leads-main, .cmd-main, .kinetic-main, .hr-main, .dispatch-main, .analytics-main, .orders-main, .exec-main {
+    margin-left: 0 !important;
+  }
+  /* Add bottom padding so content isn't hidden behind nav */
+  main, .prod-main, .leads-main, .cmd-main, .kinetic-main, .hr-main {
+    padding-bottom: 80px !important;
+  }
+}
+
+.mobile-bottom-nav { display: none; } @media (max-width: 768px) { .mobile-bottom-nav { display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: rgba(12,19,36,0.98); border-top: 1px solid rgba(180,197,255,0.08); justify-content: space-around; align-items: center; padding: 8px 0 20px; } .mobile-bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 3px; color: rgba(195,198,215,0.4); text-decoration: none; font-size: 10px; font-weight: 700; padding: 6px 12px; } .mobile-bottom-nav a.active { color: #b4c5ff; } .mobile-bottom-nav a span { font-size: 22px; display: block; } .prod-sidebar,.leads-sidebar,.cmd-sidebar,.hr-sidebar,.dispatch-sidebar,.analytics-sidebar,.orders-sidebar,.exec-sidebar { display: none !important; } .prod-main,.leads-main,.cmd-main,.hr-main,.dispatch-main,.analytics-main,.orders-main,.exec-main { margin-left: 0 !important; padding-bottom: 80px !important; } }
