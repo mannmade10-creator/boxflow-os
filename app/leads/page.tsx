@@ -245,6 +245,7 @@ export default function LeadsPage() {
         <div style={{ display: 'flex', background: '#151b2d', borderBottom: '1px solid rgba(180,197,255,0.04)', flexShrink: 0 }}>
           {[
             { id: 'pipeline', label: '🎯 PIPELINE' },
+            { id: 'bulk', label: '? SEND ALL TO INSTANTLY' },
             { id: 'hot', label: '🔥 HOT LEADS' },
             { id: 'stats', label: '📊 STATS' },
           ].map(tab => (
