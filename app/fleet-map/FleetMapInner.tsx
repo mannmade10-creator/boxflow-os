@@ -237,7 +237,7 @@ function alertBadgeStyle(label: string): React.CSSProperties {
   }
 }
 
-export default function FleetMapInner() {
+export default function FleetMapInner({ embedded = false }: { embedded?: boolean }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<Record<string, mapboxgl.Marker>>({})
@@ -586,10 +586,7 @@ export default function FleetMapInner() {
       : 'All Operations'
 
   return (
-    <main
-      style={{
-        height: "100%", background: "#020617", color: "#fff", padding: 0, overflow: "hidden",
-      }}
+    <main style={{ height: "100%", background: "#020617", color: "#fff", padding: 0, overflow: "hidden", position: "relative" }}
     >
       <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         
@@ -598,78 +595,6 @@ export default function FleetMapInner() {
           style={{
             display: 'flex',
             gap: 10,
-            flexWrap: 'wrap',
-            marginBottom: 14,
-          }}
-        >
-          <button
-            onClick={() => setDemoMode('admin')}
-            style={demoMode === 'admin' ? activeModeBtn : modeBtn}
-          >
-            Admin Mode
-          </button>
-          <button
-            onClick={() => setDemoMode('client')}
-            style={demoMode === 'client' ? activeModeBtn : modeBtn}
-          >
-            Client Mode
-          </button>
-          <button
-            onClick={() => setDemoMode('driver')}
-            style={demoMode === 'driver' ? activeModeBtn : modeBtn}
-          >
-            Driver Mode
-          </button>
-
-          {demoMode === 'client' ? (
-            <select
-              value={clientFilter}
-              onChange={(e) => setClientFilter(e.target.value)}
-              style={selectStyle}
-            >
-              {uniqueClients.map((client) => (
-                <option key={client} value={client}>
-                  {client}
-                </option>
-              ))}
-            </select>
-          ) : null}
-
-          {demoMode === 'driver' ? (
-            <select
-              value={driverFilter}
-              onChange={(e) => setDriverFilter(e.target.value)}
-              style={selectStyle}
-            >
-              {uniqueDrivers.map((driver) => (
-                <option key={driver} value={driver}>
-                  {driver}
-                </option>
-              ))}
-            </select>
-          ) : null}
-        </div>
-
-        {optimizeMessage ? <div style={successStyle}>{optimizeMessage}</div> : null}
-
-        {error ? <div style={errorStyle}>{error}</div> : null}
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: demoMode === 'driver' ? '1fr 320px' : '1fr 390px',
-            gap: 18,
-            alignItems: 'start',
-          }}
-        >
-          <div
-            style={{
-              height: demoMode === 'driver' ? '82vh' : '80vh',
-              borderRadius: 24,
-              overflow: 'hidden',
-              border: '1px solid rgba(148,163,184,0.16)',
-              background: '#0f172a',
-            }}
           >
             <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
           </div>
