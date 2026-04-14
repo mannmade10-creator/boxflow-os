@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer N2RjYTJlOGYtMWE2NC00NGU1LTg0OTUtOThiOTA3MTkxYWU3OlVxZFNOcGprWmdieQ==',
+      'Authorization': 'Bearer ',
     },
     body: JSON.stringify(body),
   })
