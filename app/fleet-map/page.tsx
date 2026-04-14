@@ -20,7 +20,7 @@ export default function FleetMapPage() {
   }, [])
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#0c1324', color: '#dce1fb', fontFamily: 'Inter, Arial, sans-serif', overflow: 'hidden', position: 'relative' }}>
+    <div className="fleet-map-page" style={{ width: "100vw", height: '100vh', background: '#0c1324', color: '#dce1fb', fontFamily: 'Inter, Arial, sans-serif', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <FleetMapInner />
       </div>

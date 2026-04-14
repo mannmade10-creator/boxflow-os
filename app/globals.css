@@ -222,3 +222,5 @@ html {
 }
 
 @media (max-width: 768px) { .kinetic-sidebar { display: none !important; } .kinetic-main { margin-left: 0 !important; } }
+
+/* Hide FleetMapInner internal UI - map fills full page */ .fleet-map-page > div:first-child > main { padding: 0 !important; } .fleet-map-page > div:first-child > main > div > div:first-child { display: none !important; } .fleet-map-page > div:first-child > main > div { height: 100vh !important; }
