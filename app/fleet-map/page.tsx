@@ -21,7 +21,7 @@ export default function FleetMapPage() {
   }, [])
 
   return (
-    <div className="fleet-map-page" style={{ width: "100vw", height: '100vh', background: '#0c1324', color: '#dce1fb', fontFamily: 'Inter, Arial, sans-serif', overflow: 'hidden', position: 'relative' }}>
+    <div className="fleet-map-page" style={{ width: "100vw", height: "100vh", background: "#0c1324", color: '#dce1fb', fontFamily: 'Inter, Arial, sans-serif', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <FleetMapInner />
       </div>
@@ -51,7 +51,7 @@ export default function FleetMapPage() {
           <a href="/dashboard" style={{ fontSize: 13, color: 'rgba(180,197,255,0.6)', textDecoration: 'none', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', padding: '6px 14px', background: 'rgba(180,197,255,0.06)', borderRadius: 3, border: '1px solid rgba(180,197,255,0.1)' }}>BACK</a>
         </div>
       </header>
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: showPanel ? 320 : 0, zIndex: 10, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'rgba(12,19,36,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(180,197,255,0.08)' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: showPanel && !fullscreen ? 320 : 0, zIndex: fullscreen ? -1 : 10, display: fullscreen ? "none" : "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: 'rgba(12,19,36,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(180,197,255,0.08)' }}>
         {[{ label: 'ENGINE HEALTH', value: '98.2%', pct: 98, color: '#b4c5ff', change: '+0.4%' }, { label: 'FUEL RESERVES', value: '12.4k L', pct: 65, color: '#7bd0ff', change: 'AVG 82%' }, { label: 'MAINTENANCE', value: '3 UNITS', pct: 12, color: '#ef4444', change: 'CRITICAL' }].map(m => (
           <div key={m.label} style={{ padding: '12px 20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -75,7 +75,7 @@ export default function FleetMapPage() {
       <button onClick={() => setShowPanel(!showPanel)} style={{ position: 'absolute', top: '50%', right: showPanel ? 320 : 0, transform: 'translateY(-50%)', zIndex: 15, background: 'rgba(37,99,235,0.9)', border: 'none', borderRadius: showPanel ? '4px 0 0 4px' : '0 4px 4px 0', padding: '12px 8px', color: '#fff', fontWeight: 800, fontSize: 11, cursor: 'pointer', letterSpacing: 1, writingMode: 'vertical-rl', textTransform: 'uppercase' }}>
         {showPanel ? 'HIDE ?' : '? DRIVERS'}
       </button>
-      {showPanel && (
+      {showPanel && !fullscreen && (
         <div style={{ position: 'absolute', top: 56, right: 0, bottom: 0, width: 320, zIndex: 10, background: 'rgba(21,27,45,0.95)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(180,197,255,0.08)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(180,197,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
             <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#dce1fb' }}>Active Personnel</span>
