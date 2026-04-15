@@ -232,3 +232,5 @@ html {
 @media (max-width: 768px) { .fleet-inner-right-col { display: none !important; } }
 
 @media (max-width: 768px) { .fleet-inner-grid { grid-template-columns: 1fr !important; } .fleet-inner-right-col { display: none !important; } }
+
+@media (max-width: 768px) { .hide-mobile { display: none !important; } }

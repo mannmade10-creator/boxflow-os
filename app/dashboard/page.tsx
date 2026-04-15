@@ -219,7 +219,7 @@ export default function DashboardPage() {
                 <thead><tr style={{ background: 'rgba(2,6,23,0.35)' }}>
                   <th style={{ padding: '12px 18px', fontSize: 12, color: '#94a3b8', textAlign: 'left', fontWeight: 800 }}>LOAD</th>
                   <th style={{ padding: '12px 18px', fontSize: 12, color: '#94a3b8', textAlign: 'left', fontWeight: 800 }}>CLIENT</th>
-                  <th style={{ padding: '12px 18px', fontSize: 12, color: '#94a3b8', textAlign: 'left', fontWeight: 800 }}>TRUCK</th>
+                  <th style={{ padding: "12px 18px", fontSize: 12, color: "#94a3b8", textAlign: "left", fontWeight: 800 }} className="hide-mobile">TRUCK</th>
                   <th style={{ padding: '12px 18px', fontSize: 12, color: '#94a3b8', textAlign: 'left', fontWeight: 800 }}>STATUS</th>
                 </tr></thead>
                 <tbody>
@@ -228,9 +228,9 @@ export default function DashboardPage() {
                     const statusStyle = s.includes('transit') || s.includes('dispatch') ? { bg: 'rgba(59,130,246,0.14)', color: '#93c5fd', border: 'rgba(59,130,246,0.3)' } : s.includes('deliver') ? { bg: 'rgba(34,197,94,0.14)', color: '#86efac', border: 'rgba(34,197,94,0.3)' } : s.includes('pending') ? { bg: 'rgba(148,163,184,0.14)', color: '#cbd5e1', border: 'rgba(148,163,184,0.3)' } : { bg: 'rgba(245,158,11,0.14)', color: '#fcd34d', border: 'rgba(245,158,11,0.3)' }
                     return (
                       <tr key={order.id} style={{ borderTop: '1px solid rgba(148,163,184,0.1)' }}>
-                        <td style={{ padding: '14px 18px', color: '#fff', fontWeight: 700 }}>{order.load_name || order.id?.slice(0,8)}</td>
+                        <td style={{ padding: '14px 18px', color: '#fff', fontWeight: 700 }}>{order.order_number ? 'ORD-' + order.order_number : order.load_name || ('ORD-' + (order.id || '').slice(0,8))}</td>
                         <td style={{ padding: '14px 18px', color: '#e2e8f0' }}>{order.client_name || 'N/A'}</td>
-                        <td style={{ padding: '14px 18px', color: '#e2e8f0' }}>{order.assigned_truck_id || 'Unassigned'}</td>
+                        <td style={{ padding: "14px 18px", color: "#e2e8f0" }} className="hide-mobile">{order.assigned_truck_id || "Unassigned"}</td>
                         <td style={{ padding: '14px 18px' }}><span style={{ padding: '5px 10px', borderRadius: 999, fontSize: 12, fontWeight: 800, background: statusStyle.bg, color: statusStyle.color, border: '1px solid ' + statusStyle.border }}>{order.status || 'Pending'}</span></td>
                       </tr>
                     )
