@@ -78,7 +78,7 @@ export default function DispatchPage() {
         <header style={{ position: 'sticky', top: 0, zIndex: 40, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', background: 'rgba(12,19,36,0.96)', backdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(180,197,255,0.06)', flexShrink: 0 }}>
           <div>
             <div style={{ fontSize: 10, color: '#b4c5ff', fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>Operations Hub</div>
-            <h1 style={{ fontSize: 20, fontWeight: 900, color: '#dce1fb', letterSpacing: 2, textTransform: 'uppercase', margin: 0 }}>DISPATCH CENTER</h1>
+            <h1 style={{ fontSize: 20, fontWeight: 900, color: '#dce1fb', letterSpacing: 2, textTransform: "uppercase", margin: 0 }}>DISPATCH CENTER</h1></div><div style={{ display: "flex", alignItems: "center", gap: 16 }}>{alerts.length > 0 && (<div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 3, padding: "4px 12px" }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444" }} /><span style={{ color: "#ef4444", fontSize: 11, fontWeight: 700 }}>{alerts.length} AI ALERTS</span></div>)}<a href="/dashboard" style={{ fontSize: 12, color: "#b4c5ff", textDecoration: "none", fontWeight: 700, padding: "6px 12px", background: "rgba(180,197,255,0.06)", borderRadius: 3, border: "1px solid rgba(180,197,255,0.1)" }}>BACK</a>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {alerts.length > 0 && (
