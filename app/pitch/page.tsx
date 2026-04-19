@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 const slides = [
   {
@@ -18,7 +18,7 @@ const slides = [
     label: 'The Problem',
     title: 'Box Plants Are Running on Legacy Systems From the 1980s',
     points: [
-      '🖥️ KIWIPLAN — order queue terminal, green screen interface, 1985',
+      '🖥️ KIWIPLAN — order queue terminal, green screen interface, deployed 1985',
       '🖥️ Qualitek — wet-end production control, separate hardware terminal',
       '📋 Dispatch software — $2,000/month, not connected to production',
       '🚛 Fleet tracking — $1,500/month, separate login, separate data',
@@ -53,7 +53,7 @@ const slides = [
     features: [
       { icon: '📋', title: 'Order Queue (AIAB)', desc: 'Full transmission queue — HIST, PROC, XMTD, RXMT with live countdown timers for every order based on current machine speed' },
       { icon: '🎞️', title: 'Roll Stock Timers', desc: 'Real-time remaining paper calculation, time-to-splice countdown, shortage alerts with color-coded urgency per station' },
-      { icon: '📊', title: 'Shift Performance', desc: 'Elapsed time, run time, downtime, footage by flute (B/C/BC), waste %, and number of order changes — all in real time' },
+      { icon: '📊', title: 'Shift Performance', desc: 'Elapsed time, run time, downtime, footage by flute B/C/BC, waste %, and number of order changes — all in real time' },
       { icon: '⬇️', title: 'Downtime Logging', desc: 'One-tap downtime event logging — paper break, splice, order change, mechanical, washup, scheduled break, no orders' },
       { icon: '⚡', title: 'DB Cruise Control', desc: 'Manager-only speed slider from 200-800 FPM. All order timers, roll timers, and completion estimates recalculate instantly' },
       { icon: '🔐', title: 'Role-Based Access', desc: 'Machine operators clock in on-site only. Production managers access the full dashboard from anywhere — including home' },
@@ -181,6 +181,7 @@ export default function PitchPage() {
           <span style={{ color: '#93c5fd', fontSize: 13, fontWeight: 700 }}>Investor Pitch Deck</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <a href="/demo" style={{ padding: '6px 14px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, color: '#ef4444', textDecoration: 'none', fontSize: 12, fontWeight: 700 }}>▶ Live Demo</a>
           <div style={{ display: 'flex', gap: 6 }}>
             {slides.map((_, i) => (
               <button key={i} onClick={() => setCurrent(i)} style={{ width: i === current ? 24 : 8, height: 8, borderRadius: 999, background: i === current ? slide.color : 'rgba(148,163,184,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
@@ -206,6 +207,9 @@ export default function PitchPage() {
               <p style={{ fontSize: 16, color: slide.color, fontWeight: 700, letterSpacing: 2 }}>{slide.body}</p>
               <div style={{ marginTop: 40, padding: '16px 32px', background: slide.color + '15', border: '1px solid ' + slide.color + '30', borderRadius: 16, display: 'inline-block' }}>
                 <span style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{slide.note}</span>
+              </div>
+              <div style={{ marginTop: 24 }}>
+                <a href="/demo" style={{ display: 'inline-block', padding: '14px 36px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 16, boxShadow: '0 0 30px rgba(239,68,68,0.3)' }}>▶ Watch 60-Second Live Demo</a>
               </div>
             </div>
           )}
@@ -245,7 +249,7 @@ export default function PitchPage() {
           {slide.type === 'demo' && (
             <div>
               <h1 style={{ fontSize: 'clamp(24px, 5vw, 56px)', fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
-              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40 }}>Live system — not a mockup. Real data. Real production floor.</p>
+              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32 }}>Live system — not a mockup. Real data. Real production floor.</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 32 }}>
                 {slide.demos?.map((demo: any, i: number) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28 }}>
@@ -256,8 +260,9 @@ export default function PitchPage() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' as const }}>
+                <a href="/demo" style={{ display: 'inline-block', padding: '16px 36px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 16, boxShadow: '0 0 30px rgba(239,68,68,0.3)' }}>▶ Watch 60-Second Live Demo</a>
                 <a href="/dashboard" style={{ display: 'inline-block', padding: '14px 32px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>Launch BoxFlow OS →</a>
-                <a href="/production-v2" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', color: '#c084fc', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>View Corrugator System →</a>
+                <a href="/production-v2" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', color: '#c084fc', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>View Corrugator →</a>
               </div>
             </div>
           )}
@@ -325,8 +330,12 @@ export default function PitchPage() {
                   </div>
                 ))}
               </div>
-              <div style={{ padding: '20px 32px', background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 16, display: 'inline-block', fontSize: 18, fontWeight: 800, color: '#c4b5fd' }}>
+              <div style={{ padding: '20px 32px', background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 16, display: 'inline-block', fontSize: 18, fontWeight: 800, color: '#c4b5fd', marginBottom: 24 }}>
                 🎯 {slide.goal}
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <a href="/investors" style={{ display: 'inline-block', padding: '14px 36px', background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15, marginRight: 12 }}>Request Investor Package →</a>
+                <a href="/demo" style={{ display: 'inline-block', padding: '14px 36px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>▶ Watch Live Demo</a>
               </div>
             </div>
           )}
