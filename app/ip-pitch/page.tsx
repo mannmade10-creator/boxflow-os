@@ -191,7 +191,7 @@ export default function IPPitchPage() {
               <button key={i} onClick={() => setCurrent(i)} style={{ width: i === current ? 24 : 8, height: 8, borderRadius: 999, background: i === current ? slide.color : 'rgba(148,163,184,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
             ))}
           </div>
-          <span style={{ color: '#64748b', fontSize: 13 }}>{current + 1} / {slides.length}</span>
+          <a href="/demo" style={{ padding: "6px 14px", background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, color: "#ef4444", textDecoration: "none", fontSize: 12, fontWeight: 700 }}>? Live Demo</a><span style={{ color: "#64748b", fontSize: 13 }}>{current + 1} / {slides.length}</span>
           <a href="/dashboard" style={{ padding: '6px 14px', background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>✕ Exit</a>
         </div>
       </div>
