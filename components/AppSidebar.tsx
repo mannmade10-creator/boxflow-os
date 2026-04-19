@@ -11,7 +11,7 @@ type AppSidebarProps = {
 const navItems = [
   { key: 'dashboard', label: 'Dashboard', href: '/dashboard' },
   { key: 'command-center', label: 'Command Center', href: '/command-center' },
-  { key: 'production', label: 'Production', href: '/production' },
+  { key: 'corrugator', label: 'Corrugator Production', href: '/production-v2' },
   { key: 'orders', label: 'Orders', href: '/orders' },
   { key: 'dispatch', label: 'Dispatch', href: '/dispatch' },
   { key: 'fleet-map', label: 'Fleet Map', href: '/fleet-map' },
@@ -21,7 +21,6 @@ const navItems = [
   { key: 'equipment', label: 'Equipment', href: '/equipment' },
   { key: 'hr', label: 'HR', href: '/hr' },
   { key: 'analytics', label: 'Analytics', href: '/analytics' },
-  { key: 'contact', label: '📧 Contact', href: '/contact' },
   { key: 'pitch', label: 'Pitch Deck', href: '/pitch' },
   { key: 'settings', label: 'Settings', href: '/settings' },
 ]
@@ -148,7 +147,6 @@ export default function AppSidebar({ active }: AppSidebarProps) {
             gap: 8,
           }}
         >
-          🚪 Sign Out
         </button>
       </div>
     </aside>
