@@ -14,6 +14,7 @@ const navItems = [
   { key: 'corrugator', label: 'Corrugator Production', href: '/production-v2' },
   { key: 'orders', label: 'Orders', href: '/orders' },
   { key: 'dispatch', label: 'Dispatch', href: '/dispatch' },
+  { key: 'freight', label: 'Freight Dispatch', href: '/dispatch-v2' },
   { key: 'fleet-map', label: 'Fleet Map', href: '/fleet-map' },
   { key: 'driver', label: 'Driver', href: '/driver' },
   { key: 'client', label: 'Client', href: '/client' },

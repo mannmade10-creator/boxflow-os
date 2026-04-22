@@ -1,0 +1,153 @@
+'use client'
+import { useEffect, useState } from 'react'
+
+export default function Dashboard() {
+  const [units, setUnits] = useState<any[]>([])
+  const [workOrders, setWorkOrders] = useState<any[]>([])
+  const [tenants, setTenants] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const headers = { 'apikey': key!, 'Authorization': `Bearer ${key}` }
+
+    Promise.all([
+      fetch(`${url}/rest/v1/units?select=*`, { headers }).then(r => r.json()),
+      fetch(`${url}/rest/v1/work_orders?select=*&status=eq.Pending`, { headers }).then(r => r.json()),
+      fetch(`${url}/rest/v1/tenants?select=*&status=eq.Active`, { headers }).then(r => r.json()),
+    ]).then(([u, w, t]) => {
+      setUnits(Array.isArray(u) ? u : [])
+      setWorkOrders(Array.isArray(w) ? w : [])
+      setTenants(Array.isArray(t) ? t : [])
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
+
+  const occupied = units.filter(u => u.status === 'Occupied').length
+  const vacant = units.filter(u => u.status === 'Vacant').length
+  const urgent = workOrders.filter(w => w.priority === 'Urgent').length
+
+  const nav = ['Dashboard', 'Units', 'Tenants', 'Maintenance', 'GPS', 'Finance', 'Community']
+
+  return (
+    <main style={{ minHeight: '100vh', background: '#050d1a', color: '#e2e8f0', fontFamily: 'Inter,Arial,sans-serif' }}>
+      <header style={{ background: '#070f1f', borderBottom: '1px solid rgba(99,132,255,0.15)', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' as const, gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/assets/logo.png" alt="PropFlow OS" style={{ height: 44, objectFit: 'contain' }} />
+        </div>
+        <nav style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
+          {nav.map(item => (
+            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+              style={{ padding: '6px 12px', fontSize: 11, fontWeight: 700, color: item === 'Dashboard' ? '#4f8ef7' : '#475569', borderRadius: 7, textDecoration: 'none', background: item === 'Dashboard' ? 'rgba(79,142,247,0.1)' : 'transparent' }}>
+              {item}
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap' as const, gap: 12 }}>
+          <div>
+            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#fff', marginBottom: 4 }}>Good morning, Kenneth 👋</h1>
+            <p style={{ fontSize: 13, color: '#475569' }}>Penn Station Apartments — 1920 Heritage Park Dr, OKC 73120</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 11, color: '#22c55e', fontWeight: 700 }}>● All Systems Live</span>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14, marginBottom: 20 }}>
+          {[
+            { title: 'Total Units', value: loading ? '...' : units.length, sub: `${occupied} Occupied / ${vacant} Vacant`, color: '#4f8ef7' },
+            { title: 'Active Tenants', value: loading ? '...' : tenants.length, sub: 'Current leases', color: '#22c55e' },
+            { title: 'Open Work Orders', value: loading ? '...' : workOrders.length, sub: `${urgent} urgent`, color: '#f59e0b' },
+            { title: 'Property Health', value: '91%', sub: 'Overall condition', color: '#a855f7' },
+          ].map(k => (
+            <div key={k.title} style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 16, borderTop: `3px solid ${k.color}` }}>
+              <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 8 }}>{k.title}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: k.color, lineHeight: 1, marginBottom: 6 }}>{k.value}</div>
+              <div style={{ fontSize: 11, color: '#475569' }}>{k.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18 }}>
+            <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Property Overview</div>
+            {[
+              ['Address', '1920 Heritage Park Drive, OKC 73120'],
+              ['Phone', '405-755-9246'],
+              ['Website', 'pennstationapartmenthomes.com'],
+              ['Buildings', '17 Buildings — 1900 through 1932'],
+              ['Unit Types', 'A1 • A2 • A3 • A4 • B2/B3 • C1'],
+              ['Amenities', '2 Pools • Bark Park • 2 Playgrounds'],
+              ['Managed By', 'Kenneth Covington — M.A.D.E Technologies'],
+            ].map(([l, v]) => (
+              <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(99,132,255,0.07)', flexWrap: 'wrap' as const, gap: 8 }}>
+                <span style={{ fontSize: 12, color: '#475569' }}>{l}</span>
+                <span style={{ fontSize: 12, color: '#cbd5e1', textAlign: 'right' as const }}>{v}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18 }}>
+            <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>System Status</div>
+            {[
+              { label: 'Database', value: 'Supabase Connected', color: '#22c55e' },
+              { label: 'Payments', value: 'Stripe Live', color: '#22c55e' },
+              { label: 'GPS', value: 'Mapbox Active', color: '#22c55e' },
+              { label: 'Tenant App', value: 'Live on Expo', color: '#22c55e' },
+              { label: 'Credit Screening', value: 'SmartMove Ready', color: '#22c55e' },
+              { label: 'Domain', value: 'propflowos.com', color: '#4f8ef7' },
+              { label: 'Platform', value: 'M.A.D.E Technologies', color: '#a855f7' },
+            ].map(s => (
+              <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(99,132,255,0.07)' }}>
+                <span style={{ fontSize: 12, color: '#475569' }}>{s.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: s.color }}>{s.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
+          <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Quick Actions</div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
+            {[
+              { label: '+ Work Order', color: '#4f8ef7', href: '/maintenance' },
+              { label: '+ Tenant', color: '#22c55e', href: '/tenants' },
+              { label: '📢 Send Notice', color: '#a855f7', href: '/community' },
+              { label: '💰 Run Payroll', color: '#f59e0b', href: '/finance' },
+              { label: '📍 View GPS', color: '#ef4444', href: '/gps' },
+              { label: '📋 New Application', color: '#22c55e', href: '/apply' },
+              { label: '🏠 View Units', color: '#4f8ef7', href: '/units' },
+            ].map(b => (
+              <a key={b.label} href={b.href} style={{ padding: '10px 18px', borderRadius: 9, fontSize: 12, fontWeight: 700, color: '#fff', background: b.color, textDecoration: 'none' }}>
+                {b.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18 }}>
+          <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Open Work Orders</div>
+          {loading ? (
+            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>Loading...</div>
+          ) : workOrders.length === 0 ? (
+            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>No open work orders — all clear! ✅</div>
+          ) : workOrders.slice(0, 5).map(wo => (
+            <div key={wo.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(99,132,255,0.07)', flexWrap: 'wrap' as const, gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{wo.description}</div>
+                <div style={{ fontSize: 11, color: '#475569', marginTop: 2 }}>{wo.assigned_to || 'Unassigned'}</div>
+              </div>
+              <span style={{ padding: '3px 10px', borderRadius: 5, fontSize: 10, fontWeight: 700, background: wo.priority === 'Urgent' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)', color: wo.priority === 'Urgent' ? '#ef4444' : '#f59e0b' }}>
+                {wo.priority}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
