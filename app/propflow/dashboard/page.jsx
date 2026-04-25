@@ -1,0 +1,1 @@
+﻿'use client'; export default function PropFlowDash() { return <div style={{minHeight:'100vh',background:'#0A0800',display:'flex',alignItems:'center',justifyContent:'center',color:'#F59E0B',fontSize:32,fontWeight:900,fontFamily:'Outfit,sans-serif'}}>PropFlow OS — Coming Soon</div>; }

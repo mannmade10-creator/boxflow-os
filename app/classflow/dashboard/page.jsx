@@ -1,0 +1,1 @@
+﻿'use client'; export default function ClassFlowDash() { return <div style={{minHeight:'100vh',background:'#06040F',display:'flex',alignItems:'center',justifyContent:'center',color:'#A78BFA',fontSize:32,fontWeight:900,fontFamily:'Outfit,sans-serif'}}>ClassFlow AI — Coming Soon</div>; }
