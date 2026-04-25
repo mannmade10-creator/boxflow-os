@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,7 @@ const PLATFORMS = [
     id: 'medflow', name: 'MedFlow', suffix: 'OS',
     tagline: 'Pharmacy Command Center',
     desc: 'Temperature monitoring, drug inventory and USP compliance.',
-    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow/dashboard',
+    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow-login',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <polygon points="22,4 38,13 38,31 22,40 6,31 6,13" stroke="#14D2C2" strokeWidth="1.8" fill="rgba(20,210,194,0.07)" />
       <rect x="17" y="12" width="10" height="20" rx="2.5" stroke="#14D2C2" strokeWidth="1.6" fill="rgba(20,210,194,0.12)" />
@@ -33,7 +33,7 @@ const PLATFORMS = [
     id: 'propflow', name: 'PropFlow', suffix: 'OS',
     tagline: 'Real Estate Operations',
     desc: 'Property management, tenant tracking and financial reporting.',
-    color: '#F59E0B', glow: 'rgba(245,158,11,0.5)', login: '/login',
+    color: '#F59E0B', glow: 'rgba(245,158,11,0.5)', login: '/propflow-login',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <path d="M22 5L4 18h5v19h12V26h2v11h12V18h5L22 5z" stroke="#F59E0B" strokeWidth="1.8" fill="rgba(245,158,11,0.07)" strokeLinejoin="round" />
       <rect x="18" y="26" width="8" height="11" rx="1.5" stroke="#F59E0B" strokeWidth="1.4" fill="rgba(245,158,11,0.12)" />
@@ -45,7 +45,7 @@ const PLATFORMS = [
     id: 'classflow', name: 'ClassFlow', suffix: 'AI',
     tagline: 'Intelligent Learning Platform',
     desc: 'AI-powered curriculum design and adaptive learning pathways.',
-    color: '#A78BFA', glow: 'rgba(167,139,250,0.5)', login: '/login',
+    color: '#A78BFA', glow: 'rgba(167,139,250,0.5)', login: '/classflow-login',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <circle cx="22" cy="15" r="9" stroke="#A78BFA" strokeWidth="1.8" fill="rgba(167,139,250,0.07)" />
       <path d="M8 38c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round" fill="none" />
@@ -140,7 +140,7 @@ export default function PlatformHub() {
         .hub-foot { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:2.5px; color:#0D1B28; font-family:'Geist Mono',monospace; white-space:nowrap; z-index:5; }
       `}</style>
 
-      {/* ── SPLASH SCREEN ── */}
+      {/* -- SPLASH SCREEN -- */}
       {screen === 'splash' && (
         <div style={{
           position:'fixed', inset:0, zIndex:100,
@@ -205,7 +205,7 @@ export default function PlatformHub() {
         </div>
       )}
 
-      {/* ── CARDS SCREEN ── */}
+      {/* -- CARDS SCREEN -- */}
       {screen === 'cards' && (
         <div style={{
           width:'100%', minHeight:'100vh',
@@ -224,7 +224,7 @@ export default function PlatformHub() {
           {/* Header */}
           <div style={{ textAlign:'center', marginBottom:52 }}>
             <div style={{ fontSize:'9.5px', letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', marginBottom:14 }}>
-              Made Technologies Inc · Select Your Platform
+              Made Technologies Inc � Select Your Platform
             </div>
             <h1 style={{ fontSize:38, fontWeight:900, letterSpacing:'-1.8px', color:'#EEF6FB', lineHeight:1, marginBottom:10 }}>
               Choose your <span style={{ color:'#14D2C2' }}>workspace</span>
@@ -252,7 +252,7 @@ export default function PlatformHub() {
                 <div className="pcard-glow" style={{ background:`radial-gradient(ellipse at top right, ${p.glow} 0%, transparent 65%)` }} />
                 <div className="pcard-top">
                   <div className="pcard-icon">{p.icon}</div>
-                  <div className="pcard-arrow">↗</div>
+                  <div className="pcard-arrow">?</div>
                 </div>
                 <div className="pcard-name" style={{ color:hoveredId===p.id?p.color:'#EEF6FB' }}>
                   {p.name}<span className="pcard-suffix">{p.suffix}</span>
@@ -269,7 +269,7 @@ export default function PlatformHub() {
         </div>
       )}
 
-      {/* ── LAUNCH TRANSITION ── */}
+      {/* -- LAUNCH TRANSITION -- */}
       <div
         className={`t-overlay${transitioning?' on':''}`}
         style={{ background: selected?`radial-gradient(ellipse at center,${selected.glow} 0%,rgba(2,4,8,0.98) 55%)`:'rgba(2,4,8,0.98)' }}
@@ -286,7 +286,7 @@ export default function PlatformHub() {
         )}
       </div>
 
-      <div className="hub-foot">Made Technologies Inc · Enterprise Suite · v2026.1</div>
+      <div className="hub-foot">Made Technologies Inc � Enterprise Suite � v2026.1</div>
     </>
   );
 }
