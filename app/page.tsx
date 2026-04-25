@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -57,7 +57,7 @@ const PLATFORMS = [
 
 export default function PlatformHub() {
   const router = useRouter();
-  const [screen,        setScreen]        = useState('splash'); // 'splash' | 'cards'
+  const [screen,        setScreen]        = useState('splash');
   const [splashOpacity, setSplashOpacity] = useState(0);
   const [cardsOpacity,  setCardsOpacity]  = useState(0);
   const [selectedId,    setSelectedId]    = useState(null);
@@ -65,11 +65,8 @@ export default function PlatformHub() {
   const [hoveredId,     setHoveredId]     = useState(null);
 
   useEffect(() => {
-    // Fade splash IN
     const t0 = setTimeout(() => setSplashOpacity(1), 50);
-    // After 2.8s fade splash OUT
     const t1 = setTimeout(() => setSplashOpacity(0), 2800);
-    // Switch to cards screen
     const t2 = setTimeout(() => {
       setScreen('cards');
       setTimeout(() => setCardsOpacity(1), 50);
@@ -140,16 +137,8 @@ export default function PlatformHub() {
         .hub-foot { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:2.5px; color:#0D1B28; font-family:'Geist Mono',monospace; white-space:nowrap; z-index:5; }
       `}</style>
 
-      {/* -- SPLASH SCREEN -- */}
       {screen === 'splash' && (
-        <div style={{
-          position:'fixed', inset:0, zIndex:100,
-          background:'#000',
-          display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:28,
-          opacity: splashOpacity,
-          transition:'opacity 0.7s ease',
-        }}>
-          {/* Spinning rings as backdrop */}
+        <div style={{ position:'fixed', inset:0, zIndex:100, background:'#000', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:28, opacity:splashOpacity, transition:'opacity 0.7s ease' }}>
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, opacity:0.6 }}>
             <svg viewBox="0 0 400 400" fill="none" width="580" height="580">
               <g className="ring-a" style={{ transformOrigin:'200px 200px' }}>
@@ -181,18 +170,10 @@ export default function PlatformHub() {
               </defs>
             </svg>
           </div>
-
-          {/* Text on top */}
           <div style={{ position:'relative', zIndex:2, display:'flex', flexDirection:'column', alignItems:'center', gap:10, textAlign:'center' }}>
-            <div style={{ fontSize:11, letterSpacing:5, color:'#2E5470', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', animation:'textIn 0.8s ease 0.5s both' }}>
-              Made Technologies Inc
-            </div>
-            <div style={{ fontSize:54, fontWeight:900, letterSpacing:'-2.5px', color:'#EEF6FB', lineHeight:1, animation:'textIn 0.8s ease 0.7s both' }}>
-              Made<span style={{ color:'#14D2C2' }}>Tech</span>
-            </div>
-            <div style={{ fontSize:10, letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', animation:'textIn 0.8s ease 0.9s both' }}>
-              Enterprise Software Suite
-            </div>
+            <div style={{ fontSize:11, letterSpacing:5, color:'#2E5470', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', animation:'textIn 0.8s ease 0.5s both' }}>Made Technologies Inc</div>
+            <div style={{ fontSize:54, fontWeight:900, letterSpacing:'-2.5px', color:'#EEF6FB', lineHeight:1, animation:'textIn 0.8s ease 0.7s both' }}>Made<span style={{ color:'#14D2C2' }}>Tech</span></div>
+            <div style={{ fontSize:10, letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', animation:'textIn 0.8s ease 0.9s both' }}>Enterprise Software Suite</div>
             <div style={{ display:'flex', gap:22, marginTop:10, animation:'textIn 0.8s ease 1.1s both' }}>
               {PLATFORMS.map(p => (
                 <div key={p.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:7 }}>
@@ -205,58 +186,31 @@ export default function PlatformHub() {
         </div>
       )}
 
-      {/* -- CARDS SCREEN -- */}
       {screen === 'cards' && (
-        <div style={{
-          width:'100%', minHeight:'100vh',
-          background:'#04080F',
-          display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-          padding:'48px 32px',
-          opacity: cardsOpacity,
-          transition:'opacity 0.8s ease',
-        }}>
+        <div style={{ width:'100%', minHeight:'100vh', background:'#04080F', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'48px 32px', opacity:cardsOpacity, transition:'opacity 0.8s ease' }}>
           <div className="sel-grid" />
           <div className="corner c-tl" />
           <div className="corner c-tr" />
           <div className="corner c-bl" />
           <div className="corner c-br" />
-
-          {/* Header */}
           <div style={{ textAlign:'center', marginBottom:52 }}>
-            <div style={{ fontSize:'9.5px', letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', marginBottom:14 }}>
-              Made Technologies Inc · Select Your Platform
-            </div>
-            <h1 style={{ fontSize:38, fontWeight:900, letterSpacing:'-1.8px', color:'#EEF6FB', lineHeight:1, marginBottom:10 }}>
-              Choose your <span style={{ color:'#14D2C2' }}>workspace</span>
-            </h1>
-            <p style={{ fontSize:13, color:'#2E5470', maxWidth:460, margin:'0 auto', lineHeight:1.65 }}>
-              Each platform requires an active subscription. Select the software you want to access to continue to login.
-            </p>
+            <div style={{ fontSize:'9.5px', letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', marginBottom:14 }}>Made Technologies Inc Â· Select Your Platform</div>
+            <h1 style={{ fontSize:38, fontWeight:900, letterSpacing:'-1.8px', color:'#EEF6FB', lineHeight:1, marginBottom:10 }}>Choose your <span style={{ color:'#14D2C2' }}>workspace</span></h1>
+            <p style={{ fontSize:13, color:'#2E5470', maxWidth:460, margin:'0 auto', lineHeight:1.65 }}>Each platform requires an active subscription. Select the software you want to access to continue to login.</p>
           </div>
-
-          {/* 4 Cards */}
           <div style={{ display:'flex', gap:16, width:'100%', maxWidth:1080, flexWrap:'wrap', justifyContent:'center' }}>
             {PLATFORMS.map((p, i) => (
-              <div
-                key={p.id}
-                className={`pcard${selectedId===p.id?' gone':''}`}
-                style={{
-                  borderColor:  hoveredId===p.id ? p.color+'55' : 'rgba(255,255,255,0.06)',
-                  boxShadow:    hoveredId===p.id ? `0 20px 60px ${p.glow}, 0 0 0 1px ${p.color}33` : 'none',
-                  animationDelay:`${i*90}ms`,
-                }}
+              <div key={p.id} className={`pcard${selectedId===p.id?' gone':''}`}
+                style={{ borderColor:hoveredId===p.id?p.color+'55':'rgba(255,255,255,0.06)', boxShadow:hoveredId===p.id?`0 20px 60px ${p.glow}, 0 0 0 1px ${p.color}33`:'none', animationDelay:`${i*90}ms` }}
                 onClick={() => selectPlatform(p)}
                 onMouseEnter={() => setHoveredId(p.id)}
-                onMouseLeave={() => setHoveredId(null)}
-              >
+                onMouseLeave={() => setHoveredId(null)}>
                 <div className="pcard-glow" style={{ background:`radial-gradient(ellipse at top right, ${p.glow} 0%, transparent 65%)` }} />
                 <div className="pcard-top">
                   <div className="pcard-icon">{p.icon}</div>
-                  <div className="pcard-arrow">?</div>
+                  <div className="pcard-arrow">â†—</div>
                 </div>
-                <div className="pcard-name" style={{ color:hoveredId===p.id?p.color:'#EEF6FB' }}>
-                  {p.name}<span className="pcard-suffix">{p.suffix}</span>
-                </div>
+                <div className="pcard-name" style={{ color:hoveredId===p.id?p.color:'#EEF6FB' }}>{p.name}<span className="pcard-suffix">{p.suffix}</span></div>
                 <div className="pcard-tag" style={{ color:hoveredId===p.id?p.color:'#1E3A50' }}>{p.tagline}</div>
                 <div className="pcard-desc">{p.desc}</div>
                 <div className="pcard-foot">
@@ -269,24 +223,18 @@ export default function PlatformHub() {
         </div>
       )}
 
-      {/* -- LAUNCH TRANSITION -- */}
-      <div
-        className={`t-overlay${transitioning?' on':''}`}
-        style={{ background: selected?`radial-gradient(ellipse at center,${selected.glow} 0%,rgba(2,4,8,0.98) 55%)`:'rgba(2,4,8,0.98)' }}
-      >
+      <div className={`t-overlay${transitioning?' on':''}`} style={{ background:selected?`radial-gradient(ellipse at center,${selected.glow} 0%,rgba(2,4,8,0.98) 55%)`:'rgba(2,4,8,0.98)' }}>
         {selected && (
           <div className="t-inner">
             <div className="t-label">Launching</div>
-            <div className="t-name" style={{ color:selected.color }}>
-              {selected.name}<span style={{ opacity:.3, fontWeight:300 }}>{selected.suffix}</span>
-            </div>
+            <div className="t-name" style={{ color:selected.color }}>{selected.name}<span style={{ opacity:.3, fontWeight:300 }}>{selected.suffix}</span></div>
             <div className="t-spinner" style={{ color:selected.color }} />
             <div className="t-label" style={{ marginTop:4 }}>Verifying subscription access...</div>
           </div>
         )}
       </div>
 
-      <div className="hub-foot">Made Technologies Inc · Enterprise Suite · v2026.1</div>
+      <div className="hub-foot">Made Technologies Inc Â· Enterprise Suite Â· v2026.1</div>
     </>
   );
 }
