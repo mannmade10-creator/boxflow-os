@@ -1,13 +1,13 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PlusCircle, Play, TrendingUp, Users, Globe } from 'lucide-react'
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabase = supabase
   const router = useRouter()
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#07080d', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: 13, color: '#64748b' }}>Loading…</div>
+      <div style={{ fontSize: 13, color: '#64748b' }}>Loadingâ€¦</div>
     </div>
   )
 
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
           <div>
             <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.02em' }}>Dashboard</h1>
-            <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>Welcome back — here's what's happening</p>
+            <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>Welcome back â€” here's what's happening</p>
           </div>
           <Link href="/create" style={{
             display: 'flex', alignItems: 'center', gap: 8, background: '#2563eb',

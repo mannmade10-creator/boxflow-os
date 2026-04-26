@@ -1,14 +1,14 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import { Upload, Loader2, CheckCircle, ChevronRight, Video } from 'lucide-react'
 
 const INSTRUCTORS = [
-  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN · ES', emoji: '👨🏾' },
-  { id: 'ava', name: 'Ava', style: 'Casual', langs: 'EN · FR', emoji: '👩🏻' },
-  { id: 'sofia', name: 'Sofia', style: 'Energetic', langs: 'ES · PT', emoji: '👩🏽' },
-  { id: 'james', name: 'James', style: 'Professional', langs: 'EN · FR', emoji: '👨🏼' },
+  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN Â· ES', emoji: 'ðŸ‘¨ðŸ¾' },
+  { id: 'ava', name: 'Ava', style: 'Casual', langs: 'EN Â· FR', emoji: 'ðŸ‘©ðŸ»' },
+  { id: 'sofia', name: 'Sofia', style: 'Energetic', langs: 'ES Â· PT', emoji: 'ðŸ‘©ðŸ½' },
+  { id: 'james', name: 'James', style: 'Professional', langs: 'EN Â· FR', emoji: 'ðŸ‘¨ðŸ¼' },
 ]
 
 const LANGUAGES = [
@@ -29,7 +29,7 @@ export default function CreatePage() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [videoStatus, setVideoStatus] = useState('')
   const [error, setError] = useState('')
-  const supabase = createClient()
+  const supabase = supabase
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -67,7 +67,7 @@ export default function CreatePage() {
 
   async function handleGenerateVideo() {
     setStep('video')
-    setVideoStatus('Submitting to D-ID…')
+    setVideoStatus('Submitting to D-IDâ€¦')
     try {
       const res = await fetch('/api/generate-video', {
         method: 'POST',
@@ -76,7 +76,7 @@ export default function CreatePage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Video generation failed')
-      setVideoStatus('Rendering… checking every 8 seconds.')
+      setVideoStatus('Renderingâ€¦ checking every 8 seconds.')
       pollVideoStatus(data.video_id)
     } catch (err: any) {
       setError(err.message)
@@ -146,7 +146,7 @@ export default function CreatePage() {
       {topbar}
       <div style={{ textAlign: 'center', padding: '80px 20px' }}>
         <Loader2 size={40} color="#3b82f6" style={{ margin: '0 auto 20px', animation: 'spin 1s linear infinite' }} />
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Building your lesson…</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Building your lessonâ€¦</h2>
         <p style={{ fontSize: 13, color: '#64748b' }}>AI is generating your script, quiz, and summary.</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -158,8 +158,8 @@ export default function CreatePage() {
       {topbar}
       <div style={{ textAlign: 'center', padding: '80px 20px' }}>
         <Video size={40} color="#3b82f6" style={{ margin: '0 auto 20px' }} />
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Generating AI video…</h2>
-        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 20 }}>Your AI instructor is being rendered. This takes 2–5 minutes.</p>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Generating AI videoâ€¦</h2>
+        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 20 }}>Your AI instructor is being rendered. This takes 2â€“5 minutes.</p>
         <div style={{
           display: 'inline-block', padding: '10px 20px',
           background: 'rgba(59,130,246,0.1)', border: '0.5px solid rgba(59,130,246,0.3)',
@@ -196,7 +196,7 @@ export default function CreatePage() {
             {result.quiz?.slice(0, 2).map((q: any, i: number) => (
               <div key={i} style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 500, color: '#e2e8f0', marginBottom: 4 }}>{i + 1}. {q.question}</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>✓ {q.options?.[q.correct_index]}</div>
+                <div style={{ fontSize: 11, color: '#22c55e' }}>âœ“ {q.options?.[q.correct_index]}</div>
               </div>
             ))}
           </div>
@@ -236,7 +236,7 @@ export default function CreatePage() {
             {result.quiz?.slice(0, 2).map((q: any, i: number) => (
               <div key={i} style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 500, color: '#e2e8f0', marginBottom: 4 }}>{i + 1}. {q.question}</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>✓ {q.options?.[q.correct_index]}</div>
+                <div style={{ fontSize: 11, color: '#22c55e' }}>âœ“ {q.options?.[q.correct_index]}</div>
               </div>
             ))}
             <div style={{ fontSize: 11, color: '#64748b' }}>+{Math.max(0, (result.quiz?.length || 0) - 2)} more questions</div>
@@ -244,7 +244,7 @@ export default function CreatePage() {
         </div>
         <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px', marginBottom: 16 }}>
           <div style={{ fontSize: 11, color: '#64748b', marginBottom: 10 }}>SCRIPT PREVIEW</div>
-          <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{result.script?.slice(0, 400)}…</div>
+          <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{result.script?.slice(0, 400)}â€¦</div>
         </div>
         {error && <div style={{ marginBottom: 16, fontSize: 13, color: '#f87171' }}>{error}</div>}
         <div style={{ display: 'flex', gap: 12 }}>
@@ -276,8 +276,8 @@ export default function CreatePage() {
             <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>Lesson content</div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-                <button style={btnStyle(inputMode === 'text')} onClick={() => setInputMode('text')}>✏️ Type content</button>
-                <button style={btnStyle(inputMode === 'file')} onClick={() => setInputMode('file')}>📄 Upload file</button>
+                <button style={btnStyle(inputMode === 'text')} onClick={() => setInputMode('text')}>âœï¸ Type content</button>
+                <button style={btnStyle(inputMode === 'file')} onClick={() => setInputMode('file')}>ðŸ“„ Upload file</button>
               </div>
               {inputMode === 'text' ? (
                 <textarea
@@ -326,7 +326,7 @@ export default function CreatePage() {
                     <span style={{ fontSize: 22 }}>{inst.emoji}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 500, color: '#f1f5f9' }}>{inst.name}</div>
-                      <div style={{ fontSize: 11, color: '#64748b' }}>{inst.style} · {inst.langs}</div>
+                      <div style={{ fontSize: 11, color: '#64748b' }}>{inst.style} Â· {inst.langs}</div>
                     </div>
                     <div style={{ width: 7, height: 7, borderRadius: '50%', background: instructor === inst.id ? '#3b82f6' : 'rgba(255,255,255,0.1)' }} />
                   </div>
@@ -336,10 +336,10 @@ export default function CreatePage() {
             <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 12 }}>What gets generated</div>
               {[
-                { icon: '🎬', label: 'AI video lesson', desc: 'Live avatar instructor' },
-                { icon: '📝', label: 'Quiz', desc: '8 auto-scored questions' },
-                { icon: '📄', label: 'Summary', desc: 'Key takeaways' },
-                { icon: '📚', label: 'Key terms', desc: '6 vocabulary cards' },
+                { icon: 'ðŸŽ¬', label: 'AI video lesson', desc: 'Live avatar instructor' },
+                { icon: 'ðŸ“', label: 'Quiz', desc: '8 auto-scored questions' },
+                { icon: 'ðŸ“„', label: 'Summary', desc: 'Key takeaways' },
+                { icon: 'ðŸ“š', label: 'Key terms', desc: '6 vocabulary cards' },
               ].map(item => (
                 <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                   <span style={{ fontSize: 14 }}>{item.icon}</span>
