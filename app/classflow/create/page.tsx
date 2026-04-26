@@ -29,10 +29,10 @@ export default function CreatePage() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [videoStatus, setVideoStatus] = useState('')
   const [error, setError] = useState('')
-  const supabase = supabase
+  const client = supabase
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
+    await client.auth.signOut()
     window.location.href = '/login'
   }
 
@@ -365,3 +365,4 @@ export default function CreatePage() {
     </div>
   )
 }
+
