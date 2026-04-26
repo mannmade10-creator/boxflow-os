@@ -7,7 +7,7 @@ import { PlusCircle, Play, TrendingUp, Users, Globe } from 'lucide-react'
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
-  const supabase = supabase
+  // supabase client ready
   const router = useRouter()
 
   useEffect(() => {
@@ -124,3 +124,4 @@ export default function DashboardPage() {
     </div>
   )
 }
+
