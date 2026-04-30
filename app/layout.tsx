@@ -1,5 +1,6 @@
-import './globals.css'
+﻿import './globals.css'
 import type { Metadata, Viewport } from 'next'
+import BoxFlowAIWidget from '@/components/BoxFlowAIWidget'
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',
@@ -29,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0, background: '#020617' }}>
+      <head>
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -39,11 +40,11 @@ export default function RootLayout({
             });
           }
         `}} />
+      </head>
+      <body style={{ margin: 0, padding: 0, background: '#020617' }}>
         {children}
+        <BoxFlowAIWidget />
       </body>
     </html>
   )
 }
-import BoxFlowAIWidget from '@/components/BoxFlowAIWidget';
-// inside body tag:
-<BoxFlowAIWidget />
