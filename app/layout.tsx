@@ -44,3 +44,6 @@ export default function RootLayout({
     </html>
   )
 }
+import BoxFlowAIWidget from '@/components/BoxFlowAIWidget';
+// inside body tag:
+<BoxFlowAIWidget />
