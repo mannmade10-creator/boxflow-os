@@ -1,127 +1,153 @@
-﻿'use client'
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { PlusCircle, Play, TrendingUp, Users, Globe } from 'lucide-react'
+﻿'use client';
 
-export default function DashboardPage() {
-  const [loading, setLoading] = useState(true)
-  // supabase client ready
-  const router = useRouter()
+import { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.push('/login')
-      } else {
-        setLoading(false)
-      }
-    })
-  }, [])
+const C = {
+  bg:     '#06040F', panel: '#0D0B1A', card: '#0A0814',
+  border: '#1E1640', purple: '#A78BFA', purpleD: '#6D28D9',
+  green:  '#22C55E', red:    '#F43F5E', blue: '#3B82F6',
+  dim:    '#4A3A70', txt:    '#C8DDE9', white: '#EEF6FB',
+  D: "'Outfit',sans-serif", M: "'Geist Mono',monospace",
+};
 
-  async function handleSignOut() {
-    await supabase.auth.signOut()
-    window.location.href = '/login'
-  }
+const QUICK = [
+  { icon:'📚', label:'Lesson Status',   prompt:'Give me a summary of lessons created and published so far.' },
+  { icon:'👥', label:'Student Activity', prompt:'How many students are active? Any engagement issues I should know about?' },
+  { icon:'🌐', label:'Languages',        prompt:'What languages are currently available and which are most used?' },
+  { icon:'💡', label:'Lesson Ideas',     prompt:'Based on current content, suggest 3 new lesson topics that would complement what we have.' },
+];
 
-  const stats = [
-    { label: 'Lessons created', value: 0, icon: Play, color: '#3b82f6' },
-    { label: 'Published', value: 0, icon: TrendingUp, color: '#22c55e' },
-    { label: 'Students', value: 0, icon: Users, color: '#a78bfa' },
-    { label: 'Languages', value: 4, icon: Globe, color: '#f59e0b' },
-  ]
-
-  if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#07080d', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: 13, color: '#64748b' }}>Loadingâ€¦</div>
-    </div>
-  )
-
-  return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      <header style={{
-        background: '#111318', borderBottom: '0.5px solid rgba(59,130,246,0.18)',
-        height: 52, display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between', padding: '0 24px',
-        position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 28, height: 28, background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)',
-            clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
-          }}>
-            <div style={{ position: 'absolute', inset: 2, background: '#111318', clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)' }} />
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3b82f6', position: 'relative', zIndex: 1 }} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 15, color: '#f1f5f9' }}>
-            Class<span style={{ color: '#3b82f6' }}>Flow</span> AI
-          </span>
-        </Link>
-        <nav style={{ display: 'flex', gap: 4 }}>
-          {[
-            { href: '/dashboard', label: 'Dashboard' },
-            { href: '/create', label: 'Create lesson' },
-            { href: '/students', label: 'Students' },
-          ].map(({ href, label }) => (
-            <Link key={href} href={href} style={{
-              padding: '6px 12px', borderRadius: 8, textDecoration: 'none',
-              fontSize: 13, color: href === '/dashboard' ? '#3b82f6' : '#64748b',
-              background: href === '/dashboard' ? 'rgba(59,130,246,0.1)' : 'transparent',
-            }}>{label}</Link>
-          ))}
-        </nav>
-        <button onClick={handleSignOut} style={{
-          background: 'none', border: 'none', cursor: 'pointer',
-          color: '#64748b', fontSize: 13, padding: '6px 10px', borderRadius: 8,
-        }}>Sign out</button>
-      </header>
-      <main style={{ padding: '28px 24px', maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
-          <div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.02em' }}>Dashboard</h1>
-            <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>Welcome back â€” here's what's happening</p>
-          </div>
-          <Link href="/create" style={{
-            display: 'flex', alignItems: 'center', gap: 8, background: '#2563eb',
-            color: '#fff', textDecoration: 'none', padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 500,
-          }}>
-            <PlusCircle size={15} /> New lesson
-          </Link>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
-          {stats.map(({ label, value, icon: Icon, color }) => (
-            <div key={label} style={{
-              background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)',
-              borderRadius: 12, padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: 14,
-            }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon size={16} color={color} />
-              </div>
-              <div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9' }}>{value}</div>
-                <div style={{ fontSize: 12, color: '#64748b', marginTop: 3 }}>{label}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{
-          background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)',
-          borderRadius: 14, padding: '48px 20px', textAlign: 'center',
-        }}>
-          <div style={{ fontSize: 13, color: '#64748b', marginBottom: 16 }}>No lessons yet</div>
-          <Link href="/create" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: 'rgba(59,130,246,0.1)', color: '#3b82f6',
-            border: '0.5px solid rgba(59,130,246,0.3)',
-            textDecoration: 'none', padding: '9px 18px', borderRadius: 8, fontSize: 13,
-          }}>
-            <PlusCircle size={14} /> Create your first lesson
-          </Link>
-        </div>
-      </main>
-    </div>
-  )
+async function gatherContext() {
+  try {
+    const [lessonsRes, studentsRes] = await Promise.all([
+      supabase.from('lessons').select('*').order('created_at', { ascending: false }).limit(10),
+      supabase.from('students').select('*').limit(20),
+    ]);
+    const fmt = (arr: any[], fn: (r: any) => string) => (arr || []).map(fn).join('\n') || 'No data';
+    return [
+      `LESSONS (${lessonsRes.data?.length || 0}):`,
+      fmt(lessonsRes.data || [], l => `- ${l.title || 'Untitled'}: ${l.status || 'Draft'} | Language: ${l.language || 'EN'}`),
+      '',
+      `STUDENTS (${studentsRes.data?.length || 0}):`,
+      fmt(studentsRes.data || [], s => `- ${s.name || 'Student'}: ${s.status || 'Active'}`),
+    ].join('\n');
+  } catch { return 'Live data temporarily unavailable.'; }
 }
 
+export default function ClassFlowAIWidget() {
+  const [open,     setOpen]     = useState(false);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [input,    setInput]    = useState('');
+  const [loading,  setLoading]  = useState(false);
+  const [unread,   setUnread]   = useState(0);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { if (open) setUnread(0); }, [open]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
+
+  const send = async (text: string) => {
+    if (!text.trim() || loading) return;
+    const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+    setMessages(prev => [...prev, { role: 'user', content: text, time: now }]);
+    setInput(''); setLoading(true);
+    try {
+      const context = await gatherContext();
+      const history = messages.map(m => ({ role: m.role, content: m.content }));
+      const res = await fetch('/api/classflow-ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...history, { role: 'user', content: text + '\n\nLIVE DATA:\n' + context }] }),
+      });
+      const data = await res.json();
+      let aiText = 'No response generated.';
+      if (data.content?.[0]?.text) aiText = data.content[0].text;
+      else if (data.error) aiText = `Error: ${data.error}`;
+      const replyTime = new Date().toLocaleTimeString('en-US', { hour12: false });
+      setMessages(prev => [...prev, { role: 'assistant', content: aiText, time: replyTime }]);
+      if (!open) setUnread(u => u + 1);
+    } catch (err: any) {
+      setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${err.message}`, time: new Date().toLocaleTimeString() }]);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <style>{`
+        @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .cf-msg{animation:msgIn .25s ease both}
+        .cf-quick:hover{background:rgba(167,139,250,0.15)!important;border-color:rgba(167,139,250,0.5)!important;color:#EEF6FB!important}
+      `}</style>
+
+      {open && (
+        <div style={{ position:'fixed', bottom:80, right:20, width:360, height:480, background:C.panel, border:`1px solid ${C.border}`, borderRadius:16, display:'flex', flexDirection:'column', zIndex:9999, boxShadow:'0 20px 60px rgba(0,0,0,0.6)', fontFamily:C.D, overflow:'hidden' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', borderBottom:`1px solid ${C.border}`, background:C.bg, flexShrink:0 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <div style={{ width:28, height:28, borderRadius:7, background:`linear-gradient(135deg,${C.purpleD},${C.purple})`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14 }}>🎓</div>
+              <div>
+                <div style={{ fontSize:13, fontWeight:700, color:C.white }}>ClassFlow AI</div>
+                <div style={{ fontSize:9, color:C.green, fontFamily:C.M, letterSpacing:1 }}>● ONLINE</div>
+              </div>
+            </div>
+            <button onClick={() => setOpen(false)} style={{ background:'none', border:'none', color:C.dim, fontSize:18, cursor:'pointer' }}>×</button>
+          </div>
+
+          <div style={{ flex:1, overflowY:'auto', padding:'12px 14px', display:'flex', flexDirection:'column', gap:8 }}>
+            {messages.length === 0 && (
+              <div style={{ textAlign:'center', padding:'20px 10px' }}>
+                <div style={{ fontSize:28, marginBottom:8 }}>🎓</div>
+                <div style={{ fontSize:13, color:C.white, fontWeight:600, marginBottom:4 }}>ClassFlow AI</div>
+                <div style={{ fontSize:11, color:C.dim, lineHeight:1.5, marginBottom:14 }}>Ask me about lessons, students, languages, or content ideas.</div>
+                <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+                  {QUICK.map((q, i) => (
+                    <button key={i} className="cf-quick" onClick={() => send(q.prompt)}
+                      style={{ background:'rgba(167,139,250,0.07)', border:`1px solid ${C.border}`, borderRadius:8, color:C.dim, fontSize:11, padding:'7px 10px', cursor:'pointer', fontFamily:C.D, display:'flex', alignItems:'center', gap:7, textAlign:'left' }}>
+                      <span>{q.icon}</span><span>{q.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {messages.map((msg, i) => (
+              <div key={i} className="cf-msg" style={{ display:'flex', flexDirection:'column', alignItems:msg.role==='user'?'flex-end':'flex-start' }}>
+                <div style={{ maxWidth:'85%', background:msg.role==='user'?'rgba(167,139,250,0.1)':C.card, border:`1px solid ${msg.role==='user'?C.purple+'40':C.border}`, borderRadius:msg.role==='user'?'12px 4px 12px 12px':'4px 12px 12px 12px', padding:'9px 12px' }}>
+                  {msg.role==='assistant' && <div style={{ fontSize:8.5, color:C.purple, fontFamily:C.M, letterSpacing:1.5, marginBottom:5 }}>CLASSFLOW AI</div>}
+                  <div style={{ fontSize:12, color:C.txt, lineHeight:1.6, whiteSpace:'pre-wrap' }}>{msg.content}</div>
+                  {msg.time && <div style={{ fontSize:8.5, color:C.dim, fontFamily:C.M, marginTop:5 }}>{msg.time}</div>}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div style={{ display:'flex', gap:5, padding:'8px 12px', background:C.card, border:`1px solid ${C.border}`, borderRadius:'4px 12px 12px 12px', width:'fit-content' }}>
+                {[0,1,2].map(i => <div key={i} style={{ width:6, height:6, borderRadius:'50%', background:C.purple, animation:`pulse 1.2s ease ${i*0.2}s infinite` }} />)}
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          <div style={{ padding:'10px 12px', borderTop:`1px solid ${C.border}`, flexShrink:0 }}>
+            <div style={{ display:'flex', gap:8, background:C.card, border:`1px solid ${C.border}`, borderRadius:10, padding:'7px 10px', alignItems:'center' }}>
+              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key==='Enter') { e.preventDefault(); send(input); }}}
+                placeholder="Ask ClassFlow AI..." style={{ flex:1, background:'transparent', border:'none', outline:'none', color:C.txt, fontSize:12, fontFamily:C.D }} />
+              <button onClick={() => send(input)} disabled={loading || !input.trim()}
+                style={{ width:28, height:28, borderRadius:7, background:'rgba(167,139,250,0.1)', border:`1px solid ${C.purple}40`, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:13, opacity:loading||!input.trim()?0.4:1 }}>
+                {loading ? <div style={{ width:12, height:12, border:`2px solid ${C.purple}`, borderTopColor:'transparent', borderRadius:'50%', animation:'spin .7s linear infinite' }} /> : '→'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button onClick={() => setOpen(o => !o)}
+        style={{ position:'fixed', bottom:20, right:20, width:52, height:52, borderRadius:'50%', background:`linear-gradient(135deg,${C.purpleD},${C.purple})`, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, zIndex:9999, boxShadow:'0 4px 20px rgba(167,139,250,0.4)', transition:'transform .15s' }}>
+        {open ? '×' : '🎓'}
+        {!open && unread > 0 && (
+          <div style={{ position:'absolute', top:-3, right:-3, width:18, height:18, borderRadius:'50%', background:C.red, fontSize:10, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontFamily:C.M }}>{unread}</div>
+        )}
+      </button>
+    </>
+  );
+}
