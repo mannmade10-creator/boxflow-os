@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -123,7 +123,7 @@ export default function TenantPage() {
             <div style={{ ...card, borderColor: 'rgba(79,142,247,0.3)' }}>
               <div style={{ fontSize: 14, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 12 }}>Welcome Back</div>
               <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Good day, Resident ðŸ‘‹</div>
-              <div style={{ fontSize: 17, color: '#475569' }}>Penn Station Apartment Homes â€¢ 1920 Heritage Park Dr, OKC 73120</div>
+              <div style={{ fontSize: 17, color: '#475569' }}>Penn Station Apartment Homes • 1920 Heritage Park Dr, OKC 73120</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 18 }}>
               {[
@@ -216,7 +216,7 @@ export default function TenantPage() {
                 <div style={{ position: 'absolute' as const, bottom: 12, left: 12, background: 'rgba(2,8,18,0.88)', padding: '10px 14px', borderRadius: 10 }}>
                   <div style={{ fontSize: 12, color: '#475569', marginBottom: 6, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Staff on Property</div>
                   {staffPositions.map(s => (
-                    <div key={s.name} style={{ fontSize: 13, color: s.color, fontWeight: 700, marginBottom: 2 }}>â— {s.name} â€” {s.role}</div>
+                    <div key={s.name} style={{ fontSize: 13, color: s.color, fontWeight: 700, marginBottom: 2 }}>â— {s.name} "” {s.role}</div>
                   ))}
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function TenantPage() {
                 <div style={{ fontSize: 16, color: '#94a3b8', lineHeight: 1.7 }}>{p.body}</div>
               </div>
             ))}
-            {posts.length === 0 && <div style={{ textAlign: 'center' as const, color: '#475569', fontSize: 16, padding: 48 }}>No posts yet â€” be the first!</div>}
+            {posts.length === 0 && <div style={{ textAlign: 'center' as const, color: '#475569', fontSize: 16, padding: 48 }}>No posts yet "” be the first!</div>}
           </div>
         )}
 
@@ -259,8 +259,8 @@ export default function TenantPage() {
             <p style={{ fontSize: 17, color: '#475569', marginBottom: 26 }}>Reach out to the property management team.</p>
             <div style={{ display: 'grid', gap: 14 }}>
               {[
-                { title: 'Leasing Office', detail: '405-755-9246', sub: 'Mondayâ€“Friday 9AMâ€“5PM', icon: 'ðŸ“ž', color: '#4f8ef7' },
-                { title: 'Emergency Maintenance', detail: '405-755-9246', sub: '24/7 for urgent issues', icon: 'ðŸš¨', color: '#ef4444' },
+                { title: 'Leasing Office', detail: '405-755-9246', sub: 'Monday"“Friday 9AM"“5PM', icon: 'ðŸ“ž', color: '#4f8ef7' },
+                { title: 'Emergency Maintenance', detail: '405-755-9246', sub: '24/7 for urgent issues', icon: '🚗¨', color: '#ef4444' },
                 { title: 'Email Management', detail: 'info@pennstationapartmenthomes.com', sub: 'Response within 24 hours', icon: 'ðŸ“§', color: '#22c55e' },
                 { title: 'Property Website', detail: 'pennstationapartmenthomes.com', sub: 'Online resources and info', icon: 'ðŸŒ', color: '#a855f7' },
                 { title: 'CAF Management', detail: 'Professional Property Management', sub: 'People Matter. Performance Counts.', icon: 'ðŸ¢', color: '#f59e0b' },

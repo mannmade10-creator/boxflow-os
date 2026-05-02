@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 
 export default function FinancePage() {
@@ -81,7 +81,7 @@ export default function FinancePage() {
               <div key={p.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:'1px solid rgba(99,132,255,0.07)'}}>
                 <div>
                   <div style={{fontSize:12,fontWeight:700,color:'#fff'}}>${p.amount}</div>
-                  <div style={{fontSize:11,color:'#475569'}}>{p.method} â€¢ {p.due_date ? new Date(p.due_date).toLocaleDateString() : 'â€”'}</div>
+                  <div style={{fontSize:11,color:'#475569'}}>{p.method} • {p.due_date ? new Date(p.due_date).toLocaleDateString() : '"”'}</div>
                 </div>
                 <span style={{padding:'2px 8px',borderRadius:4,fontSize:10,fontWeight:700,
                   background:p.status==='Paid'?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)',
@@ -93,7 +93,7 @@ export default function FinancePage() {
           </div>
 
           <div style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.12)',borderRadius:14,padding:18}}>
-            <div style={{fontSize:10,color:'#475569',fontWeight:700,textTransform:'uppercase' as const,letterSpacing:1.5,marginBottom:14}}>Payroll â€” Staff</div>
+            <div style={{fontSize:10,color:'#475569',fontWeight:700,textTransform:'uppercase' as const,letterSpacing:1.5,marginBottom:14}}>Payroll "” Staff</div>
             {staff.length === 0 ? (
               <div style={{color:'#475569',fontSize:13}}>No staff found</div>
             ) : staff.map(s => {
@@ -102,7 +102,7 @@ export default function FinancePage() {
                 <div key={s.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:'1px solid rgba(99,132,255,0.07)'}}>
                   <div>
                     <div style={{fontSize:12,fontWeight:700,color:'#fff'}}>{s.name}</div>
-                    <div style={{fontSize:11,color:'#475569'}}>{s.role} â€¢ ${s.hourly_rate}/hr â€¢ {s.pay_method}</div>
+                    <div style={{fontSize:11,color:'#475569'}}>{s.role} • ${s.hourly_rate}/hr • {s.pay_method}</div>
                   </div>
                   <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${gross.toLocaleString()}</div>
                 </div>

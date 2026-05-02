@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 
 export default function UnitsPage() {
@@ -51,7 +51,7 @@ export default function UnitsPage() {
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap' as const,gap:12}}>
           <div>
             <h1 style={{fontSize:24,fontWeight:800,color:'#fff',marginBottom:4}}>Unit Directory</h1>
-            <p style={{fontSize:13,color:'#475569'}}>Penn Station â€” All 17 Buildings</p>
+            <p style={{fontSize:13,color:'#475569'}}>Penn Station "” All 17 Buildings</p>
           </div>
           <div style={{display:'flex',gap:8}}>
             <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(79,142,247,0.15)',color:'#4f8ef7'}}>{units.length} Total</span>
@@ -86,7 +86,7 @@ export default function UnitsPage() {
                 </span>
               </div>
               <div style={{fontSize:10,color:'#475569',marginBottom:2}}>Bldg {unit.building}</div>
-              <div style={{fontSize:10,color:'#64748b',marginBottom:4}}>{unit.floor_plan} â€¢ {unit.sqft} sqft</div>
+              <div style={{fontSize:10,color:'#64748b',marginBottom:4}}>{unit.floor_plan} • {unit.sqft} sqft</div>
               <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${unit.monthly_rent}/mo</div>
               <div style={{fontSize:10,color:'#475569',marginTop:2}}>{unit.condition || 'Good'}</div>
             </div>

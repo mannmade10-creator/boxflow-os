@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 
 export default function MaintenancePage() {
@@ -110,13 +110,13 @@ export default function MaintenancePage() {
                     </span>
                   </div>
                   <div style={{fontSize:12,color:'#475569'}}>
-                    Assigned to: {o.assigned_to || 'Unassigned'} &nbsp;â€¢&nbsp;
-                    Type: {o.issue_type} &nbsp;â€¢&nbsp;
+                    Assigned to: {o.assigned_to || 'Unassigned'} &nbsp;•&nbsp;
+                    Type: {o.issue_type} &nbsp;•&nbsp;
                     Urgency: {o.urgency_rating}
                   </div>
                   {(o.parts_cost || o.labor_cost) && (
                     <div style={{fontSize:12,color:'#64748b',marginTop:4}}>
-                      Parts: ${o.parts_cost || 0} &nbsp;â€¢&nbsp; Labor: ${o.labor_cost || 0} &nbsp;â€¢&nbsp;
+                      Parts: ${o.parts_cost || 0} &nbsp;•&nbsp; Labor: ${o.labor_cost || 0} &nbsp;•&nbsp;
                       <span style={{color:'#22c55e',fontWeight:700}}>Total: ${(o.parts_cost || 0) + (o.labor_cost || 0)}</span>
                     </div>
                   )}

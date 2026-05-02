@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -6,12 +6,12 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 const unitOptions = [
-  { id: 'A1', label: 'A1 â€” 1BR/1BA â€” 504 sqft â€” $750/mo' },
-  { id: 'A2', label: 'A2 â€” 1BR/1BA â€” 640 sqft â€” $850/mo' },
-  { id: 'A3', label: 'A3 â€” 1BR/1BA â€” 816 sqft â€” $950/mo' },
-  { id: 'A4', label: 'A4 â€” 2BR/1BA â€” 800 sqft â€” $1,050/mo' },
-  { id: 'B2', label: 'B2/B3 â€” 2BR/2BA â€” 973 sqft â€” $1,200/mo' },
-  { id: 'C1', label: 'C1 â€” 3BR/2BA â€” 1,240 sqft â€” $1,600/mo' },
+  { id: 'A1', label: 'A1 "” 1BR/1BA "” 504 sqft "” $750/mo' },
+  { id: 'A2', label: 'A2 "” 1BR/1BA "” 640 sqft "” $850/mo' },
+  { id: 'A3', label: 'A3 "” 1BR/1BA "” 816 sqft "” $950/mo' },
+  { id: 'A4', label: 'A4 "” 2BR/1BA "” 800 sqft "” $1,050/mo' },
+  { id: 'B2', label: 'B2/B3 "” 2BR/2BA "” 973 sqft "” $1,200/mo' },
+  { id: 'C1', label: 'C1 "” 3BR/2BA "” 1,240 sqft "” $1,600/mo' },
 ]
 
 const rentMap: any = { A1: 750, A2: 850, A3: 950, A4: 1050, B2: 1200, C1: 1600 }
@@ -57,8 +57,8 @@ function CheckoutForm({ form, onSuccess }: { form: any; onSuccess: (result: any)
       score += form.bankruptcy === 'no' ? 20 : 0
       score += form.currentLandlord ? 10 : 0
       const creditScore = 580 + Math.floor(score * 2.5)
-      if (creditScore < 620) result = { status: 'denied', reason: `Credit score too low (${creditScore} â€” minimum 620 required)`, score: creditScore }
-      else if (creditScore < 660) result = { status: 'conditional', reason: 'Conditionally approved â€” additional deposit required', score: creditScore }
+      if (creditScore < 620) result = { status: 'denied', reason: `Credit score too low (${creditScore} "” minimum 620 required)`, score: creditScore }
+      else if (creditScore < 660) result = { status: 'conditional', reason: 'Conditionally approved "” additional deposit required', score: creditScore }
       else result = { status: 'approved', reason: 'All criteria met', score: creditScore }
     }
 
@@ -142,16 +142,16 @@ export default function ApplyPage() {
           <div style={{ width: 34, height: 34, borderRadius: 8, background: '#4f8ef7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#fff' }}>P</div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#4f8ef7', letterSpacing: 1 }}>PropFlow OS</div>
-            <div style={{ fontSize: 9, color: '#475569' }}>Penn Station Apartment Homes â€” Online Application</div>
+            <div style={{ fontSize: 9, color: '#475569' }}>Penn Station Apartment Homes "” Online Application</div>
           </div>
         </div>
-        <div style={{ fontSize: 12, color: '#475569' }}>1920 Heritage Park Dr, OKC 73120 â€¢ 405-755-9246</div>
+        <div style={{ fontSize: 12, color: '#475569' }}>1920 Heritage Park Dr, OKC 73120 • 405-755-9246</div>
       </header>
 
       <div style={{ maxWidth: 760, margin: '0 auto', padding: 32 }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Rental Application</h1>
-          <p style={{ fontSize: 13, color: '#475569' }}>Penn Station Apartment Homes â€¢ Powered by PropFlow OS</p>
+          <p style={{ fontSize: 13, color: '#475569' }}>Penn Station Apartment Homes • Powered by PropFlow OS</p>
         </div>
 
         {step !== 'result' && (
@@ -374,7 +374,7 @@ export default function ApplyPage() {
               </div>
               {result.status === 'approved' && (
                 <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: 16, marginBottom: 16, fontSize: 13, color: '#22c55e', lineHeight: 1.7 }}>
-                  ðŸŽ‰ Congratulations! A leasing agent will contact you at {form.email} within 24 hours.
+                  🎉 Congratulations! A leasing agent will contact you at {form.email} within 24 hours.
                 </div>
               )}
               {result.status === 'conditional' && (
@@ -387,7 +387,7 @@ export default function ApplyPage() {
                   We are unable to approve your application. You will receive a formal adverse action notice at {form.email} within 3 business days.
                 </div>
               )}
-              <div style={{ fontSize: 11, color: '#334155' }}>Reference: APP-{Date.now().toString().slice(-8)} â€¢ {new Date().toLocaleDateString()}</div>
+              <div style={{ fontSize: 11, color: '#334155' }}>Reference: APP-{Date.now().toString().slice(-8)} • {new Date().toLocaleDateString()}</div>
             </div>
           )}
         </div>

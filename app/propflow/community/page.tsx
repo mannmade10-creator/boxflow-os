@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 
 export default function CommunityPage() {
@@ -124,7 +124,7 @@ export default function CommunityPage() {
 
         {filtered.length === 0 ? (
           <div style={{padding:30,textAlign:'center' as const,color:'#475569',fontSize:13,background:'rgba(15,23,42,0.9)',borderRadius:14}}>
-            No posts yet â€” be the first to post!
+            No posts yet "” be the first to post!
           </div>
         ) : filtered.map(p => (
           <div key={p.id} style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.1)',borderRadius:14,padding:16,marginBottom:12}}>
