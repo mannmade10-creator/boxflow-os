@@ -47,7 +47,7 @@ export default function GPSPage() {
         </div>
         <nav style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
           {['Dashboard', 'Units', 'Tenants', 'Maintenance', 'GPS', 'Finance', 'Community'].map(item => (
-            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+            <a key={item} href={`/${item === 'Dashboard' ? 'propflow/dashboard' : 'propflow/' + item.toLowerCase()}`}
               style={{ padding: '6px 12px', fontSize: 11, fontWeight: 700, color: item === 'GPS' ? '#4f8ef7' : '#475569', borderRadius: 7, textDecoration: 'none', background: item === 'GPS' ? 'rgba(79,142,247,0.1)' : 'transparent' }}>
               {item}
             </a>
@@ -196,4 +196,5 @@ export default function GPSPage() {
     </main>
   )
 }
+
 
