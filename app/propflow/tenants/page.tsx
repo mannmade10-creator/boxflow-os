@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 
 export default function TenantsPage() {
@@ -54,7 +54,7 @@ export default function TenantsPage() {
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap' as const,gap:12}}>
           <div>
             <h1 style={{fontSize:24,fontWeight:800,color:'#fff',marginBottom:4}}>Tenant Directory</h1>
-            <p style={{fontSize:13,color:'#475569'}}>Penn Station — All Active Leases</p>
+            <p style={{fontSize:13,color:'#475569'}}>Penn Station â€” All Active Leases</p>
           </div>
           <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(34,197,94,0.15)',color:'#22c55e'}}>{active} Active</span>
         </div>
@@ -78,7 +78,7 @@ export default function TenantsPage() {
                 </div>
               </div>
               <div style={{fontSize:12,color:'#94a3b8'}}>{t.phone}</div>
-              <div style={{fontSize:12,color:'#94a3b8'}}>{t.lease_end ? new Date(t.lease_end).toLocaleDateString() : '—'}</div>
+              <div style={{fontSize:12,color:'#94a3b8'}}>{t.lease_end ? new Date(t.lease_end).toLocaleDateString() : 'â€”'}</div>
               <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${t.monthly_rent}/mo</div>
               <span style={{padding:'2px 8px',borderRadius:4,fontSize:10,fontWeight:700,display:'inline-block',
                 background:t.status==='Active'?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)',

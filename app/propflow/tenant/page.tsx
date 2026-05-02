@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -21,7 +21,7 @@ export default function TenantPage() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       )
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
+      if (!user) { router.push('/propflow-login'); return }
       setUser(user)
       const { data } = await supabase.from('community_posts').select('*').order('created_at', { ascending: false }).limit(10)
       setPosts(data || [])
@@ -37,7 +37,7 @@ export default function TenantPage() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/propflow-login')
   }
 
   async function submitMaintenance() {
@@ -75,11 +75,11 @@ export default function TenantPage() {
   ]
 
   const nav = [
-    { id: 'home', label: '🏠 Home' },
-    { id: 'maintenance', label: '🔧 Maintenance' },
-    { id: 'gps', label: '📍 Property Map' },
-    { id: 'community', label: '💬 Community' },
-    { id: 'contact', label: '📞 Contact' },
+    { id: 'home', label: 'ðŸ  Home' },
+    { id: 'maintenance', label: 'ðŸ”§ Maintenance' },
+    { id: 'gps', label: 'ðŸ“ Property Map' },
+    { id: 'community', label: 'ðŸ’¬ Community' },
+    { id: 'contact', label: 'ðŸ“ž Contact' },
   ]
 
   const card: React.CSSProperties = { background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 18, padding: 26, marginBottom: 18 }
@@ -122,15 +122,15 @@ export default function TenantPage() {
           <div>
             <div style={{ ...card, borderColor: 'rgba(79,142,247,0.3)' }}>
               <div style={{ fontSize: 14, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 12 }}>Welcome Back</div>
-              <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Good day, Resident 👋</div>
-              <div style={{ fontSize: 17, color: '#475569' }}>Penn Station Apartment Homes • 1920 Heritage Park Dr, OKC 73120</div>
+              <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Good day, Resident ðŸ‘‹</div>
+              <div style={{ fontSize: 17, color: '#475569' }}>Penn Station Apartment Homes â€¢ 1920 Heritage Park Dr, OKC 73120</div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 18 }}>
               {[
-                { label: 'Rent Status', value: 'Current', color: '#22c55e', icon: '💰' },
-                { label: 'Open Requests', value: '0', color: '#f59e0b', icon: '🔧' },
-                { label: 'Lease Status', value: 'Active', color: '#4f8ef7', icon: '📋' },
-                { label: 'Next Payment', value: 'May 1', color: '#a855f7', icon: '📅' },
+                { label: 'Rent Status', value: 'Current', color: '#22c55e', icon: 'ðŸ’°' },
+                { label: 'Open Requests', value: '0', color: '#f59e0b', icon: 'ðŸ”§' },
+                { label: 'Lease Status', value: 'Active', color: '#4f8ef7', icon: 'ðŸ“‹' },
+                { label: 'Next Payment', value: 'May 1', color: '#a855f7', icon: 'ðŸ“…' },
               ].map(k => (
                 <div key={k.label} style={{ ...card, marginBottom: 0, borderTop: `3px solid ${k.color}` }}>
                   <div style={{ fontSize: 26, marginBottom: 10 }}>{k.icon}</div>
@@ -155,8 +155,8 @@ export default function TenantPage() {
               ))}
             </div>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' as const }}>
-              <button onClick={() => setScreen('maintenance')} style={{ flex: 1, padding: '17px', borderRadius: 13, fontSize: 16, fontWeight: 700, cursor: 'pointer', background: '#4f8ef7', border: 'none', color: '#fff', minWidth: 160 }}>🔧 Submit Maintenance</button>
-              <button onClick={() => setScreen('contact')} style={{ flex: 1, padding: '17px', borderRadius: 13, fontSize: 16, fontWeight: 700, cursor: 'pointer', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#22c55e', minWidth: 160 }}>📞 Contact Management</button>
+              <button onClick={() => setScreen('maintenance')} style={{ flex: 1, padding: '17px', borderRadius: 13, fontSize: 16, fontWeight: 700, cursor: 'pointer', background: '#4f8ef7', border: 'none', color: '#fff', minWidth: 160 }}>ðŸ”§ Submit Maintenance</button>
+              <button onClick={() => setScreen('contact')} style={{ flex: 1, padding: '17px', borderRadius: 13, fontSize: 16, fontWeight: 700, cursor: 'pointer', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#22c55e', minWidth: 160 }}>ðŸ“ž Contact Management</button>
             </div>
           </div>
         )}
@@ -167,7 +167,7 @@ export default function TenantPage() {
             <p style={{ fontSize: 17, color: '#475569', marginBottom: 26 }}>Submit a request and our team will respond promptly.</p>
             {submitted ? (
               <div style={{ ...card, borderColor: 'rgba(34,197,94,0.3)', textAlign: 'center' as const }}>
-                <div style={{ fontSize: 60, marginBottom: 18 }}>✅</div>
+                <div style={{ fontSize: 60, marginBottom: 18 }}>âœ…</div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: '#22c55e', marginBottom: 10 }}>Request Submitted!</div>
                 <div style={{ fontSize: 17, color: '#94a3b8', marginBottom: 22 }}>Our maintenance team has been notified and will respond within 24 hours.</div>
                 <button onClick={() => setSubmitted(false)} style={{ padding: '15px 30px', borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: 'pointer', background: '#4f8ef7', border: 'none', color: '#fff' }}>Submit Another</button>
@@ -191,7 +191,7 @@ export default function TenantPage() {
                 </div>
                 <button onClick={submitMaintenance} disabled={!issue}
                   style={{ width: '100%', padding: '17px', borderRadius: 13, fontSize: 17, fontWeight: 800, cursor: issue ? 'pointer' : 'not-allowed', background: issue ? '#4f8ef7' : 'rgba(79,142,247,0.3)', border: 'none', color: '#fff' }}>
-                  Submit Request →
+                  Submit Request â†’
                 </button>
               </div>
             )}
@@ -216,7 +216,7 @@ export default function TenantPage() {
                 <div style={{ position: 'absolute' as const, bottom: 12, left: 12, background: 'rgba(2,8,18,0.88)', padding: '10px 14px', borderRadius: 10 }}>
                   <div style={{ fontSize: 12, color: '#475569', marginBottom: 6, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Staff on Property</div>
                   {staffPositions.map(s => (
-                    <div key={s.name} style={{ fontSize: 13, color: s.color, fontWeight: 700, marginBottom: 2 }}>● {s.name} — {s.role}</div>
+                    <div key={s.name} style={{ fontSize: 13, color: s.color, fontWeight: 700, marginBottom: 2 }}>â— {s.name} â€” {s.role}</div>
                   ))}
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function TenantPage() {
                 <div style={{ fontSize: 16, color: '#94a3b8', lineHeight: 1.7 }}>{p.body}</div>
               </div>
             ))}
-            {posts.length === 0 && <div style={{ textAlign: 'center' as const, color: '#475569', fontSize: 16, padding: 48 }}>No posts yet — be the first!</div>}
+            {posts.length === 0 && <div style={{ textAlign: 'center' as const, color: '#475569', fontSize: 16, padding: 48 }}>No posts yet â€” be the first!</div>}
           </div>
         )}
 
@@ -259,11 +259,11 @@ export default function TenantPage() {
             <p style={{ fontSize: 17, color: '#475569', marginBottom: 26 }}>Reach out to the property management team.</p>
             <div style={{ display: 'grid', gap: 14 }}>
               {[
-                { title: 'Leasing Office', detail: '405-755-9246', sub: 'Monday–Friday 9AM–5PM', icon: '📞', color: '#4f8ef7' },
-                { title: 'Emergency Maintenance', detail: '405-755-9246', sub: '24/7 for urgent issues', icon: '🚨', color: '#ef4444' },
-                { title: 'Email Management', detail: 'info@pennstationapartmenthomes.com', sub: 'Response within 24 hours', icon: '📧', color: '#22c55e' },
-                { title: 'Property Website', detail: 'pennstationapartmenthomes.com', sub: 'Online resources and info', icon: '🌐', color: '#a855f7' },
-                { title: 'CAF Management', detail: 'Professional Property Management', sub: 'People Matter. Performance Counts.', icon: '🏢', color: '#f59e0b' },
+                { title: 'Leasing Office', detail: '405-755-9246', sub: 'Mondayâ€“Friday 9AMâ€“5PM', icon: 'ðŸ“ž', color: '#4f8ef7' },
+                { title: 'Emergency Maintenance', detail: '405-755-9246', sub: '24/7 for urgent issues', icon: 'ðŸš¨', color: '#ef4444' },
+                { title: 'Email Management', detail: 'info@pennstationapartmenthomes.com', sub: 'Response within 24 hours', icon: 'ðŸ“§', color: '#22c55e' },
+                { title: 'Property Website', detail: 'pennstationapartmenthomes.com', sub: 'Online resources and info', icon: 'ðŸŒ', color: '#a855f7' },
+                { title: 'CAF Management', detail: 'Professional Property Management', sub: 'People Matter. Performance Counts.', icon: 'ðŸ¢', color: '#f59e0b' },
               ].map(c => (
                 <div key={c.title} style={{ ...card, marginBottom: 0, display: 'flex', alignItems: 'center', gap: 18, borderLeft: `4px solid ${c.color}` }}>
                   <div style={{ fontSize: 34, flexShrink: 0 }}>{c.icon}</div>

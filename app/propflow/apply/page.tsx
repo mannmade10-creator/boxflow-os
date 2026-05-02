@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -6,12 +6,12 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 const unitOptions = [
-  { id: 'A1', label: 'A1 — 1BR/1BA — 504 sqft — $750/mo' },
-  { id: 'A2', label: 'A2 — 1BR/1BA — 640 sqft — $850/mo' },
-  { id: 'A3', label: 'A3 — 1BR/1BA — 816 sqft — $950/mo' },
-  { id: 'A4', label: 'A4 — 2BR/1BA — 800 sqft — $1,050/mo' },
-  { id: 'B2', label: 'B2/B3 — 2BR/2BA — 973 sqft — $1,200/mo' },
-  { id: 'C1', label: 'C1 — 3BR/2BA — 1,240 sqft — $1,600/mo' },
+  { id: 'A1', label: 'A1 â€” 1BR/1BA â€” 504 sqft â€” $750/mo' },
+  { id: 'A2', label: 'A2 â€” 1BR/1BA â€” 640 sqft â€” $850/mo' },
+  { id: 'A3', label: 'A3 â€” 1BR/1BA â€” 816 sqft â€” $950/mo' },
+  { id: 'A4', label: 'A4 â€” 2BR/1BA â€” 800 sqft â€” $1,050/mo' },
+  { id: 'B2', label: 'B2/B3 â€” 2BR/2BA â€” 973 sqft â€” $1,200/mo' },
+  { id: 'C1', label: 'C1 â€” 3BR/2BA â€” 1,240 sqft â€” $1,600/mo' },
 ]
 
 const rentMap: any = { A1: 750, A2: 850, A3: 950, A4: 1050, B2: 1200, C1: 1600 }
@@ -57,8 +57,8 @@ function CheckoutForm({ form, onSuccess }: { form: any; onSuccess: (result: any)
       score += form.bankruptcy === 'no' ? 20 : 0
       score += form.currentLandlord ? 10 : 0
       const creditScore = 580 + Math.floor(score * 2.5)
-      if (creditScore < 620) result = { status: 'denied', reason: `Credit score too low (${creditScore} — minimum 620 required)`, score: creditScore }
-      else if (creditScore < 660) result = { status: 'conditional', reason: 'Conditionally approved — additional deposit required', score: creditScore }
+      if (creditScore < 620) result = { status: 'denied', reason: `Credit score too low (${creditScore} â€” minimum 620 required)`, score: creditScore }
+      else if (creditScore < 660) result = { status: 'conditional', reason: 'Conditionally approved â€” additional deposit required', score: creditScore }
       else result = { status: 'approved', reason: 'All criteria met', score: creditScore }
     }
 
@@ -142,16 +142,16 @@ export default function ApplyPage() {
           <div style={{ width: 34, height: 34, borderRadius: 8, background: '#4f8ef7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#fff' }}>P</div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#4f8ef7', letterSpacing: 1 }}>PropFlow OS</div>
-            <div style={{ fontSize: 9, color: '#475569' }}>Penn Station Apartment Homes — Online Application</div>
+            <div style={{ fontSize: 9, color: '#475569' }}>Penn Station Apartment Homes â€” Online Application</div>
           </div>
         </div>
-        <div style={{ fontSize: 12, color: '#475569' }}>1920 Heritage Park Dr, OKC 73120 • 405-755-9246</div>
+        <div style={{ fontSize: 12, color: '#475569' }}>1920 Heritage Park Dr, OKC 73120 â€¢ 405-755-9246</div>
       </header>
 
       <div style={{ maxWidth: 760, margin: '0 auto', padding: 32 }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Rental Application</h1>
-          <p style={{ fontSize: 13, color: '#475569' }}>Penn Station Apartment Homes • Powered by PropFlow OS</p>
+          <p style={{ fontSize: 13, color: '#475569' }}>Penn Station Apartment Homes â€¢ Powered by PropFlow OS</p>
         </div>
 
         {step !== 'result' && (
@@ -159,7 +159,7 @@ export default function ApplyPage() {
             {steps.slice(0, -1).map((s, i) => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, background: i < stepIndex ? '#22c55e' : i === stepIndex ? '#4f8ef7' : 'rgba(99,132,255,0.1)', color: i <= stepIndex ? '#fff' : '#475569' }}>
-                  {i < stepIndex ? '✓' : i + 1}
+                  {i < stepIndex ? 'âœ“' : i + 1}
                 </div>
                 <span style={{ fontSize: 11, color: i === stepIndex ? '#4f8ef7' : i < stepIndex ? '#22c55e' : '#475569', fontWeight: i === stepIndex ? 700 : 400 }}>{stepLabels[i]}</span>
                 {i < steps.length - 2 && <div style={{ width: 16, height: 1, background: 'rgba(99,132,255,0.2)' }} />}
@@ -185,7 +185,7 @@ export default function ApplyPage() {
               </div>
               <button onClick={() => form.unit && setStep('personal')}
                 style={{ width: '100%', padding: 14, borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: form.unit ? 'pointer' : 'not-allowed', background: form.unit ? '#4f8ef7' : 'rgba(79,142,247,0.3)', border: 'none', color: '#fff' }}>
-                Continue →
+                Continue â†’
               </button>
             </div>
           )}
@@ -219,8 +219,8 @@ export default function ApplyPage() {
                 <input type="text" placeholder="ID Number" value={form.idNumber} onChange={e => update('idNumber', e.target.value)} style={inputStyle} />
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep('unit')} style={btnBack as any}>← Back</button>
-                <button onClick={() => setStep('employment')} style={btnNext as any}>Continue →</button>
+                <button onClick={() => setStep('unit')} style={btnBack as any}>â† Back</button>
+                <button onClick={() => setStep('employment')} style={btnNext as any}>Continue â†’</button>
               </div>
             </div>
           )}
@@ -247,8 +247,8 @@ export default function ApplyPage() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep('personal')} style={btnBack as any}>← Back</button>
-                <button onClick={() => setStep('history')} style={btnNext as any}>Continue →</button>
+                <button onClick={() => setStep('personal')} style={btnBack as any}>â† Back</button>
+                <button onClick={() => setStep('history')} style={btnNext as any}>Continue â†’</button>
               </div>
             </div>
           )}
@@ -274,14 +274,14 @@ export default function ApplyPage() {
                   </div>
                   {(form as any)[q.field] === 'yes' && q.warn && (
                     <div style={{ marginTop: 10, fontSize: 11, color: '#ef4444', background: 'rgba(239,68,68,0.1)', padding: '6px 10px', borderRadius: 6 }}>
-                      ⚠ This may result in denial of your application.
+                      âš  This may result in denial of your application.
                     </div>
                   )}
                 </div>
               ))}
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep('employment')} style={btnBack as any}>← Back</button>
-                <button onClick={() => setStep('review')} style={btnNext as any}>Continue →</button>
+                <button onClick={() => setStep('employment')} style={btnBack as any}>â† Back</button>
+                <button onClick={() => setStep('review')} style={btnNext as any}>Continue â†’</button>
               </div>
             </div>
           )}
@@ -297,8 +297,8 @@ export default function ApplyPage() {
                 { label: 'Employer', value: form.employer },
                 { label: 'Monthly Income', value: `$${parseFloat(form.monthlyIncome || '0').toLocaleString()}` },
                 { label: 'Income Requirement', value: `$${((rentMap[form.unit] || 0) * 3).toLocaleString()}/mo`, highlight: parseFloat(form.monthlyIncome) >= (rentMap[form.unit] || 0) * 3 },
-                { label: 'Eviction History', value: form.eviction === 'yes' ? 'Yes ⚠' : 'No ✓' },
-                { label: 'Felony History', value: form.felony === 'yes' ? 'Yes ⚠' : 'No ✓' },
+                { label: 'Eviction History', value: form.eviction === 'yes' ? 'Yes âš ' : 'No âœ“' },
+                { label: 'Felony History', value: form.felony === 'yes' ? 'Yes âš ' : 'No âœ“' },
                 { label: 'Bankruptcy', value: form.bankruptcy === 'yes' ? 'Yes' : 'No' },
               ].map(r => (
                 <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(99,132,255,0.07)' }}>
@@ -317,10 +317,10 @@ export default function ApplyPage() {
                 </label>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep('history')} style={btnBack as any}>← Back</button>
+                <button onClick={() => setStep('history')} style={btnBack as any}>â† Back</button>
                 <button onClick={() => { if (form.agreeTerms && form.agreeFee) goToPayment() }}
                   style={{ ...btnNext, background: form.agreeTerms && form.agreeFee ? '#4f8ef7' : 'rgba(79,142,247,0.3)', cursor: form.agreeTerms && form.agreeFee ? 'pointer' : 'not-allowed' } as any}>
-                  Proceed to Payment →
+                  Proceed to Payment â†’
                 </button>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function ApplyPage() {
           {step === 'result' && result && (
             <div style={{ textAlign: 'center' as const }}>
               <div style={{ fontSize: 60, marginBottom: 16 }}>
-                {result.status === 'approved' ? '✅' : result.status === 'conditional' ? '⚠️' : '❌'}
+                {result.status === 'approved' ? 'âœ…' : result.status === 'conditional' ? 'âš ï¸' : 'âŒ'}
               </div>
               <h2 style={{ fontSize: 26, fontWeight: 800, marginBottom: 10, color: result.status === 'approved' ? '#22c55e' : result.status === 'conditional' ? '#f59e0b' : '#ef4444' }}>
                 {result.status === 'approved' ? 'Application Approved!' : result.status === 'conditional' ? 'Conditionally Approved' : 'Application Denied'}
@@ -374,7 +374,7 @@ export default function ApplyPage() {
               </div>
               {result.status === 'approved' && (
                 <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: 16, marginBottom: 16, fontSize: 13, color: '#22c55e', lineHeight: 1.7 }}>
-                  🎉 Congratulations! A leasing agent will contact you at {form.email} within 24 hours.
+                  ðŸŽ‰ Congratulations! A leasing agent will contact you at {form.email} within 24 hours.
                 </div>
               )}
               {result.status === 'conditional' && (
@@ -387,7 +387,7 @@ export default function ApplyPage() {
                   We are unable to approve your application. You will receive a formal adverse action notice at {form.email} within 3 business days.
                 </div>
               )}
-              <div style={{ fontSize: 11, color: '#334155' }}>Reference: APP-{Date.now().toString().slice(-8)} • {new Date().toLocaleDateString()}</div>
+              <div style={{ fontSize: 11, color: '#334155' }}>Reference: APP-{Date.now().toString().slice(-8)} â€¢ {new Date().toLocaleDateString()}</div>
             </div>
           )}
         </div>

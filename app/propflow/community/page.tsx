@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 
 export default function CommunityPage() {
@@ -124,7 +124,7 @@ export default function CommunityPage() {
 
         {filtered.length === 0 ? (
           <div style={{padding:30,textAlign:'center' as const,color:'#475569',fontSize:13,background:'rgba(15,23,42,0.9)',borderRadius:14}}>
-            No posts yet — be the first to post!
+            No posts yet â€” be the first to post!
           </div>
         ) : filtered.map(p => (
           <div key={p.id} style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.1)',borderRadius:14,padding:16,marginBottom:12}}>
@@ -142,13 +142,13 @@ export default function CommunityPage() {
                 {p.category}
               </span>
               {p.star_rating && (
-                <span style={{color:'#f59e0b',fontSize:12}}>{'★'.repeat(p.star_rating)}</span>
+                <span style={{color:'#f59e0b',fontSize:12}}>{'â˜…'.repeat(p.star_rating)}</span>
               )}
             </div>
             <div style={{fontSize:13,color:'#94a3b8',lineHeight:1.6}}>{p.body}</div>
             <div style={{display:'flex',gap:10,marginTop:10}}>
               <button style={{padding:'4px 12px',borderRadius:7,fontSize:11,fontWeight:700,cursor:'pointer',background:'rgba(79,142,247,0.1)',border:'1px solid rgba(79,142,247,0.2)',color:'#4f8ef7'}}>
-                👍 {p.likes || 0}
+                ðŸ‘ {p.likes || 0}
               </button>
               <button style={{padding:'4px 12px',borderRadius:7,fontSize:11,fontWeight:700,cursor:'pointer',background:'rgba(99,132,255,0.08)',border:'1px solid rgba(99,132,255,0.15)',color:'#64748b'}}>
                 Reply
