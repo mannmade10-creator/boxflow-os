@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 
 const staffData = [
@@ -32,7 +32,7 @@ export default function GPSPage() {
     }, 5000)
   }
 
-  const token = 'pk.eyJ1IjoibWFubm1hZGUxMCIsImEiOiJjbW5ocjF4bmUwNWl1MnBvazA4cWtoamhqIn0.jyLZJSgCvBKssW4YybZuNA'
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
   const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/-97.5572,35.5938,16,0/900x540?access_token=${token}`
 
   return (
@@ -59,10 +59,10 @@ export default function GPSPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap' as const, gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 4 }}>GPS Live Tracker</h1>
-            <p style={{ fontSize: 13, color: '#475569' }}>Penn Station — 1920 Heritage Park Dr, OKC 73120</p>
+            <p style={{ fontSize: 13, color: '#475569' }}>Penn Station â€” 1920 Heritage Park Dr, OKC 73120</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 11, color: '#22c55e', fontWeight: 700 }}>● GEO SYNC ACTIVE</span>
+            <span style={{ fontSize: 11, color: '#22c55e', fontWeight: 700 }}>â— GEO SYNC ACTIVE</span>
             <span style={{ fontFamily: 'monospace', color: '#4f8ef7', fontSize: 12 }}>
               {time ? time.toLocaleTimeString() : ''}
             </span>
@@ -71,10 +71,10 @@ export default function GPSPage() {
 
         {busArrived && (
           <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', borderRadius: 12, padding: '14px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const }}>
-            <span style={{ fontSize: 24 }}>🚌</span>
+            <span style={{ fontSize: 24 }}>ðŸšŒ</span>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#f59e0b' }}>School Bus Arrived at Penn Station!</div>
-              <div style={{ fontSize: 12, color: '#94a3b8' }}>All parents notified via PropFlow tenant app — {time ? time.toLocaleTimeString() : ''}</div>
+              <div style={{ fontSize: 12, color: '#94a3b8' }}>All parents notified via PropFlow tenant app â€” {time ? time.toLocaleTimeString() : ''}</div>
             </div>
             <button onClick={() => setBusArrived(false)} style={{ marginLeft: 'auto', padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: 'rgba(245,158,11,0.2)', border: '1px solid rgba(245,158,11,0.3)', color: '#f59e0b' }}>
               Dismiss
@@ -101,7 +101,7 @@ export default function GPSPage() {
                 <div key={s.id} style={{ position: 'absolute' as const, top: s.top, left: s.left, transform: 'translate(-50%,-50%)', pointerEvents: 'auto' as const }}>
                   <div
                     onClick={() => setSelectedStaff(selectedStaff?.id === s.id ? null : s)}
-                    title={`${s.name} — ${s.role}`}
+                    title={`${s.name} â€” ${s.role}`}
                     style={{ width: 36, height: 36, borderRadius: '50%', background: s.color, border: '3px solid #020812', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'white', cursor: 'pointer', boxShadow: `0 0 0 3px ${s.color}55, 0 2px 8px rgba(0,0,0,0.6)` }}>
                     {s.name.split(' ').map((n: string) => n[0]).join('')}
                   </div>
@@ -113,32 +113,32 @@ export default function GPSPage() {
 
               {busOnRoute && (
                 <div style={{ position: 'absolute' as const, top: '20%', left: '30%', transform: 'translate(-50%,-50%)', fontSize: 30, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.9))' }}>
-                  🚌
+                  ðŸšŒ
                 </div>
               )}
 
               {busArrived && (
                 <div style={{ position: 'absolute' as const, top: '35%', left: '45%', transform: 'translate(-50%,-50%)', fontSize: 30, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.9))' }}>
-                  🚌
+                  ðŸšŒ
                 </div>
               )}
 
               <div style={{ position: 'absolute' as const, top: 10, right: 10, background: 'rgba(2,8,18,0.85)', padding: '6px 10px', borderRadius: 6, fontSize: 10, color: 'rgba(99,132,255,0.7)', fontWeight: 700 }}>
-                N ↑
+                N â†‘
               </div>
 
               <div style={{ position: 'absolute' as const, bottom: 10, left: 10, background: 'rgba(2,8,18,0.85)', padding: '8px 12px', borderRadius: 8 }}>
                 <div style={{ fontSize: 9, color: '#475569', marginBottom: 5, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Legend</div>
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
-                  <span style={{ fontSize: 10, color: '#4f8ef7' }}>● Maintenance</span>
-                  <span style={{ fontSize: 10, color: '#22c55e' }}>● Make-Ready</span>
-                  <span style={{ fontSize: 10, color: '#ef4444' }}>● Security</span>
-                  <span style={{ fontSize: 10, color: '#a855f7' }}>● Admin</span>
+                  <span style={{ fontSize: 10, color: '#4f8ef7' }}>â— Maintenance</span>
+                  <span style={{ fontSize: 10, color: '#22c55e' }}>â— Make-Ready</span>
+                  <span style={{ fontSize: 10, color: '#ef4444' }}>â— Security</span>
+                  <span style={{ fontSize: 10, color: '#a855f7' }}>â— Admin</span>
                 </div>
               </div>
 
               <div style={{ position: 'absolute' as const, top: 10, left: 10, background: 'rgba(2,8,18,0.85)', padding: '6px 10px', borderRadius: 6 }}>
-                <div style={{ fontSize: 10, color: '#22c55e', fontWeight: 700 }}>● Penn Station Apartment Homes</div>
+                <div style={{ fontSize: 10, color: '#22c55e', fontWeight: 700 }}>â— Penn Station Apartment Homes</div>
                 <div style={{ fontSize: 9, color: '#475569' }}>1920 Heritage Park Dr, OKC</div>
               </div>
             </div>
@@ -166,28 +166,28 @@ export default function GPSPage() {
               <div style={{ background: 'rgba(15,23,42,0.9)', border: `1px solid ${selectedStaff.color}44`, borderRadius: 14, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: selectedStaff.color }}>{selectedStaff.name}</div>
-                  <button onClick={() => setSelectedStaff(null)} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', fontSize: 18 }}>×</button>
+                  <button onClick={() => setSelectedStaff(null)} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', fontSize: 18 }}>Ã—</button>
                 </div>
                 <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>{selectedStaff.role}</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>● On Property — Active</div>
+                <div style={{ fontSize: 11, color: '#22c55e' }}>â— On Property â€” Active</div>
               </div>
             )}
 
             <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 14, padding: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', marginBottom: 8 }}>🚌 School Bus Alert</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', marginBottom: 8 }}>ðŸšŒ School Bus Alert</div>
               <div style={{ fontSize: 12, color: '#64748b', lineHeight: 1.6, marginBottom: 12 }}>
                 When activated, all parents receive an instant push notification through the PropFlow tenant app.
               </div>
               <button onClick={activateBus}
                 style={{ width: '100%', padding: '10px', borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: busOnRoute ? 'default' : 'pointer', background: busOnRoute ? 'rgba(245,158,11,0.3)' : 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}>
-                {busOnRoute ? '🚌 Bus En Route...' : '🚌 Simulate Bus Arrival'}
+                {busOnRoute ? 'ðŸšŒ Bus En Route...' : 'ðŸšŒ Simulate Bus Arrival'}
               </button>
             </div>
 
             <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.1)', borderRadius: 14, padding: 14 }}>
               <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 8 }}>AI Auto-Dispatch</div>
               <div style={{ fontSize: 12, color: '#64748b', lineHeight: 1.6 }}>
-                New work order submitted → PropFlow OS routes to the nearest available technician automatically based on GPS location.
+                New work order submitted â†’ PropFlow OS routes to the nearest available technician automatically based on GPS location.
               </div>
             </div>
           </div>
