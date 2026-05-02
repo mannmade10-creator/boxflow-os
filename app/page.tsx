@@ -8,7 +8,7 @@ const PLATFORMS = [
     id: 'boxflow', name: 'BoxFlow', suffix: 'OS',
     tagline: 'Logistics & Fleet Command',
     desc: 'Real-time dispatch, fleet tracking and operational analytics.',
-    color: '#2563EB', glow: 'rgba(37,99,235,0.5)', login: '/login',
+    color: '#2563EB', glow: 'rgba(37,99,235,0.5)', login: '/boxflow',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <rect x="4" y="14" width="24" height="18" rx="3" stroke="#2563EB" strokeWidth="1.8" fill="rgba(37,99,235,0.1)" />
       <path d="M28 20h7l5 7v5H28V20z" stroke="#2563EB" strokeWidth="1.8" fill="rgba(37,99,235,0.1)" strokeLinejoin="round" />
@@ -21,7 +21,7 @@ const PLATFORMS = [
     id: 'medflow', name: 'MedFlow', suffix: 'OS',
     tagline: 'Pharmacy Command Center',
     desc: 'Temperature monitoring, drug inventory and USP compliance.',
-    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow-login',
+    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <polygon points="22,4 38,13 38,31 22,40 6,31 6,13" stroke="#14D2C2" strokeWidth="1.8" fill="rgba(20,210,194,0.07)" />
       <rect x="17" y="12" width="10" height="20" rx="2.5" stroke="#14D2C2" strokeWidth="1.6" fill="rgba(20,210,194,0.12)" />
@@ -238,3 +238,4 @@ export default function PlatformHub() {
     </>
   );
 }
+
