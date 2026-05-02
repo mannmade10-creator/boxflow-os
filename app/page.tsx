@@ -33,7 +33,7 @@ const PLATFORMS = [
     id: 'propflow', name: 'PropFlow', suffix: 'OS',
     tagline: 'Real Estate Operations',
     desc: 'Property management, tenant tracking and financial reporting.',
-    color: '#F59E0B', glow: 'rgba(245,158,11,0.5)', login: '/propflow-login',
+    color: '#F59E0B', glow: 'rgba(245,158,11,0.5)', login: '/propflow',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <path d="M22 5L4 18h5v19h12V26h2v11h12V18h5L22 5z" stroke="#F59E0B" strokeWidth="1.8" fill="rgba(245,158,11,0.07)" strokeLinejoin="round" />
       <rect x="18" y="26" width="8" height="11" rx="1.5" stroke="#F59E0B" strokeWidth="1.4" fill="rgba(245,158,11,0.12)" />
