@@ -1,101 +1,98 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+'use client'
+import { useEffect, useState } from 'react'
 
-export default function PropFlowUnits() {
-  const router = useRouter();
-  const [units, setUnits] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
-  const [search, setSearch] = useState('');
+export default function UnitsPage() {
+  const [units, setUnits] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('All')
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { router.push('/propflow-login'); return; }
-      supabase.from('propflow_units').select('*').order('unit_number').then(({ data }) => {
-        setUnits(data || []);
-        setLoading(false);
-      });
-    });
-  }, []);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    fetch(`${url}/rest/v1/units?select=*&order=building`, {
+      headers: { 'apikey': key!, 'Authorization': `Bearer ${key}` }
+    })
+    .then(r => r.json())
+    .then(data => { setUnits(Array.isArray(data) ? data : []); setLoading(false) })
+    .catch(() => setLoading(false))
+  }, [])
 
-  const bg = '#0A0800'; const panel = '#120F02'; const card = '#0D0A00';
-  const border = '#2A2000'; const amber = '#F59E0B'; const green = '#22C55E';
-  const red = '#EF4444'; const blue = '#4F8EF7'; const dim = '#6B5A30';
-  const white = '#EEF6FB'; const D = "'Outfit',sans-serif";
+  const filtered = filter === 'All' ? units : units.filter(u => u.status === filter)
+  const occupied = units.filter(u => u.status === 'Occupied').length
+  const vacant = units.filter(u => u.status === 'Vacant').length
 
-  const statusColor = (s: string) => ({ Occupied: green, Vacant: blue, Maintenance: amber, Reserved: '#A855F7' }[s] || dim);
-  const statuses = ['All', 'Occupied', 'Vacant', 'Maintenance', 'Reserved'];
-
-  const filtered = units.filter(u => {
-    const matchFilter = filter === 'All' || u.status === filter;
-    const matchSearch = !search || u.unit_number?.toLowerCase().includes(search.toLowerCase()) || u.type?.toLowerCase().includes(search.toLowerCase());
-    return matchFilter && matchSearch;
-  });
-
-  if (loading) return <div style={{ minHeight: '100vh', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: dim, fontFamily: D }}>Loading...</div>;
+  if (loading) return (
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#050d1a',color:'#4f8ef7',fontFamily:'Inter,Arial,sans-serif',fontSize:18}}>
+      Loading units...
+    </div>
+  )
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: D, color: '#C8DDE9' }}>
-      <header style={{ background: panel, borderBottom: '1px solid ' + border, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/propflow/dashboard')} style={{ background: 'none', border: 'none', color: dim, cursor: 'pointer', fontSize: 13, fontFamily: D }}>← Dashboard</button>
-          <span style={{ color: border }}>|</span>
-          <span style={{ fontWeight: 700, color: white, fontSize: 15 }}>🏢 Units</span>
+    <main style={{minHeight:'100vh',background:'#050d1a',color:'#e2e8f0',fontFamily:'Inter,Arial,sans-serif'}}>
+      <header style={{background:'#070f1f',borderBottom:'1px solid rgba(99,132,255,0.15)',padding:'0 24px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap' as const,gap:8}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div style={{width:34,height:34,borderRadius:8,background:'#4f8ef7',display:'flex',alignItems:'center',justifyContent:'center',fontSize:15,fontWeight:800,color:'#fff'}}>P</div>
+          <div>
+            <div style={{fontSize:14,fontWeight:800,color:'#4f8ef7',letterSpacing:1}}>PropFlow OS</div>
+            <div style={{fontSize:9,color:'#475569',letterSpacing:1}}>by M.A.D.E Technologies</div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search units..." style={{ background: card, border: '1px solid ' + border, borderRadius: 8, padding: '6px 12px', color: white, fontSize: 12, fontFamily: D, outline: 'none', width: 200 }} />
-        </div>
+        <nav style={{display:'flex',gap:4,flexWrap:'wrap' as const}}>
+          {['Dashboard','Units','Tenants','Maintenance','GPS','Finance','Community'].map(item => (
+            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+              style={{padding:'6px 12px',fontSize:11,fontWeight:700,color:item==='Units'?'#4f8ef7':'#475569',borderRadius:7,textDecoration:'none',background:item==='Units'?'rgba(79,142,247,0.1)':'transparent'}}>
+              {item}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+      <div style={{maxWidth:1200,margin:'0 auto',padding:24}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap' as const,gap:12}}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: white, margin: 0 }}>Unit Management</h1>
-            <p style={{ fontSize: 13, color: dim, marginTop: 4 }}>{units.length} total units · {units.filter(u => u.status === 'Vacant').length} vacant</p>
+            <h1 style={{fontSize:24,fontWeight:800,color:'#fff',marginBottom:4}}>Unit Directory</h1>
+            <p style={{fontSize:13,color:'#475569'}}>Penn Station — All 17 Buildings</p>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {statuses.map(s => (
-              <button key={s} onClick={() => setFilter(s)} style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (filter === s ? amber : border), background: filter === s ? amber + '20' : 'transparent', color: filter === s ? amber : dim, fontSize: 12, cursor: 'pointer', fontFamily: D }}>{s}</button>
-            ))}
+          <div style={{display:'flex',gap:8}}>
+            <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(79,142,247,0.15)',color:'#4f8ef7'}}>{units.length} Total</span>
+            <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(34,197,94,0.15)',color:'#22c55e'}}>{occupied} Occupied</span>
+            <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(168,85,247,0.15)',color:'#a855f7'}}>{vacant} Vacant</span>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
-          {filtered.map((u, i) => (
-            <div key={i} style={{ background: card, border: '1px solid ' + border, borderRadius: 12, padding: '16px 18px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: white }}>{u.unit_number}</div>
-                  <div style={{ fontSize: 11, color: dim, marginTop: 2 }}>Building {u.building} · Floor {u.floor}</div>
-                </div>
-                <div style={{ padding: '3px 10px', borderRadius: 20, background: statusColor(u.status) + '20', border: '1px solid ' + statusColor(u.status) + '50', fontSize: 10, color: statusColor(u.status), fontWeight: 700 }}>{u.status}</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-                {[
-                  { label: 'Type', value: u.type },
-                  { label: 'Sq Ft', value: u.sqft + ' sqft' },
-                  { label: 'Bed/Bath', value: u.bedrooms + 'bd / ' + u.bathrooms + 'ba' },
-                  { label: 'Rent', value: '$' + u.rent + '/mo' },
-                ].map((d, j) => (
-                  <div key={j} style={{ background: panel, borderRadius: 6, padding: '6px 10px' }}>
-                    <div style={{ fontSize: 9, color: dim, letterSpacing: 1, marginBottom: 2 }}>{d.label.toUpperCase()}</div>
-                    <div style={{ fontSize: 12, color: white, fontWeight: 600 }}>{d.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap' as const}}>
+          {['All','Occupied','Vacant','Renovating','Make-Ready'].map(f => (
+            <button key={f} onClick={() => setFilter(f)}
+              style={{padding:'7px 14px',borderRadius:8,fontSize:11,fontWeight:700,cursor:'pointer',
+                background:filter===f?'rgba(79,142,247,0.15)':'rgba(15,23,42,0.9)',
+                border:filter===f?'1px solid rgba(79,142,247,0.4)':'1px solid rgba(99,132,255,0.15)',
+                color:filter===f?'#4f8ef7':'#475569'}}>
+              {f}
+            </button>
           ))}
         </div>
 
-        {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: dim }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>🏢</div>
-            <div style={{ fontSize: 14 }}>No units found matching your filter</div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:10}}>
+          {filtered.map(unit => (
+            <div key={unit.id} style={{background:'rgba(15,23,42,0.9)',
+              border:`1px solid ${unit.status==='Occupied'?'rgba(34,197,94,0.3)':unit.status==='Vacant'?'rgba(79,142,247,0.3)':'rgba(245,158,11,0.3)'}`,
+              borderRadius:12,padding:12,cursor:'pointer'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:6}}>
+                <div style={{fontSize:13,fontWeight:800,color:'#4f8ef7'}}>Unit {unit.unit_number}</div>
+                <span style={{padding:'2px 6px',borderRadius:4,fontSize:9,fontWeight:700,
+                  background:unit.status==='Occupied'?'rgba(34,197,94,0.15)':'rgba(79,142,247,0.15)',
+                  color:unit.status==='Occupied'?'#22c55e':'#4f8ef7'}}>
+                  {unit.status==='Occupied'?'OCC':'VAC'}
+                </span>
+              </div>
+              <div style={{fontSize:10,color:'#475569',marginBottom:2}}>Bldg {unit.building}</div>
+              <div style={{fontSize:10,color:'#64748b',marginBottom:4}}>{unit.floor_plan} • {unit.sqft} sqft</div>
+              <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${unit.monthly_rent}/mo</div>
+              <div style={{fontSize:10,color:'#475569',marginTop:2}}>{unit.condition || 'Good'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
 }

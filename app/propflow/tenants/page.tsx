@@ -1,104 +1,94 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+'use client'
+import { useEffect, useState } from 'react'
 
-export default function PropFlowTenants() {
-  const router = useRouter();
-  const [tenants, setTenants] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
-  const [search, setSearch] = useState('');
+export default function TenantsPage() {
+  const [tenants, setTenants] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { router.push('/propflow-login'); return; }
-      supabase.from('propflow_tenants').select('*').order('last_name').then(({ data }) => {
-        setTenants(data || []);
-        setLoading(false);
-      });
-    });
-  }, []);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    fetch(`${url}/rest/v1/tenants?select=*&order=last_name`, {
+      headers: { 'apikey': key!, 'Authorization': `Bearer ${key}` }
+    })
+    .then(r => r.json())
+    .then(data => { setTenants(Array.isArray(data) ? data : []); setLoading(false) })
+    .catch(() => setLoading(false))
+  }, [])
 
-  const bg = '#0A0800'; const panel = '#120F02'; const card = '#0D0A00';
-  const border = '#2A2000'; const amber = '#F59E0B'; const green = '#22C55E';
-  const red = '#EF4444'; const dim = '#6B5A30'; const white = '#EEF6FB';
-  const D = "'Outfit',sans-serif"; const M = "'Geist Mono',monospace";
+  const filtered = tenants.filter(t =>
+    `${t.first_name} ${t.last_name}`.toLowerCase().includes(search.toLowerCase())
+  )
+  const active = tenants.filter(t => t.status === 'Active').length
 
-  const statusColor = (s: string) => ({ Active: green, Pending: '#4F8EF7', Inactive: dim, Eviction: red }[s] || dim);
-  const statuses = ['All', 'Active', 'Pending', 'Inactive', 'Eviction'];
-
-  const filtered = tenants.filter(t => {
-    const matchFilter = filter === 'All' || t.status === filter;
-    const matchSearch = !search || (t.first_name + ' ' + t.last_name).toLowerCase().includes(search.toLowerCase()) || t.email?.toLowerCase().includes(search.toLowerCase());
-    return matchFilter && matchSearch;
-  });
-
-  const daysUntil = (date: string) => {
-    if (!date) return null;
-    const diff = Math.ceil((new Date(date).getTime() - Date.now()) / 86400000);
-    return diff;
-  };
-
-  if (loading) return <div style={{ minHeight: '100vh', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: dim, fontFamily: D }}>Loading...</div>;
+  if (loading) return (
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#050d1a',color:'#4f8ef7',fontFamily:'Inter,Arial,sans-serif',fontSize:18}}>
+      Loading tenants...
+    </div>
+  )
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: D, color: '#C8DDE9' }}>
-      <header style={{ background: panel, borderBottom: '1px solid ' + border, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/propflow/dashboard')} style={{ background: 'none', border: 'none', color: dim, cursor: 'pointer', fontSize: 13, fontFamily: D }}>← Dashboard</button>
-          <span style={{ color: border }}>|</span>
-          <span style={{ fontWeight: 700, color: white, fontSize: 15 }}>👥 Tenants</span>
+    <main style={{minHeight:'100vh',background:'#050d1a',color:'#e2e8f0',fontFamily:'Inter,Arial,sans-serif'}}>
+      <header style={{background:'#070f1f',borderBottom:'1px solid rgba(99,132,255,0.15)',padding:'0 24px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap' as const,gap:8}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div style={{width:34,height:34,borderRadius:8,background:'#4f8ef7',display:'flex',alignItems:'center',justifyContent:'center',fontSize:15,fontWeight:800,color:'#fff'}}>P</div>
+          <div>
+            <div style={{fontSize:14,fontWeight:800,color:'#4f8ef7',letterSpacing:1}}>PropFlow OS</div>
+            <div style={{fontSize:9,color:'#475569',letterSpacing:1}}>by M.A.D.E Technologies</div>
+          </div>
         </div>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tenants..." style={{ background: card, border: '1px solid ' + border, borderRadius: 8, padding: '6px 12px', color: white, fontSize: 12, fontFamily: D, outline: 'none', width: 220 }} />
+        <nav style={{display:'flex',gap:4,flexWrap:'wrap' as const}}>
+          {['Dashboard','Units','Tenants','Maintenance','GPS','Finance','Community'].map(item => (
+            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+              style={{padding:'6px 12px',fontSize:11,fontWeight:700,
+                color:item==='Tenants'?'#4f8ef7':'#475569',borderRadius:7,textDecoration:'none',
+                background:item==='Tenants'?'rgba(79,142,247,0.1)':'transparent'}}>
+              {item}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+      <div style={{maxWidth:1200,margin:'0 auto',padding:24}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap' as const,gap:12}}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: white, margin: 0 }}>Tenant Management</h1>
-            <p style={{ fontSize: 13, color: dim, marginTop: 4 }}>{tenants.filter(t => t.status === 'Active').length} active tenants</p>
+            <h1 style={{fontSize:24,fontWeight:800,color:'#fff',marginBottom:4}}>Tenant Directory</h1>
+            <p style={{fontSize:13,color:'#475569'}}>Penn Station — All Active Leases</p>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {statuses.map(s => (
-              <button key={s} onClick={() => setFilter(s)} style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (filter === s ? amber : border), background: filter === s ? amber + '20' : 'transparent', color: filter === s ? amber : dim, fontSize: 12, cursor: 'pointer', fontFamily: D }}>{s}</button>
-            ))}
-          </div>
+          <span style={{padding:'4px 10px',borderRadius:6,fontSize:11,fontWeight:700,background:'rgba(34,197,94,0.15)',color:'#22c55e'}}>{active} Active</span>
         </div>
 
-        <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1.5fr 1.5fr 1fr 1fr', padding: '10px 16px', borderBottom: '1px solid ' + border, background: panel }}>
-            {['Tenant', 'Contact', 'Lease Period', 'Rent', 'Status', 'Days Left'].map((h, i) => (
-              <div key={i} style={{ fontSize: 10, color: dim, fontFamily: M, letterSpacing: 1 }}>{h.toUpperCase()}</div>
-            ))}
-          </div>
-          {filtered.map((t, i) => {
-            const days = daysUntil(t.lease_end);
-            const urgentLease = days !== null && days < 60;
-            return (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1.5fr 1.5fr 1fr 1fr', padding: '12px 16px', borderBottom: '1px solid ' + border, background: i % 2 === 0 ? card : '#0B0900', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: white }}>{t.first_name} {t.last_name}</div>
+        <input placeholder="Search tenants..." value={search} onChange={e => setSearch(e.target.value)}
+          style={{width:'100%',padding:'10px 16px',borderRadius:10,border:'1px solid rgba(99,132,255,0.2)',background:'rgba(15,23,42,0.9)',color:'#e2e8f0',fontSize:13,marginBottom:20,outline:'none'}}
+        />
+
+        <div style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.12)',borderRadius:14,overflow:'hidden'}}>
+          {filtered.length === 0 ? (
+            <div style={{padding:30,textAlign:'center' as const,color:'#475569',fontSize:13}}>No tenants found</div>
+          ) : filtered.map(t => (
+            <div key={t.id} style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr',padding:'12px 16px',borderBottom:'1px solid rgba(99,132,255,0.06)',alignItems:'center',gap:8}}>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <div style={{width:32,height:32,borderRadius:8,background:'rgba(79,142,247,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,color:'#4f8ef7',flexShrink:0}}>
+                  {t.first_name?.[0]}{t.last_name?.[0]}
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: '#C8DDE9' }}>{t.email}</div>
-                  <div style={{ fontSize: 11, color: dim }}>{t.phone}</div>
+                  <div style={{fontSize:13,fontWeight:700,color:'#fff'}}>{t.first_name} {t.last_name}</div>
+                  <div style={{fontSize:11,color:'#475569'}}>{t.email}</div>
                 </div>
-                <div>
-                  <div style={{ fontSize: 11, color: '#C8DDE9' }}>{t.lease_start}</div>
-                  <div style={{ fontSize: 11, color: urgentLease ? amber : dim }}>to {t.lease_end}</div>
-                </div>
-                <div style={{ fontSize: 13, color: amber, fontWeight: 600 }}>${t.rent_amount}/mo</div>
-                <div style={{ padding: '3px 10px', borderRadius: 20, background: statusColor(t.status) + '20', border: '1px solid ' + statusColor(t.status) + '50', fontSize: 10, color: statusColor(t.status), fontWeight: 700, width: 'fit-content' }}>{t.status}</div>
-                <div style={{ fontSize: 12, color: urgentLease ? red : dim, fontWeight: urgentLease ? 700 : 400 }}>{days !== null ? days + 'd' : '—'}</div>
               </div>
-            );
-          })}
-          {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px', color: dim }}>No tenants found</div>
-          )}
+              <div style={{fontSize:12,color:'#94a3b8'}}>{t.phone}</div>
+              <div style={{fontSize:12,color:'#94a3b8'}}>{t.lease_end ? new Date(t.lease_end).toLocaleDateString() : '—'}</div>
+              <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${t.monthly_rent}/mo</div>
+              <span style={{padding:'2px 8px',borderRadius:4,fontSize:10,fontWeight:700,display:'inline-block',
+                background:t.status==='Active'?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)',
+                color:t.status==='Active'?'#22c55e':'#ef4444'}}>
+                {t.status}
+              </span>
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
-  );
+      </div>
+    </main>
+  )
 }

@@ -1,98 +1,120 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+'use client'
+import { useEffect, useState } from 'react'
 
-export default function PropFlowFinance() {
-  const router = useRouter();
-  const [payments, setPayments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+export default function FinancePage() {
+  const [payments, setPayments] = useState<any[]>([])
+  const [staff, setStaff] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { router.push('/propflow-login'); return; }
-      supabase.from('propflow_payments').select('*').order('created_at', { ascending: false }).then(({ data }) => {
-        setPayments(data || []);
-        setLoading(false);
-      });
-    });
-  }, []);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const headers = { 'apikey': key!, 'Authorization': `Bearer ${key}` }
+    Promise.all([
+      fetch(`${url}/rest/v1/rent_payments?select=*&order=created_at.desc`, { headers }).then(r => r.json()),
+      fetch(`${url}/rest/v1/staff?select=*`, { headers }).then(r => r.json()),
+    ]).then(([p, s]) => {
+      setPayments(Array.isArray(p) ? p : [])
+      setStaff(Array.isArray(s) ? s : [])
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
 
-  const bg = '#0A0800'; const panel = '#120F02'; const card = '#0D0A00';
-  const border = '#2A2000'; const amber = '#F59E0B'; const green = '#22C55E';
-  const red = '#EF4444'; const blue = '#4F8EF7'; const dim = '#6B5A30';
-  const white = '#EEF6FB'; const D = "'Outfit',sans-serif"; const M = "'Geist Mono',monospace";
+  const paid = payments.filter(p => p.status === 'Paid')
+  const overdue = payments.filter(p => p.status === 'Overdue')
+  const totalCollected = paid.reduce((sum, p) => sum + (p.amount || 0), 0)
+  const totalOverdue = overdue.reduce((sum, p) => sum + (p.amount || 0), 0)
+  const payrollTotal = staff.reduce((sum, s) => sum + ((s.hourly_rate || 0) * 80), 0)
 
-  const statusColor = (s: string) => ({ Paid: green, Pending: amber, Late: red, Failed: dim }[s] || dim);
-  const statuses = ['All', 'Paid', 'Pending', 'Late', 'Failed'];
-
-  const filtered = filter === 'All' ? payments : payments.filter(p => p.status === filter);
-  const totalCollected = payments.filter(p => p.status === 'Paid').reduce((sum, p) => sum + (p.amount || 0), 0);
-  const totalPending = payments.filter(p => p.status === 'Pending' || p.status === 'Late').reduce((sum, p) => sum + (p.amount || 0), 0);
-  const totalLate = payments.filter(p => p.status === 'Late').reduce((sum, p) => sum + (p.amount || 0), 0);
-
-  if (loading) return <div style={{ minHeight: '100vh', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: dim, fontFamily: D }}>Loading...</div>;
+  if (loading) return (
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#050d1a',color:'#4f8ef7',fontFamily:'Inter,Arial,sans-serif',fontSize:18}}>
+      Loading finance...
+    </div>
+  )
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: D, color: '#C8DDE9' }}>
-      <header style={{ background: panel, borderBottom: '1px solid ' + border, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/propflow/dashboard')} style={{ background: 'none', border: 'none', color: dim, cursor: 'pointer', fontSize: 13, fontFamily: D }}>← Dashboard</button>
-          <span style={{ color: border }}>|</span>
-          <span style={{ fontWeight: 700, color: white, fontSize: 15 }}>💰 Finance</span>
+    <main style={{minHeight:'100vh',background:'#050d1a',color:'#e2e8f0',fontFamily:'Inter,Arial,sans-serif'}}>
+      <header style={{background:'#070f1f',borderBottom:'1px solid rgba(99,132,255,0.15)',padding:'0 24px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap' as const,gap:8}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div style={{width:34,height:34,borderRadius:8,background:'#4f8ef7',display:'flex',alignItems:'center',justifyContent:'center',fontSize:15,fontWeight:800,color:'#fff'}}>P</div>
+          <div>
+            <div style={{fontSize:14,fontWeight:800,color:'#4f8ef7',letterSpacing:1}}>PropFlow OS</div>
+            <div style={{fontSize:9,color:'#475569',letterSpacing:1}}>by M.A.D.E Technologies</div>
+          </div>
         </div>
+        <nav style={{display:'flex',gap:4,flexWrap:'wrap' as const}}>
+          {['Dashboard','Units','Tenants','Maintenance','GPS','Finance','Community'].map(item => (
+            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+              style={{padding:'6px 12px',fontSize:11,fontWeight:700,
+                color:item==='Finance'?'#4f8ef7':'#475569',borderRadius:7,textDecoration:'none',
+                background:item==='Finance'?'rgba(79,142,247,0.1)':'transparent'}}>
+              {item}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ marginBottom: 20 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: white, margin: 0 }}>Finance Dashboard</h1>
-          <p style={{ fontSize: 13, color: dim, marginTop: 4 }}>Payment tracking and rent roll</p>
-        </div>
+      <div style={{maxWidth:1200,margin:'0 auto',padding:24}}>
+        <h1 style={{fontSize:24,fontWeight:800,color:'#fff',marginBottom:4}}>Finance</h1>
+        <p style={{fontSize:13,color:'#475569',marginBottom:20}}>Rent collection, payroll & expenses</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 24 }}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:12,marginBottom:20}}>
           {[
-            { label: 'Total Collected', value: '$' + totalCollected.toLocaleString(), color: green, icon: '✅' },
-            { label: 'Pending / Late', value: '$' + totalPending.toLocaleString(), color: amber, icon: '⏳' },
-            { label: 'Late Payments', value: '$' + totalLate.toLocaleString(), color: red, icon: '🚨' },
-          ].map((k, i) => (
-            <div key={i} style={{ background: card, border: '1px solid ' + border, borderRadius: 12, padding: '18px 20px' }}>
-              <div style={{ fontSize: 22, marginBottom: 8 }}>{k.icon}</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: k.color, fontFamily: M }}>{k.value}</div>
-              <div style={{ fontSize: 12, color: dim, marginTop: 4 }}>{k.label}</div>
+            {title:'Collected',value:`$${totalCollected.toLocaleString()}`,color:'#22c55e'},
+            {title:'Overdue',value:`$${totalOverdue.toLocaleString()}`,color:'#ef4444'},
+            {title:'Payroll Est.',value:`$${payrollTotal.toLocaleString()}`,color:'#f59e0b'},
+            {title:'Net Revenue',value:`$${(totalCollected - payrollTotal).toLocaleString()}`,color:'#a855f7'},
+          ].map(k => (
+            <div key={k.title} style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.12)',borderRadius:14,padding:16,borderTop:`3px solid ${k.color}`}}>
+              <div style={{fontSize:10,color:'#475569',fontWeight:700,textTransform:'uppercase' as const,letterSpacing:1,marginBottom:8}}>{k.title}</div>
+              <div style={{fontSize:28,fontWeight:800,color:k.color}}>{k.value}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: white }}>Payment Records</div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {statuses.map(s => (
-              <button key={s} onClick={() => setFilter(s)} style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (filter === s ? amber : border), background: filter === s ? amber + '20' : 'transparent', color: filter === s ? amber : dim, fontSize: 12, cursor: 'pointer', fontFamily: D }}>{s}</button>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:16}}>
+          <div style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.12)',borderRadius:14,padding:18}}>
+            <div style={{fontSize:10,color:'#475569',fontWeight:700,textTransform:'uppercase' as const,letterSpacing:1.5,marginBottom:14}}>Rent Payments</div>
+            {payments.length === 0 ? (
+              <div style={{color:'#475569',fontSize:13}}>No payments found</div>
+            ) : payments.map(p => (
+              <div key={p.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:'1px solid rgba(99,132,255,0.07)'}}>
+                <div>
+                  <div style={{fontSize:12,fontWeight:700,color:'#fff'}}>${p.amount}</div>
+                  <div style={{fontSize:11,color:'#475569'}}>{p.method} • {p.due_date ? new Date(p.due_date).toLocaleDateString() : '—'}</div>
+                </div>
+                <span style={{padding:'2px 8px',borderRadius:4,fontSize:10,fontWeight:700,
+                  background:p.status==='Paid'?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)',
+                  color:p.status==='Paid'?'#22c55e':'#ef4444'}}>
+                  {p.status}
+                </span>
+              </div>
             ))}
           </div>
-        </div>
 
-        <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', padding: '10px 16px', borderBottom: '1px solid ' + border, background: panel }}>
-            {['Amount', 'Type', 'Status', 'Due Date', 'Paid Date'].map((h, i) => (
-              <div key={i} style={{ fontSize: 10, color: dim, fontFamily: M, letterSpacing: 1 }}>{h.toUpperCase()}</div>
-            ))}
-          </div>
-          {filtered.map((p, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', padding: '12px 16px', borderBottom: '1px solid ' + border, background: i % 2 === 0 ? card : '#0B0900', alignItems: 'center' }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: amber }}>${p.amount?.toLocaleString()}</div>
-              <div style={{ fontSize: 12, color: '#C8DDE9' }}>{p.type}</div>
-              <div style={{ padding: '3px 10px', borderRadius: 16, background: statusColor(p.status) + '20', border: '1px solid ' + statusColor(p.status) + '50', fontSize: 10, color: statusColor(p.status), fontWeight: 700, width: 'fit-content' }}>{p.status}</div>
-              <div style={{ fontSize: 11, color: dim }}>{p.due_date || '—'}</div>
-              <div style={{ fontSize: 11, color: p.paid_date ? green : dim }}>{p.paid_date || '—'}</div>
+          <div style={{background:'rgba(15,23,42,0.9)',border:'1px solid rgba(99,132,255,0.12)',borderRadius:14,padding:18}}>
+            <div style={{fontSize:10,color:'#475569',fontWeight:700,textTransform:'uppercase' as const,letterSpacing:1.5,marginBottom:14}}>Payroll — Staff</div>
+            {staff.length === 0 ? (
+              <div style={{color:'#475569',fontSize:13}}>No staff found</div>
+            ) : staff.map(s => {
+              const gross = (s.hourly_rate || 0) * 80
+              return (
+                <div key={s.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:'1px solid rgba(99,132,255,0.07)'}}>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:700,color:'#fff'}}>{s.name}</div>
+                    <div style={{fontSize:11,color:'#475569'}}>{s.role} • ${s.hourly_rate}/hr • {s.pay_method}</div>
+                  </div>
+                  <div style={{fontSize:13,fontWeight:700,color:'#22c55e'}}>${gross.toLocaleString()}</div>
+                </div>
+              )
+            })}
+            <div style={{display:'flex',justifyContent:'space-between',padding:'12px 0 0',marginTop:4}}>
+              <span style={{fontSize:13,fontWeight:700,color:'#fff'}}>Total Payroll</span>
+              <span style={{fontSize:15,fontWeight:800,color:'#f59e0b'}}>${payrollTotal.toLocaleString()}</span>
             </div>
-          ))}
-          {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px', color: dim }}>No payments found</div>
-          )}
+          </div>
         </div>
-      </main>
-    </div>
-  );
+      </div>
+    </main>
+  )
 }

@@ -1,170 +1,126 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+'use client'
+import { useEffect, useState } from 'react'
 
-export default function PropFlowDashboard() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [units, setUnits] = useState<any[]>([]);
-  const [tenants, setTenants] = useState<any[]>([]);
-  const [workOrders, setWorkOrders] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
+export default function Dashboard() {
+  const [units, setUnits] = useState<any[]>([])
+  const [workOrders, setWorkOrders] = useState<any[]>([])
+  const [tenants, setTenants] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { router.push('/propflow-login'); return; }
-      loadData();
-    });
-  }, []);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const headers = { 'apikey': key!, 'Authorization': `Bearer ${key}` }
 
-  async function loadData() {
-    const [u, t, w, p, a] = await Promise.all([
-      supabase.from('propflow_units').select('*').order('unit_number'),
-      supabase.from('propflow_tenants').select('*').order('last_name'),
-      supabase.from('propflow_work_orders').select('*').order('created_at', { ascending: false }),
-      supabase.from('propflow_payments').select('*').order('created_at', { ascending: false }),
-      supabase.from('propflow_announcements').select('*').order('created_at', { ascending: false }),
-    ]);
-    setUnits(u.data || []);
-    setTenants(t.data || []);
-    setWorkOrders(w.data || []);
-    setPayments(p.data || []);
-    setAnnouncements(a.data || []);
-    setLoading(false);
-  }
+    Promise.all([
+      fetch(`${url}/rest/v1/units?select=*`, { headers }).then(r => r.json()),
+      fetch(`${url}/rest/v1/work_orders?select=*&status=eq.Pending`, { headers }).then(r => r.json()),
+      fetch(`${url}/rest/v1/tenants?select=*&status=eq.Active`, { headers }).then(r => r.json()),
+    ]).then(([u, w, t]) => {
+      setUnits(Array.isArray(u) ? u : [])
+      setWorkOrders(Array.isArray(w) ? w : [])
+      setTenants(Array.isArray(t) ? t : [])
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
 
-  const occupied = units.filter(u => u.status === 'Occupied').length;
-  const openWO = workOrders.filter(w => w.status === 'Open' || w.status === 'In Progress').length;
-  const latePayments = payments.filter(p => p.status === 'Late' || p.status === 'Pending').length;
-
-  const bg = '#0A0800'; const panel = '#120F02'; const card = '#0D0A00';
-  const border = '#2A2000'; const amber = '#F59E0B'; const green = '#22C55E';
-  const red = '#EF4444'; const blue = '#4F8EF7'; const dim = '#6B5A30';
-  const txt = '#C8DDE9'; const white = '#EEF6FB'; const M = "'Geist Mono',monospace";
-  const D = "'Outfit',sans-serif";
-
-  const statusColor = (s: string) => ({ Occupied: green, Vacant: blue, Maintenance: amber, Reserved: '#A855F7' }[s] || dim);
-  const priorityColor = (p: string) => ({ Urgent: red, High: amber, Normal: blue, Low: dim }[p] || dim);
-
-  if (loading) return (
-    <div style={{ minHeight: '100vh', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: 13, color: dim, fontFamily: D }}>Loading PropFlow OS...</div>
-    </div>
-  );
+  const occupied = units.filter(u => u.status === 'Occupied').length
+  const vacant = units.filter(u => u.status === 'Vacant').length
+  const urgent = workOrders.filter(w => w.priority === 'Urgent').length
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: D, color: txt }}>
-      <header style={{ background: panel, borderBottom: '1px solid ' + border, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
+    <main style={{ minHeight: '100vh', background: '#050d1a', color: '#e2e8f0', fontFamily: 'Inter,Arial,sans-serif' }}>
+      <header style={{ background: '#070f1f', borderBottom: '1px solid rgba(99,132,255,0.15)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' as const, gap: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 20 }}>🏠</span>
-          <span style={{ fontWeight: 800, fontSize: 16, color: white }}>PropFlow<span style={{ color: amber }}>OS</span></span>
-          <span style={{ fontSize: 10, color: dim, fontFamily: M, letterSpacing: 2, marginLeft: 8 }}>PENN STATION APARTMENTS</span>
+          <img src="/assets/logo.png" alt="PropFlow OS" style={{ height: 44, objectFit: "contain" }} />
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: '#4f8ef7', letterSpacing: 1 }}>PropFlow OS</div>
+            <div style={{ fontSize: 9, color: '#475569', letterSpacing: 1 }}>by M.A.D.E Technologies</div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, color: dim, fontFamily: M }}>1920 Heritage Park Dr · OKC</span>
-          <button onClick={() => { supabase.auth.signOut(); router.push('/propflow-login'); }}
-            style={{ background: 'none', border: 'none', color: dim, fontSize: 13, cursor: 'pointer', fontFamily: D }}>Sign out</button>
-        </div>
+        <nav style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
+          {['Dashboard', 'Units', 'Tenants', 'Maintenance', 'GPS', 'Finance', 'Community'].map(item => (
+            <a key={item} href={`/${item === 'Dashboard' ? 'dashboard' : item.toLowerCase()}`}
+              style={{ padding: '6px 12px', fontSize: 11, fontWeight: 700, color: item === 'Dashboard' ? '#4f8ef7' : '#475569', borderRadius: 7, textDecoration: 'none', background: item === 'Dashboard' ? 'rgba(79,142,247,0.1)' : 'transparent' }}>
+              {item}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main style={{ padding: '24px', maxWidth: 1300, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 4 }}>Good morning, Kenneth 👋</h1>
+        <p style={{ fontSize: 13, color: '#475569', marginBottom: 24 }}>Penn Station Apartments — 1920 Heritage Park Dr, OKC 73120</p>
 
-        <div style={{ marginBottom: 20 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: white, margin: 0, letterSpacing: -0.5 }}>Property Dashboard</h1>
-          <p style={{ fontSize: 13, color: dim, marginTop: 4 }}>Penn Station Apartments — 17 Buildings · 200+ Units</p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14, marginBottom: 20 }}>
           {[
-            { label: 'Total Units', value: units.length, color: blue, icon: '🏢' },
-            { label: 'Occupied', value: occupied, color: green, icon: '✅' },
-            { label: 'Open Work Orders', value: openWO, color: amber, icon: '🔧' },
-            { label: 'Late / Pending Payments', value: latePayments, color: red, icon: '💰' },
-          ].map((k, i) => (
-            <div key={i} style={{ background: card, border: '1px solid ' + border, borderRadius: 12, padding: '18px 20px' }}>
-              <div style={{ fontSize: 22, marginBottom: 8 }}>{k.icon}</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: k.color }}>{k.value}</div>
-              <div style={{ fontSize: 12, color: dim, marginTop: 4 }}>{k.label}</div>
+            { title: 'Total Units', value: loading ? '...' : units.length, sub: `${occupied} Occupied / ${vacant} Vacant`, color: '#4f8ef7' },
+            { title: 'Active Tenants', value: loading ? '...' : tenants.length, sub: 'Current leases', color: '#22c55e' },
+            { title: 'Open Work Orders', value: loading ? '...' : workOrders.length, sub: `${urgent} urgent`, color: '#f59e0b' },
+            { title: 'Property Health', value: '91%', sub: 'Overall condition', color: '#a855f7' },
+          ].map(k => (
+            <div key={k.title} style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 16, borderTop: `3px solid ${k.color}` }}>
+              <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1, marginBottom: 8 }}>{k.title}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: k.color, lineHeight: 1, marginBottom: 6 }}>{k.value}</div>
+              <div style={{ fontSize: 11, color: '#475569' }}>{k.sub}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-
-          <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: white, marginBottom: 14 }}>Units — {units.length} Total</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, maxHeight: 300, overflowY: 'auto' }}>
-              {units.map((u, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: panel, borderRadius: 8, border: '1px solid ' + border }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: white }}>{u.unit_number}</div>
-                    <div style={{ fontSize: 11, color: dim }}>{u.type} · {u.sqft} sqft · {u.bedrooms}bd/{u.bathrooms}ba</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 12, color: amber, fontWeight: 600 }}>${u.rent}/mo</div>
-                    <div style={{ fontSize: 10, color: statusColor(u.status), fontWeight: 700, marginTop: 2 }}>{u.status}</div>
-                  </div>
-                </div>
-              ))}
+        <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
+          <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Property Overview</div>
+          {[
+            ['Address', '1920 Heritage Park Drive, OKC 73120'],
+            ['Phone', '405-755-9246'],
+            ['Buildings', '17 Buildings — 1900 through 1932'],
+            ['Unit Types', 'A1 (504 sqft) • A2 (640 sqft) • A3 (816 sqft) • A4 (800 sqft) • B2/B3 (973–1,034 sqft) • C1 (1,240 sqft)'],
+            ['Amenities', '2 Pools • Bark Park • 2 Playgrounds • Picnic Area • Leasing Center • 3 Mailbox Stations'],
+            ['Managed By', 'Kenneth Covington — M.A.D.E Technologies'],
+          ].map(([l, v]) => (
+            <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(99,132,255,0.07)', flexWrap: 'wrap' as const, gap: 8 }}>
+              <span style={{ fontSize: 12, color: '#475569' }}>{l}</span>
+              <span style={{ fontSize: 12, color: '#cbd5e1', textAlign: 'right' as const, maxWidth: 500 }}>{v}</span>
             </div>
-          </div>
-
-          <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: white, marginBottom: 14 }}>Work Orders — {workOrders.length} Total</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, maxHeight: 300, overflowY: 'auto' }}>
-              {workOrders.map((w, i) => (
-                <div key={i} style={{ padding: '8px 12px', background: panel, borderRadius: 8, border: '1px solid ' + border }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: white, flex: 1, marginRight: 8 }}>{w.title}</div>
-                    <div style={{ fontSize: 10, color: priorityColor(w.priority), fontWeight: 700, flexShrink: 0 }}>{w.priority}</div>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-                    <div style={{ fontSize: 10, color: dim }}>{w.category} · {w.assigned_to || 'Unassigned'}</div>
-                    <div style={{ fontSize: 10, color: w.status === 'Completed' ? green : amber }}>{w.status}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+          ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-
-          <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: white, marginBottom: 14 }}>Tenants — {tenants.length} Total</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, maxHeight: 280, overflowY: 'auto' }}>
-              {tenants.map((t, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: panel, borderRadius: 8, border: '1px solid ' + border }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: white }}>{t.first_name} {t.last_name}</div>
-                    <div style={{ fontSize: 11, color: dim }}>{t.email} · Lease ends {t.lease_end}</div>
-                  </div>
-                  <div style={{ fontSize: 10, color: t.status === 'Active' ? green : amber, fontWeight: 700 }}>{t.status}</div>
-                </div>
-              ))}
-            </div>
+        <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18, marginBottom: 16 }}>
+          <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Quick Actions</div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
+            {[
+              { label: 'Create Work Order', color: '#4f8ef7', href: '/maintenance' },
+              { label: 'Add Tenant', color: '#22c55e', href: '/tenants' },
+              { label: 'Send Notice', color: '#a855f7', href: '/community' },
+              { label: 'Run Payroll', color: '#f59e0b', href: '/finance' },
+              { label: 'View GPS', color: '#ef4444', href: '/gps' },
+              { label: 'New Application', color: '#22c55e', href: '/apply' },
+            ].map(b => (
+              <a key={b.label} href={b.href} style={{ padding: '9px 16px', borderRadius: 9, fontSize: 12, fontWeight: 700, color: '#fff', background: b.color, textDecoration: 'none' }}>
+                {b.label}
+              </a>
+            ))}
           </div>
-
-          <div style={{ background: card, border: '1px solid ' + border, borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: white, marginBottom: 14 }}>Announcements</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, maxHeight: 280, overflowY: 'auto' }}>
-              {announcements.map((a, i) => (
-                <div key={i} style={{ padding: '10px 12px', background: panel, borderRadius: 8, border: '1px solid ' + border }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: white }}>{a.title}</div>
-                    <div style={{ fontSize: 10, color: amber, fontFamily: M }}>{a.category}</div>
-                  </div>
-                  <div style={{ fontSize: 11, color: dim, lineHeight: 1.5 }}>{a.body}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
-      </main>
-    </div>
-  );
+
+        <div style={{ background: 'rgba(15,23,42,0.9)', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 18 }}>
+          <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Open Work Orders</div>
+          {loading ? (
+            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>Loading...</div>
+          ) : workOrders.length === 0 ? (
+            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>No open work orders — all clear!</div>
+          ) : workOrders.slice(0, 5).map(wo => (
+            <div key={wo.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(99,132,255,0.07)' }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{wo.description}</div>
+                <div style={{ fontSize: 11, color: '#475569', marginTop: 2 }}>{wo.assigned_to || 'Unassigned'}</div>
+              </div>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: wo.priority === 'Urgent' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)', color: wo.priority === 'Urgent' ? '#ef4444' : '#f59e0b' }}>
+                {wo.priority}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
 }
