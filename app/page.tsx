@@ -21,7 +21,7 @@ const PLATFORMS = [
     id: 'medflow', name: 'MedFlow', suffix: 'OS',
     tagline: 'Pharmacy Command Center',
     desc: 'Temperature monitoring, drug inventory and USP compliance.',
-    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow',
+    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow-splash',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <polygon points="22,4 38,13 38,31 22,40 6,31 6,13" stroke="#14D2C2" strokeWidth="1.8" fill="rgba(20,210,194,0.07)" />
       <rect x="17" y="12" width="10" height="20" rx="2.5" stroke="#14D2C2" strokeWidth="1.6" fill="rgba(20,210,194,0.12)" />
@@ -238,4 +238,5 @@ export default function PlatformHub() {
     </>
   );
 }
+
 
