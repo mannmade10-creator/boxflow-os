@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 
 export default function Dashboard() {
@@ -50,7 +50,7 @@ export default function Dashboard() {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 4 }}>Good morning, Kenneth ðŸ‘‹</h1>
-        <p style={{ fontSize: 13, color: '#475569', marginBottom: 24 }}>Penn Station Apartments "” 1920 Heritage Park Dr, OKC 73120</p>
+        <p style={{ fontSize: 13, color: '#475569', marginBottom: 24 }}>Penn Station Apartments â€” 1920 Heritage Park Dr, OKC 73120</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14, marginBottom: 20 }}>
           {[
@@ -72,10 +72,10 @@ export default function Dashboard() {
           {[
             ['Address', '1920 Heritage Park Drive, OKC 73120'],
             ['Phone', '405-755-9246'],
-            ['Buildings', '17 Buildings "” 1900 through 1932'],
-            ['Unit Types', 'A1 (504 sqft) • A2 (640 sqft) • A3 (816 sqft) • A4 (800 sqft) • B2/B3 (973"“1,034 sqft) • C1 (1,240 sqft)'],
-            ['Amenities', '2 Pools • Bark Park • 2 Playgrounds • Picnic Area • Leasing Center • 3 Mailbox Stations'],
-            ['Managed By', 'Kenneth Covington "” M.A.D.E Technologies'],
+            ['Buildings', '17 Buildings â€” 1900 through 1932'],
+            ['Unit Types', 'A1 (504 sqft) â€¢ A2 (640 sqft) â€¢ A3 (816 sqft) â€¢ A4 (800 sqft) â€¢ B2/B3 (973â€“1,034 sqft) â€¢ C1 (1,240 sqft)'],
+            ['Amenities', '2 Pools â€¢ Bark Park â€¢ 2 Playgrounds â€¢ Picnic Area â€¢ Leasing Center â€¢ 3 Mailbox Stations'],
+            ['Managed By', 'Kenneth Covington â€” M.A.D.E Technologies'],
           ].map(([l, v]) => (
             <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(99,132,255,0.07)', flexWrap: 'wrap' as const, gap: 8 }}>
               <span style={{ fontSize: 12, color: '#475569' }}>{l}</span>
@@ -88,12 +88,12 @@ export default function Dashboard() {
           <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Quick Actions</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
             {[
-              { label: 'Create Work Order', color: '#4f8ef7', href: '/maintenance' },
-              { label: 'Add Tenant', color: '#22c55e', href: '/tenants' },
-              { label: 'Send Notice', color: '#a855f7', href: '/community' },
-              { label: 'Run Payroll', color: '#f59e0b', href: '/finance' },
-              { label: 'View GPS', color: '#ef4444', href: '/gps' },
-              { label: 'New Application', color: '#22c55e', href: '/apply' },
+              { label: 'Create Work Order', color: '#4f8ef7', href: '/propflow/maintenance' },
+              { label: 'Add Tenant', color: '#22c55e', href: '/propflow/tenants' },
+              { label: 'Send Notice', color: '#a855f7', href: '/propflow/community' },
+              { label: 'Run Payroll', color: '#f59e0b', href: '/propflow/finance' },
+              { label: 'View GPS', color: '#ef4444', href: '/propflow/gps' },
+              { label: 'New Application', color: '#22c55e', href: '/propflow/apply' },
             ].map(b => (
               <a key={b.label} href={b.href} style={{ padding: '9px 16px', borderRadius: 9, fontSize: 12, fontWeight: 700, color: '#fff', background: b.color, textDecoration: 'none' }}>
                 {b.label}
@@ -107,7 +107,7 @@ export default function Dashboard() {
           {loading ? (
             <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>Loading...</div>
           ) : workOrders.length === 0 ? (
-            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>No open work orders "” all clear!</div>
+            <div style={{ fontSize: 13, color: '#475569', padding: '20px 0', textAlign: 'center' as const }}>No open work orders â€” all clear!</div>
           ) : workOrders.slice(0, 5).map(wo => (
             <div key={wo.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(99,132,255,0.07)' }}>
               <div>
@@ -124,6 +124,4 @@ export default function Dashboard() {
     </main>
   )
 }
-
-
 
