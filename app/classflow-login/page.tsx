@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -78,14 +78,14 @@ export default function ClassFlowLogin() {
       <div style={{ width:'100%', maxWidth: tab==='signup' && step==='plan' ? 900 : 440, transition:'max-width 0.3s ease' }}>
 
         <div style={{ textAlign:'center', marginBottom:28 }}>
-          <div style={{ width:52, height:52, borderRadius:14, background:'linear-gradient(135deg,#6D28D9,#A78BFA)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, margin:'0 auto 12px' }}>🎓</div>
+          <div style={{ width:52, height:52, borderRadius:14, background:'linear-gradient(135deg,#6D28D9,#A78BFA)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, margin:'0 auto 12px' }}>ðŸŽ“</div>
           <h1 style={{ fontSize:26, fontWeight:900, color:'#EEF6FB', letterSpacing:-1, margin:0 }}>ClassFlow<span style={{ color:'#A78BFA' }}>AI</span></h1>
           <p style={{ fontSize:10, color:'#2E2450', fontFamily:"'Geist Mono',monospace", letterSpacing:3, textTransform:'uppercase', marginTop:4 }}>Intelligent Learning Platform</p>
         </div>
 
         <div style={{ display:'flex', background:'#0D0B1A', border:'1px solid #1E1640', borderRadius:12, padding:4, marginBottom:24 }}>
           {(['signin','signup'] as const).map(t => (
-            <button key={t} onClick={()=>{ setTab(t); setStep('plan'); setMessage(''); }}
+            <button key={t} onClick={()=>{ if(t === 'signup'){ router.push('/onboarding/classflow') } else { setTab(t); setStep('plan'); setMessage('') }; }}
               style={{ flex:1, padding:'10px', borderRadius:9, border:'none', cursor:'pointer', fontSize:13, fontWeight:600, fontFamily:"'Outfit',sans-serif", background:tab===t?'#7C3AED':'transparent', color:tab===t?'#fff':'#4A3A70', transition:'all .2s' }}>
               {t==='signin'?'Sign In':'Sign Up'}
             </button>
@@ -95,14 +95,14 @@ export default function ClassFlowLogin() {
         {tab === 'signin' && (
           <div style={{ background:'#0D0B1A', border:'1px solid #1E1640', borderRadius:18, padding:32 }}>
             <div style={{ marginBottom:14 }}><label style={lbl}>EMAIL</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} style={inp} placeholder="teacher@school.edu" /></div>
-            <div style={{ marginBottom:24 }}><label style={lbl}>PASSWORD</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&signIn()} style={inp} placeholder="••••••••" /></div>
+            <div style={{ marginBottom:24 }}><label style={lbl}>PASSWORD</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&signIn()} style={inp} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" /></div>
             <button onClick={signIn} disabled={loading} style={{ width:'100%', padding:'13px', borderRadius:11, background:'linear-gradient(135deg,#6D28D9,#A78BFA)', border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif", opacity:loading?.7:1 }}>
               {loading?'Signing in...':'Access ClassFlowAI'}
             </button>
             {message && <div style={{ marginTop:14, color:'#F43F5E', fontSize:12, fontFamily:"'Geist Mono',monospace", textAlign:'center' }}>{message}</div>}
             <div style={{ marginTop:20, textAlign:'center' }}>
               <span style={{ fontSize:12, color:'#2E2450' }}>No subscription? </span>
-              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#A78BFA', fontSize:12, cursor:'pointer', fontWeight:600 }}>View plans →</button>
+              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#A78BFA', fontSize:12, cursor:'pointer', fontWeight:600 }}>View plans â†’</button>
             </div>
           </div>
         )}
@@ -123,7 +123,7 @@ export default function ClassFlowLogin() {
                   <div style={{ fontSize:11, color:'#4A3A70', fontFamily:"'Geist Mono',monospace", marginBottom:14 }}>{p.desc}</div>
                   <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                     {p.features.map(f => <div key={f} style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
-                      <span style={{ color:p.color, fontSize:12, flexShrink:0 }}>✓</span>
+                      <span style={{ color:p.color, fontSize:12, flexShrink:0 }}>âœ“</span>
                       <span style={{ fontSize:11.5, color:'#C8DDE9' }}>{f}</span>
                     </div>)}
                   </div>
@@ -132,7 +132,7 @@ export default function ClassFlowLogin() {
               ))}
             </div>
             <button onClick={()=>setStep('account')} style={{ width:'100%', padding:'13px', borderRadius:11, background:`linear-gradient(135deg,#6D28D9,${selectedPlan.color})`, border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>
-              Continue with {selectedPlan.name} Plan →
+              Continue with {selectedPlan.name} Plan â†’
             </button>
           </div>
         )}
@@ -141,7 +141,7 @@ export default function ClassFlowLogin() {
           <div style={{ background:'#0D0B1A', border:'1px solid #1E1640', borderRadius:18, padding:32 }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
               <h2 style={{ fontSize:18, fontWeight:800, color:'#EEF6FB', margin:0 }}>Create your account</h2>
-              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>{selectedPlan.name} · {selectedPlan.price}/mo</div>
+              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>{selectedPlan.name} Â· {selectedPlan.price}/mo</div>
             </div>
             <div style={{ marginBottom:14 }}><label style={lbl}>FULL NAME</label><input value={name} onChange={e=>setName(e.target.value)} style={inp} placeholder="Teacher / Admin" /></div>
             <div style={{ marginBottom:14 }}><label style={lbl}>WORK EMAIL</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} style={inp} placeholder="you@school.edu" /></div>
@@ -149,16 +149,16 @@ export default function ClassFlowLogin() {
             <button onClick={signUp} disabled={loading} style={{ width:'100%', padding:'13px', borderRadius:11, background:'linear-gradient(135deg,#6D28D9,#A78BFA)', border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif", opacity:loading?.7:1, marginBottom:10 }}>
               {loading?'Creating account...':'Start Free Trial'}
             </button>
-            <button onClick={()=>setStep('plan')} style={{ width:'100%', padding:'10px', borderRadius:11, background:'transparent', border:'1px solid #1E1640', color:'#4A3A70', fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>← Back to plan selection</button>
+            <button onClick={()=>setStep('plan')} style={{ width:'100%', padding:'10px', borderRadius:11, background:'transparent', border:'1px solid #1E1640', color:'#4A3A70', fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>â† Back to plan selection</button>
             {message && <div style={{ marginTop:14, color:message.includes('failed')?'#F43F5E':'#22D3A5', fontSize:12, fontFamily:"'Geist Mono',monospace", textAlign:'center' }}>{message}</div>}
             <p style={{ fontSize:10, color:'#2E2450', textAlign:'center', marginTop:16, lineHeight:1.6 }}>Billing begins after your free trial. Cancel anytime.</p>
           </div>
         )}
 
         <div style={{ marginTop:20, textAlign:'center' }}>
-          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E2450', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>← BACK TO PLATFORM SELECT</button>
+          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E2450', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>â† BACK TO PLATFORM SELECT</button>
         </div>
-        <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#1E1640', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>MADE TECHNOLOGIES INC · ENTERPRISE SUITE · v2026.1</div>
+        <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#1E1640', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>MADE TECHNOLOGIES INC Â· ENTERPRISE SUITE Â· v2026.1</div>
       </div>
     </main>
   );

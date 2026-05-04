@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -9,7 +9,7 @@ const PLANS = [
     name: 'Starter',
     price: '$599',
     period: '/mo',
-    desc: '1 location · Up to 10 trucks',
+    desc: '1 location Â· Up to 10 trucks',
     color: '#2563EB',
     features: ['Corrugator Production System', 'Smart Dispatch', 'Live Fleet Map', 'Client Portal', 'Up to 10 trucks'],
     addons: '$15/truck/mo over limit',
@@ -19,11 +19,11 @@ const PLANS = [
     name: 'Professional',
     price: '$1,899',
     period: '/mo',
-    desc: 'Up to 3 locations · Up to 50 trucks',
+    desc: 'Up to 3 locations Â· Up to 50 trucks',
     color: '#7C3AED',
     popular: true,
     features: ['Everything in Starter', 'AI Auto-Dispatch', 'HR + Payroll Center', 'Advanced Analytics', 'Up to 50 trucks', 'API Access ($299 value)'],
-    addons: '$15/truck/mo · $299/mo API access',
+    addons: '$15/truck/mo Â· $299/mo API access',
   },
   {
     id: 'enterprise',
@@ -33,7 +33,7 @@ const PLANS = [
     desc: 'Unlimited locations & trucks',
     color: '#F59E0B',
     features: ['Everything in Professional', 'Unlimited locations', 'Unlimited trucks', 'White Label option', 'Dedicated support', 'Custom integrations'],
-    addons: 'White label $799/mo · API $299/mo',
+    addons: 'White label $799/mo Â· API $299/mo',
   },
 ];
 
@@ -97,7 +97,7 @@ export default function BoxFlowLogin() {
         {/* Tabs */}
         <div style={{ display:'flex', background:'#0B1628', border:'1px solid #152840', borderRadius:12, padding:4, marginBottom:24 }}>
           {(['signin','signup'] as const).map(t => (
-            <button key={t} onClick={()=>{ setTab(t); setStep('plan'); setMessage(''); }}
+            <button key={t} onClick={()=>{ if(t === 'signup'){ router.push('/onboarding/boxflow') } else { setTab(t); setStep('plan'); setMessage('') }; }}
               style={{ flex:1, padding:'10px', borderRadius:9, border:'none', cursor:'pointer', fontSize:13, fontWeight:600, fontFamily:"'Outfit',sans-serif", background:tab===t?'#2563EB':'transparent', color:tab===t?'#fff':'#4A6090', transition:'all .2s' }}>
               {t==='signin'?'Sign In':'Sign Up'}
             </button>
@@ -113,7 +113,7 @@ export default function BoxFlowLogin() {
             </div>
             <div style={{ marginBottom:24 }}>
               <label style={lbl}>PASSWORD</label>
-              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&signIn()} style={inp} placeholder="••••••••" />
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&signIn()} style={inp} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" />
             </div>
             <button onClick={signIn} disabled={loading} style={{ width:'100%', padding:'13px', borderRadius:11, background:'linear-gradient(135deg,#1d4ed8,#2563EB)', border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif", opacity:loading?.7:1 }}>
               {loading?'Signing in...':'Sign In to BoxFlow OS'}
@@ -121,12 +121,12 @@ export default function BoxFlowLogin() {
             {message && <div style={{ marginTop:14, color:message.includes('failed')?'#F43F5E':'#22D3A5', fontSize:12, fontFamily:"'Geist Mono',monospace", textAlign:'center' }}>{message}</div>}
             <div style={{ marginTop:20, textAlign:'center' }}>
               <span style={{ fontSize:12, color:'#2E5070' }}>Don't have an account? </span>
-              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#2563EB', fontSize:12, cursor:'pointer', fontWeight:600 }}>Start free trial →</button>
+              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#2563EB', fontSize:12, cursor:'pointer', fontWeight:600 }}>Start free trial â†’</button>
             </div>
           </div>
         )}
 
-        {/* SIGN UP — STEP 1: Plan Selection */}
+        {/* SIGN UP â€” STEP 1: Plan Selection */}
         {tab === 'signup' && step === 'plan' && (
           <div>
             <div style={{ textAlign:'center', marginBottom:24 }}>
@@ -143,7 +143,7 @@ export default function BoxFlowLogin() {
                   <div style={{ fontSize:11, color:'#4A6090', fontFamily:"'Geist Mono',monospace", marginBottom:14 }}>{p.desc}</div>
                   <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                     {p.features.map(f => <div key={f} style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
-                      <span style={{ color:p.color, fontSize:12, flexShrink:0 }}>✓</span>
+                      <span style={{ color:p.color, fontSize:12, flexShrink:0 }}>âœ“</span>
                       <span style={{ fontSize:11.5, color:'#C8DDE9' }}>{f}</span>
                     </div>)}
                   </div>
@@ -153,17 +153,17 @@ export default function BoxFlowLogin() {
             </div>
             <button onClick={()=>setStep('account')}
               style={{ width:'100%', padding:'13px', borderRadius:11, background:`linear-gradient(135deg,#1d4ed8,${selectedPlan.color})`, border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>
-              Continue with {selectedPlan.name} Plan →
+              Continue with {selectedPlan.name} Plan â†’
             </button>
           </div>
         )}
 
-        {/* SIGN UP — STEP 2: Account Details */}
+        {/* SIGN UP â€” STEP 2: Account Details */}
         {tab === 'signup' && step === 'account' && (
           <div style={{ background:'#0B1628', border:'1px solid #152840', borderRadius:18, padding:32 }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
               <h2 style={{ fontSize:18, fontWeight:800, color:'#EEF6FB', margin:0 }}>Create your account</h2>
-              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>{selectedPlan.name} · {selectedPlan.price}/mo</div>
+              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>{selectedPlan.name} Â· {selectedPlan.price}/mo</div>
             </div>
             <div style={{ marginBottom:14 }}>
               <label style={lbl}>FULL NAME</label>
@@ -182,7 +182,7 @@ export default function BoxFlowLogin() {
               {loading?'Creating account...':'Start Free Trial'}
             </button>
             <button onClick={()=>setStep('plan')} style={{ width:'100%', padding:'10px', borderRadius:11, background:'transparent', border:'1px solid #152840', color:'#4A6090', fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>
-              ← Back to plan selection
+              â† Back to plan selection
             </button>
             {message && <div style={{ marginTop:14, color:message.includes('failed')?'#F43F5E':'#22D3A5', fontSize:12, fontFamily:"'Geist Mono',monospace", textAlign:'center' }}>{message}</div>}
             <p style={{ fontSize:10, color:'#2E5070', textAlign:'center', marginTop:16, lineHeight:1.6 }}>By creating an account you agree to our Terms of Service. Billing begins after your free trial.</p>
@@ -190,9 +190,9 @@ export default function BoxFlowLogin() {
         )}
 
         <div style={{ marginTop:20, textAlign:'center' }}>
-          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E5070', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>← BACK TO PLATFORM SELECT</button>
+          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E5070', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>â† BACK TO PLATFORM SELECT</button>
         </div>
-        <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#152840', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>MADE TECHNOLOGIES INC · ENTERPRISE SUITE · v2026.1</div>
+        <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#152840', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>MADE TECHNOLOGIES INC Â· ENTERPRISE SUITE Â· v2026.1</div>
       </div>
     </main>
   );
