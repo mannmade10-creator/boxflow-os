@@ -1,36 +1,26 @@
 ﻿const fs = require('fs');
-const path = require('path');
-
-function fixFile(filePath) {
-  let b = fs.readFileSync(filePath);
-  if (b[0] === 0xEF && b[1] === 0xBB && b[2] === 0xBF) b = b.slice(3);
+const files = [
+  'app/login/page.tsx',
+  'app/medflow-login/page.tsx',
+  'app/propflow-login/page.tsx',
+  'app/classflow-login/page.tsx'
+];
+files.forEach(f => {
+  let b = fs.readFileSync(f);
+  if(b[0]===0xEF && b[1]===0xBB && b[2]===0xBF) b = b.slice(3);
   let c = b.toString('utf8');
-  c = c.replace(/â€"/g, '—');
+  c = c.replace(/Â·/g, '·');
   c = c.replace(/â€¢/g, '•');
   c = c.replace(/â†'/g, '→');
-  c = c.replace(/â†"/g, '←');
+  c = c.replace(/â†/g, '←');
+  c = c.replace(/â€"/g, '—');
+  c = c.replace(/â€˜/g, "'");
   c = c.replace(/â€™/g, "'");
   c = c.replace(/â€œ/g, '"');
   c = c.replace(/â€/g, '"');
-  c = c.replace(/Ã—/g, '×');
-  c = c.replace(/ðŸ /g, '🏠');
-  c = c.replace(/ðŸš/g, '🚗');
-  c = c.replace(/ðŸ"§/g, '🔧');
-  c = c.replace(/ðŸ'°/g, '💰');
-  c = c.replace(/ðŸ"¢/g, '📢');
-  c = c.replace(/ðŸŽ‰/g, '🎉');
-  c = c.replace(/ðŸš¨/g, '🚨');
-  c = c.replace(/ðŸš/g, '🚌');
-  fs.writeFileSync(filePath, c, 'utf8');
-}
-
-function walkDir(dir) {
-  fs.readdirSync(dir).forEach(f => {
-    const full = path.join(dir, f);
-    if (fs.statSync(full).isDirectory()) walkDir(full);
-    else if (f.endsWith('.tsx') || f.endsWith('.jsx') || f.endsWith('.ts')) fixFile(full);
-  });
-}
-
-walkDir('app/propflow');
-console.log('Done');
+  c = c.replace(/âœ"/g, '✓');
+  c = c.replace(/Â·/g, '·');
+  c = c.replace(/placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"/g, 'placeholder="••••••••"');
+  fs.writeFileSync(f, c, 'utf8');
+  console.log('Fixed:', f);
+});
