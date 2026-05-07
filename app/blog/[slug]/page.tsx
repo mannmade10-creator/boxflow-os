@@ -10,10 +10,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = getPostBySlug(params.slug)
   if (!post) return {}
-  return {
-    title: post.metaTitle,
-    description: post.metaDescription,
-  }
+  return { title: post.metaTitle, description: post.metaDescription }
 }
 
 function renderContent(content: string) {
@@ -49,11 +46,8 @@ function renderContent(content: string) {
   }
 
   lines.forEach((line, i) => {
-    if (line.startsWith('|')) {
-      inTable = true; tableBuffer.push(line); return
-    }
-    if (inTable) flushTable(`table-${i}`)
-
+    if (line.startsWith('|')) { inTable = true; tableBuffer.push(line); return }
+    if (inTable) flushTable('table-' + i)
     if (line.startsWith('## ')) {
       elements.push(<h2 key={i} style={{ fontSize: 26, fontWeight: 800, color: '#f0f6ff', margin: '36px 0 16px', lineHeight: 1.2 }}>{line.slice(3)}</h2>)
     } else if (line.startsWith('### ')) {
@@ -64,7 +58,6 @@ function renderContent(content: string) {
       elements.push(<p key={i} style={{ color: '#cbd5e1', fontSize: 16, lineHeight: 1.8, margin: '0 0 20px' }}>{line}</p>)
     }
   })
-
   if (inTable) flushTable('table-end')
   return elements
 }
@@ -72,12 +65,10 @@ function renderContent(content: string) {
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug)
   if (!post) notFound()
-
   const allPosts = getAllPosts().filter(p => p.slug !== post.slug).slice(0, 3)
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020818 0%, #070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-
       <div style={{ padding: '24px 40px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
           <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 32, height: 32 }} />
@@ -90,12 +81,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       </div>
 
       <div style={{ maxWidth: 780, margin: '0 auto', padding: '60px 24px 80px' }}>
-
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-            <span style={{ background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.3)', color: '#0ea5e9', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>
-              {post.category}
-            </span>
+            <span style={{ background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.3)', color: '#0ea5e9', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{post.category}</span>
             <span style={{ color: '#64748b', fontSize: 13 }}>{post.readTime}</span>
             <span style={{ color: '#64748b', fontSize: 13 }}>·</span>
             <span style={{ color: '#64748b', fontSize: 13 }}>By {post.publishedBy}</span>
@@ -104,20 +92,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <p style={{ fontSize: 18, color: '#94a3b8', lineHeight: 1.6, borderLeft: '3px solid #0ea5e9', paddingLeft: 20 }}>{post.excerpt}</p>
         </div>
 
-        <div style={{ marginBottom: 60 }}>
-          {renderContent(post.content)}
-        </div>
+        <div style={{ marginBottom: 60 }}>{renderContent(post.content)}</div>
 
         <div style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(14,165,233,0.25)', borderRadius: 20, padding: 36, textAlign: 'center' as const, marginBottom: 60 }}>
           <h3 style={{ fontSize: 24, fontWeight: 900, marginBottom: 12 }}>See How Much BoxFlow OS Saves Your Operation</h3>
           <p style={{ color: '#94a3b8', fontSize: 15, marginBottom: 24, lineHeight: 1.6 }}>Use our free ROI calculator to get your exact savings estimate in 60 seconds.</p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' as const }}>
-            <Link href="/roi" style={{ padding: '14px 32px', background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
-              Calculate Your Savings →
-            </Link>
-            <Link href="/contact" style={{ padding: '14px 32px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
-              Book a Demo
-            </Link>
+            <Link href="/roi" style={{ padding: '14px 32px', background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>Calculate Your Savings →</Link>
+            <Link href="/contact" style={{ padding: '14px 32px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>Book a Demo</Link>
           </div>
         </div>
 
@@ -126,7 +108,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 20, color: '#f0f6ff' }}>More from the Blog</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
               {allPosts.map(p => (
-                <Link key={p.slug} href={`/blog/${p.slug}`} style={{ textDecoration: 'none' }}>
+                <Link key={p.slug} href={'/blog/' + p.slug} style={{ textDecoration: 'none' }}>
                   <div style={{ background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(14,165,233,0.12)', borderRadius: 14, padding: 20 }}>
                     <div style={{ fontSize: 11, color: '#0ea5e9', fontWeight: 700, textTransform: 'uppercase' as const, marginBottom: 8 }}>{p.category}</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#f0f6ff', lineHeight: 1.4, marginBottom: 8 }}>{p.title}</div>
