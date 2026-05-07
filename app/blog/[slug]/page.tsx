@@ -23,7 +23,7 @@ function renderContent(content: string) {
   let inTable = false
 
   const flushTable = (key: string) => {
-    if (tableBuffer.length < 2) { tableBuffer = []; inTable = false; return; }
+    if (tableBuffer.length < 2) { tableBuffer = []; inTable = false; return }
     const rows = tableBuffer.filter(r => r.trim() && !r.match(/^\|[-|\s]+\|$/))
     elements.push(
       <div key={key} style={{ overflowX: 'auto', margin: '24px 0' }}>
@@ -78,7 +78,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020818 0%, #070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
-      {/* Nav */}
       <div style={{ padding: '24px 40px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
           <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 32, height: 32 }} />
@@ -92,7 +91,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
       <div style={{ maxWidth: 780, margin: '0 auto', padding: '60px 24px 80px' }}>
 
-        {/* Post Header */}
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
             <span style={{ background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.3)', color: '#0ea5e9', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>
@@ -106,13 +104,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <p style={{ fontSize: 18, color: '#94a3b8', lineHeight: 1.6, borderLeft: '3px solid #0ea5e9', paddingLeft: 20 }}>{post.excerpt}</p>
         </div>
 
-        {/* Post Content */}
         <div style={{ marginBottom: 60 }}>
           {renderContent(post.content)}
         </div>
 
-        {/* CTA Box */}
-        <div style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(14,165,233,0.25)', borderRadius: 20, padding: 36, textAlign: 'center', marginBottom: 60 }}>
+        <div style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(14,165,233,0.25)', borderRadius: 20, padding: 36, textAlign: 'center' as const, marginBottom: 60 }}>
           <h3 style={{ fontSize: 24, fontWeight: 900, marginBottom: 12 }}>See How Much BoxFlow OS Saves Your Operation</h3>
           <p style={{ color: '#94a3b8', fontSize: 15, marginBottom: 24, lineHeight: 1.6 }}>Use our free ROI calculator to get your exact savings estimate in 60 seconds.</p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' as const }}>
@@ -125,16 +121,13 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        {/* Related Posts */}
         {allPosts.length > 0 && (
           <div>
             <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 20, color: '#f0f6ff' }}>More from the Blog</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
               {allPosts.map(p => (
                 <Link key={p.slug} href={`/blog/${p.slug}`} style={{ textDecoration: 'none' }}>
-                  <div style={{ background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(14,165,233,0.12)', borderRadius: 14, padding: 20, transition: 'border-color 0.2s' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(14,165,233,0.35)'}
-                    onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(14,165,233,0.12)'}>
+                  <div style={{ background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(14,165,233,0.12)', borderRadius: 14, padding: 20 }}>
                     <div style={{ fontSize: 11, color: '#0ea5e9', fontWeight: 700, textTransform: 'uppercase' as const, marginBottom: 8 }}>{p.category}</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#f0f6ff', lineHeight: 1.4, marginBottom: 8 }}>{p.title}</div>
                     <div style={{ fontSize: 12, color: '#0ea5e9', fontWeight: 600 }}>Read More →</div>
