@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import { getAllPosts } from '@/lib/blog-posts'
 import type { Metadata } from 'next'
