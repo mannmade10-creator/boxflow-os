@@ -1,4 +1,4 @@
-const CACHE_NAME = 'boxflow-os-v1';
+const CACHE_NAME = 'boxflow-os-v2';
 const STATIC_ASSETS = [
   '/',
   '/dashboard',
@@ -28,6 +28,17 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Never cache or intercept these paths — always fetch from network
+  const bypass = ['/blog', '/roi', '/boxflow-os', '/medflow-os', '/api'];
+  if (bypass.some(path => url.pathname.startsWith(path))) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Network first, fall back to cache for everything else
   event.respondWith(
     fetch(event.request)
       .then((response) => {
