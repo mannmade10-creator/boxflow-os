@@ -2,13 +2,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-// ── Supabase ─────────────────────────────────────────────────────────────────
 const supabase = createClient(
   'https://irifwmikcugfxpfhyfrm.supabase.co',
   'sb_publishable_kpguCeakweBu2T5JIYxdjw_0WP6mMsj'
 )
 
-// ── Zoho CRM (calls your API route) ──────────────────────────────────────────
 async function sendToZoho(data: Record<string, unknown>) {
   try {
     await fetch('/api/zoho-lead', {
@@ -21,7 +19,32 @@ async function sendToZoho(data: Record<string, unknown>) {
   }
 }
 
-// ── Save lead to Supabase + Zoho ─────────────────────────────────────────────
+async function sendToInstantly({ name, email, company, inputs, results, leadType }: {
+  name?: string; email: string; company?: string;
+  inputs: Record<string, unknown>; results: Record<string, number>; leadType: string
+}) {
+  try {
+    const nameParts = (name || '').split(' ')
+    await fetch('/api/instantly', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        first_name: nameParts[0] || '',
+        last_name: nameParts.slice(1).join(' ') || '',
+        company_name: company || '',
+        industry: inputs.industry || '',
+        trucks: String(inputs.trucks || ''),
+        employees: String(inputs.employees || ''),
+        estimated_savings: `$${Math.round(results.savings).toLocaleString()}/yr`,
+        lead_source: leadType === 'demo_request' ? 'Demo Request' : 'ROI Calculator',
+      }),
+    })
+  } catch (err) {
+    console.error('Instantly error:', err)
+  }
+}
+
 async function saveLead({
   name, email, company, leadType, inputs, results
 }: {
@@ -46,9 +69,11 @@ async function saveLead({
     payback_months: results.paybackMonths,
   }
 
+  // 1️⃣ Supabase
   const { error } = await supabase.from('roi_leads').insert([payload])
   if (error) console.error('Supabase insert error:', error)
 
+  // 2️⃣ Zoho CRM
   await sendToZoho({
     Last_Name: name?.split(' ').slice(1).join(' ') || 'Unknown',
     First_Name: name?.split(' ')[0] || '',
@@ -58,9 +83,11 @@ async function saveLead({
     Description: `Industry: ${inputs.industry || 'N/A'} | Trucks: ${inputs.trucks} | Employees: ${inputs.employees} | Est. Savings: $${Math.round(results.savings).toLocaleString()}/yr`,
     Annual_Revenue: Math.round(results.total),
   })
+
+  // 3️⃣ Instantly
+  await sendToInstantly({ name, email, company, inputs, results, leadType })
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n: number): string {
   if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M'
   if (n >= 1000) return '$' + Math.round(n / 1000) + 'K'
@@ -99,7 +126,6 @@ function calcResults(spend: Record<string, number>) {
   return { total, boxflowCost, savings, totalBenefit, paybackMonths }
 }
 
-// ── Animated number ───────────────────────────────────────────────────────────
 function AnimNum({ value }: { value: number }) {
   const [display, setDisplay] = useState(value)
   const ref = useRef(value)
@@ -117,7 +143,6 @@ function AnimNum({ value }: { value: number }) {
   return <span>{fmt(display)}</span>
 }
 
-// ── Slider ────────────────────────────────────────────────────────────────────
 function Slider({ label, value, min, max, step, format, onChange }: {
   label: string; value: number; min: number; max: number; step: number;
   format: (v: number) => string; onChange: (v: number) => void
@@ -140,7 +165,6 @@ function Slider({ label, value, min, max, step, format, onChange }: {
   )
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
 export default function ROIPage() {
   const [industry, setIndustry]     = useState<string | null>(null)
   const [trucks, setTrucks]         = useState(20)
@@ -148,10 +172,8 @@ export default function ROIPage() {
   const [locations, setLocations]   = useState(3)
   const [orders, setOrders]         = useState(200)
   const [otherSpend, setOtherSpend] = useState(500000)
-
   const [email, setEmail]           = useState('')
   const [emailStatus, setEmailStatus] = useState<null | 'sending' | 'sent' | 'error'>(null)
-
   const [showModal, setShowModal]   = useState(false)
   const [modalShown, setModalShown] = useState(false)
   const [demoName, setDemoName]     = useState('')
@@ -238,7 +260,6 @@ export default function ROIPage() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))', gap: 20 }}>
-
           <div style={{ background: 'rgba(12,26,56,0.9)', border: '1px solid rgba(14,165,233,0.18)', borderRadius: 20, padding: 28 }}>
             <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#64748b', marginBottom: 24 }}>⚙️  Your Operation</div>
             <Slider label="Trucks / Vehicles"     value={trucks}     min={1}  max={200}      step={1}     format={v => String(v)}                                         onChange={setTrucks} />
@@ -246,7 +267,6 @@ export default function ROIPage() {
             <Slider label="Locations"             value={locations}  min={1}  max={50}       step={1}     format={v => String(v)}                                         onChange={setLocations} />
             <Slider label="Orders Per Month"      value={orders}     min={10} max={10000}    step={10}    format={v => v >= 1000 ? `${(v/1000).toFixed(1)}K` : String(v)} onChange={setOrders} />
             <Slider label="Other Annual SW Spend" value={otherSpend} min={0}  max={10000000} step={10000} format={v => fmt(v)}                                            onChange={setOtherSpend} />
-
             <div style={{ marginTop: 8, padding: 20, background: 'rgba(2,8,24,0.5)', borderRadius: 16 }}>
               <div style={{ color: '#64748b', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', marginBottom: 14 }}>💸  Estimated Current Annual Spend</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -337,12 +357,10 @@ export default function ROIPage() {
           <div style={{ background: '#0c1a38', border: '1px solid rgba(14,165,233,0.35)', borderRadius: 24, padding: 40, maxWidth: 480, width: '100%', position: 'relative' }}>
             <button onClick={() => setShowModal(false)}
               style={{ position: 'absolute', top: 16, right: 16, width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
-
             <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 36, fontWeight: 900, color: '#10b981' }}>{fmtFull(results.savings)}/yr</div>
               <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>your estimated annual savings with BoxFlow OS</div>
             </div>
-
             {demoStatus === 'booked' ? (
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
