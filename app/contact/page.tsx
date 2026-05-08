@@ -1,161 +1,162 @@
 'use client'
+import Link from 'next/link'
+import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
-import React, { useState } from 'react'
+const supabase = createClient(
+  'https://irifwmikcugfxpfhyfrm.supabase.co',
+  'sb_publishable_kpguCeakweBu2T5JIYxdjw_0WP6mMsj'
+)
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', company: '', trucks: '', message: '', plan: 'Professional' })
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', trucks: '', message: '', interest: 'BoxFlow OS Demo' })
+  const [status, setStatus] = useState<null | 'sending' | 'sent' | 'error'>(null)
+
+  function update(field: string, value: string) {
+    setForm(prev => ({ ...prev, [field]: value }))
+  }
 
   async function handleSubmit() {
-    if (!form.name || !form.email || !form.company) {
-      alert('Please fill in name, email, and company.')
-      return
+    if (!form.name || !form.email) return
+    setStatus('sending')
+    try {
+      await supabase.from('contact_leads').insert([{
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        phone: form.phone,
+        trucks: form.trucks ? Number(form.trucks) : null,
+        message: form.message,
+        interest: form.interest,
+      }])
+      setStatus('sent')
+    } catch {
+      setStatus('error')
     }
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 1500))
-    setSubmitted(true)
-    setLoading(false)
   }
 
-  if (submitted) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(180deg, #020617 0%, #0b1220 100%)', fontFamily: 'Arial' }}>
-        <div style={{ textAlign: 'center', maxWidth: 500, padding: 40 }}>
-          <div style={{ fontSize: 80, marginBottom: 24 }}>🎉</div>
-          <h1 style={{ fontSize: 40, fontWeight: 900, color: '#fff', margin: '0 0 16px' }}>You're on the list!</h1>
-          <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32, lineHeight: 1.6 }}>
-            Thanks {form.name}! We'll reach out to <strong style={{ color: '#60a5fa' }}>{form.email}</strong> within 24 hours to schedule your demo.
-          </p>
-          <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 16, padding: 20, marginBottom: 28 }}>
-            <div style={{ color: '#22c55e', fontWeight: 800, fontSize: 16, marginBottom: 8 }}>What happens next:</div>
-            <div style={{ color: '#cbd5e1', fontSize: 14, lineHeight: 1.8 }}>
-              ✓ You'll receive a confirmation email<br/>
-              ✓ Our team will contact you within 24hrs<br/>
-              ✓ We'll schedule a live demo of BoxFlow OS<br/>
-              ✓ 14-day free trial starts immediately
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/dashboard" style={{ padding: '14px 28px', background: '#2563eb', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800 }}>View Live Demo</a>
-            <a href="/pricing" style={{ padding: '14px 28px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800 }}>See Pricing</a>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const inputStyle = { width: '100%', background: 'rgba(7,15,36,0.8)', border: '1px solid rgba(14,165,233,0.2)', borderRadius: 10, padding: '13px 16px', fontSize: 15, color: '#f0f6ff', fontFamily: 'inherit', outline: 'none' }
+  const labelStyle = { display: 'block', fontSize: 13, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 8 }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 50% 0%, rgba(37,99,235,0.15), transparent 60%), linear-gradient(180deg, #020617 0%, #0b1220 100%)', color: '#fff', fontFamily: 'Arial, sans-serif', padding: '60px 20px' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020818 0%, #070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
-        <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 32 }}>
-            <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 40, height: 40 }} />
-            <span style={{ color: '#fff', fontWeight: 900, fontSize: 20 }}>BoxFlow OS</span>
-          </a>
-          <div style={{ display: 'inline-block', padding: '6px 16px', borderRadius: 999, background: 'rgba(37,99,235,0.14)', border: '1px solid rgba(96,165,250,0.24)', color: '#93c5fd', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20 }}>Get Started</div>
-          <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 16px', lineHeight: 1.1 }}>Start Your Free Trial</h1>
-          <p style={{ color: '#94a3b8', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>
-            14 days free. No credit card. Full access to every feature. Our team will set you up personally.
-          </p>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 40px', borderBottom: '1px solid rgba(14,165,233,0.1)', position: 'sticky', top: 0, background: 'rgba(2,8,24,0.9)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+          <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 36, height: 36 }} />
+          <span style={{ fontWeight: 900, fontSize: 18, color: '#fff' }}>BoxFlow OS</span>
+        </Link>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <Link href="/pricing" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none' }}>Pricing</Link>
+          <Link href="/roi" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none' }}>ROI Calculator</Link>
+          <Link href="/login" style={{ padding: '8px 20px', background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: 8, color: '#0ea5e9', fontSize: 14, fontWeight: 700, textDecoration: 'none' }}>Log In</Link>
         </div>
+      </nav>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'start' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 60, alignItems: 'start' }}>
+
+          {/* LEFT */}
           <div>
-            <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 24, padding: 32 }}>
-              <h2 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 24px', color: '#fff' }}>Tell us about your operation</h2>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.2)', borderRadius: 100, padding: '6px 16px', fontSize: 12, fontWeight: 700, color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 24 }}>
+              Get in Touch
+            </div>
+            <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, lineHeight: 1.1, margin: '0 0 20px' }}>
+              Let's Talk About<br /><span style={{ color: '#0ea5e9' }}>Your Operation.</span>
+            </h1>
+            <p style={{ color: '#94a3b8', fontSize: 17, lineHeight: 1.6, marginBottom: 48 }}>
+              Book a 30-minute demo, ask a question, or tell us about your operation. We'll show you exactly what BoxFlow OS looks like inside a business like yours.
+            </p>
 
-              <div style={{ display: 'grid', gap: 18 }}>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Full Name *</label>
-                  <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="John Smith" style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(148,163,184,0.2)', background: 'rgba(2,6,23,0.5)', color: '#fff', fontSize: 15, outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Work Email *</label>
-                  <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="john@company.com" style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(148,163,184,0.2)', background: 'rgba(2,6,23,0.5)', color: '#fff', fontSize: 15, outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Company Name *</label>
-                  <input value={form.company} onChange={e => setForm({...form, company: e.target.value})} placeholder="Acme Logistics Co." style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(148,163,184,0.2)', background: 'rgba(2,6,23,0.5)', color: '#fff', fontSize: 15, outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Number of Trucks</label>
-                  <select value={form.trucks} onChange={e => setForm({...form, trucks: e.target.value})} style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(148,163,184,0.2)', background: 'rgba(2,6,23,0.5)', color: '#fff', fontSize: 15, outline: 'none', boxSizing: 'border-box' }}>
-                    <option value="">Select fleet size</option>
-                    <option>1-5 trucks</option>
-                    <option>6-15 trucks</option>
-                    <option>16-50 trucks</option>
-                    <option>50+ trucks</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Interested Plan</label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                    {['Starter', 'Professional', 'Enterprise'].map(plan => (
-                      <button key={plan} onClick={() => setForm({...form, plan})} style={{ padding: '10px', borderRadius: 10, border: form.plan === plan ? '2px solid #2563eb' : '1px solid rgba(148,163,184,0.2)', background: form.plan === plan ? 'rgba(37,99,235,0.2)' : 'rgba(2,6,23,0.5)', color: form.plan === plan ? '#60a5fa' : '#94a3b8', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>{plan}</button>
-                    ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {[
+                { icon: '📞', title: 'Book a Demo', desc: '30 minutes. We show you BoxFlow OS live in your industry. No pitch. Just the product.' },
+                { icon: '💰', title: 'Get a Custom ROI Estimate', desc: 'Tell us your stack and we\'ll show you exactly what you\'d save switching to BoxFlow OS.' },
+                { icon: '🤝', title: 'Talk to Sales', desc: 'Ready to move forward? Our team will build a custom plan and get you live in 48 hours.' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div style={{ width: 44, height: 44, background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{item.icon}</div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{item.title}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.5 }}>{item.desc}</div>
                   </div>
                 </div>
-                <div>
-                  <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Tell us about your needs</label>
-                  <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} placeholder="We currently manage 20 trucks and need better dispatch and client visibility..." rows={4} style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(148,163,184,0.2)', background: 'rgba(2,6,23,0.5)', color: '#fff', fontSize: 15, outline: 'none', boxSizing: 'border-box', resize: 'vertical', fontFamily: 'Arial' }} />
-                </div>
-                <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', border: 'none', borderRadius: 14, color: '#fff', fontWeight: 800, fontSize: 16, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.8 : 1, boxShadow: '0 0 30px rgba(37,99,235,0.3)' }}>
-                  {loading ? 'Submitting...' : 'Start My Free Trial →'}
-                </button>
-                <p style={{ color: '#64748b', fontSize: 12, textAlign: 'center', margin: 0 }}>
-                  ✓ 14-day free trial &nbsp; ✓ No credit card &nbsp; ✓ Cancel anytime
-                </p>
-              </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 48, padding: 24, background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: 16 }}>
+              <p style={{ color: '#64748b', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Direct Contact</p>
+              <p style={{ color: '#cbd5e1', fontSize: 15, marginBottom: 8 }}>📧 hello@boxflowos.com</p>
+              <p style={{ color: '#cbd5e1', fontSize: 15 }}>🌐 Made Technologies Inc</p>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gap: 20 }}>
-            <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 24, padding: 28 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 800, margin: '0 0 20px', color: '#fff' }}>What you get immediately</h3>
-              <div style={{ display: 'grid', gap: 14 }}>
-                {[
-                  { icon: '🚀', title: 'Full Platform Access', desc: 'Every module unlocked from day one' },
-                  { icon: '🤖', title: 'AI Control Panel', desc: 'Optimize production and dispatch instantly' },
-                  { icon: '🗺️', title: 'Live Fleet Map', desc: 'Real GPS tracking for all your trucks' },
-                  { icon: '👥', title: 'Client Portal', desc: 'Give clients live order visibility' },
-                  { icon: '📊', title: 'Analytics Dashboard', desc: 'Real-time KPIs and efficiency metrics' },
-                  { icon: '🎯', title: 'Personal Onboarding', desc: 'Our team sets you up step by step' },
-                ].map(item => (
-                  <div key={item.title} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                    <div style={{ fontSize: 24, flexShrink: 0 }}>{item.icon}</div>
-                    <div>
-                      <div style={{ fontWeight: 800, color: '#fff', fontSize: 15, marginBottom: 2 }}>{item.title}</div>
-                      <div style={{ color: '#94a3b8', fontSize: 13 }}>{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
+          {/* RIGHT — FORM */}
+          <div style={{ background: 'rgba(12,26,56,0.9)', border: '1px solid rgba(14,165,233,0.18)', borderRadius: 24, padding: 36 }}>
+            {status === 'sent' ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{ fontSize: 56, marginBottom: 20 }}>🎉</div>
+                <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 12 }}>We Got Your Message!</h2>
+                <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.6 }}>Our team will reach out within 24 hours. In the meantime, check out the ROI calculator to see your savings.</p>
+                <Link href="/roi" style={{ display: 'inline-block', marginTop: 24, padding: '12px 28px', background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)', color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700 }}>See Your Savings →</Link>
               </div>
-            </div>
+            ) : (
+              <>
+                <h2 style={{ fontSize: 22, fontWeight: 900, marginBottom: 8 }}>Book a Demo or Get in Touch</h2>
+                <p style={{ color: '#64748b', fontSize: 14, marginBottom: 28 }}>We respond within 24 hours.</p>
 
-            <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 24, padding: 28 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 800, margin: '0 0 16px', color: '#fff' }}>Trusted by logistics companies</h3>
-              <div style={{ display: 'grid', gap: 14 }}>
-                {[
-                  { quote: 'Replaced 4 tools with BoxFlow OS. Saving $3,200/month.', author: 'Mike R., Fleet Manager' },
-                  { quote: 'Our clients love the real-time tracking portal. Game changer.', author: 'Sarah K., Operations Director' },
-                  { quote: 'The AI dispatch alone paid for the entire subscription in week one.', author: 'James T., Logistics Owner' },
-                ].map(t => (
-                  <div key={t.author} style={{ background: 'rgba(2,6,23,0.45)', border: '1px solid rgba(148,163,184,0.1)', borderRadius: 14, padding: 16 }}>
-                    <div style={{ color: '#cbd5e1', fontSize: 14, lineHeight: 1.5, marginBottom: 8 }}>"{t.quote}"</div>
-                    <div style={{ color: '#64748b', fontSize: 12, fontWeight: 700 }}>— {t.author}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Your Name *</label>
+                    <input style={inputStyle} placeholder="Kenneth Covington" value={form.name} onChange={e => update('name', e.target.value)} />
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div>
+                    <label style={labelStyle}>Work Email *</label>
+                    <input style={inputStyle} type="email" placeholder="you@company.com" value={form.email} onChange={e => update('email', e.target.value)} />
+                  </div>
+                </div>
 
-            <div style={{ background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: 20, padding: 24, textAlign: 'center' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📞</div>
-              <div style={{ fontWeight: 800, color: '#fff', fontSize: 16, marginBottom: 4 }}>Prefer to talk first?</div>
-              <div style={{ color: '#94a3b8', fontSize: 14, marginBottom: 16 }}>Schedule a 15-min call with our team</div>
-              <a href="mailto:sales@boxflowos.com" style={{ padding: '12px 24px', background: '#2563eb', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 14 }}>Email Sales Team</a>
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Company Name</label>
+                    <input style={inputStyle} placeholder="Your Company" value={form.company} onChange={e => update('company', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Phone Number</label>
+                    <input style={inputStyle} placeholder="+1 (555) 000-0000" value={form.phone} onChange={e => update('phone', e.target.value)} />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Number of Trucks</label>
+                    <input style={inputStyle} type="number" placeholder="20" value={form.trucks} onChange={e => update('trucks', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>I'm Interested In</label>
+                    <select style={{ ...inputStyle, cursor: 'pointer' }} value={form.interest} onChange={e => update('interest', e.target.value)}>
+                      <option>BoxFlow OS Demo</option>
+                      <option>MedFlow OS Demo</option>
+                      <option>Pricing Information</option>
+                      <option>Enterprise Plan</option>
+                      <option>General Question</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  <label style={labelStyle}>Message</label>
+                  <textarea style={{ ...inputStyle, minHeight: 100, resize: 'vertical' as const }} placeholder="Tell us about your operation — fleet size, locations, what you're currently using..." value={form.message} onChange={e => update('message', e.target.value)} />
+                </div>
+
+                <button onClick={handleSubmit} disabled={status === 'sending' || !form.name || !form.email}
+                  style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', opacity: (!form.name || !form.email) ? 0.6 : 1 }}>
+                  {status === 'sending' ? 'Sending…' : 'Send Message →'}
+                </button>
+                {status === 'error' && <p style={{ color: '#ef4444', fontSize: 13, textAlign: 'center', marginTop: 10 }}>Something went wrong. Please try again.</p>}
+                <p style={{ color: '#475569', fontSize: 12, textAlign: 'center', marginTop: 12 }}>We respond within 24 hours. No spam, ever.</p>
+              </>
+            )}
           </div>
         </div>
       </div>
