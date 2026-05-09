@@ -107,7 +107,7 @@ export default function MedFlowLogin() {
         </div>
             <div style={{ marginTop:20, textAlign:'center' }}>
               <span style={{ fontSize:12, color:'#2E5470' }}>No subscription? </span>
-              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#14D2C2', fontSize:12, cursor:'pointer', fontWeight:600 }}>View plans â†â€™</button>
+              <button onClick={()=>setTab('signup')} style={{ background:'none', border:'none', color:'#14D2C2', fontSize:12, cursor:'pointer', fontWeight:600 }}>View plans ← BACK TO PLATFORM SELECT
             </div>
           </div>
         )}
@@ -137,7 +137,7 @@ export default function MedFlowLogin() {
               ))}
             </div>
             <button onClick={()=>setStep('account')} style={{ width:'100%', padding:'13px', borderRadius:11, background:`linear-gradient(135deg,#0A6E68,${selectedPlan.color})`, border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>
-              Continue with {selectedPlan.name} Plan â†â€™
+              Continue with {selectedPlan.name} Plan ← BACK TO PLATFORM SELECT
             </button>
           </div>
         )}
@@ -154,7 +154,7 @@ export default function MedFlowLogin() {
             <button onClick={signUp} disabled={loading} style={{ width:'100%', padding:'13px', borderRadius:11, background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif", opacity:loading?.7:1, marginBottom:10 }}>
               {loading?'Creating account...':'Start Free Trial'}
             </button>
-            <button onClick={()=>setStep('plan')} style={{ width:'100%', padding:'10px', borderRadius:11, background:'transparent', border:'1px solid #152840', color:'#4A7090', fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>â†Â Back to plan selection</button>
+            <button onClick={()=>setStep('plan')} style={{ width:'100%', padding:'10px', borderRadius:11, background:'transparent', border:'1px solid #152840', color:'#4A7090', fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>← BACK TO PLATFORM SELECT Back to plan selection</button>
             {message && <div style={{ marginTop:14, color:message.includes('failed')?'#F43F5E':'#22D3A5', fontSize:12, fontFamily:"'Geist Mono',monospace", textAlign:'center' }}>{message}</div>}
             <p style={{ fontSize:10, color:'#2E5070', textAlign:'center', marginTop:16, lineHeight:1.6 }}>HIPAA compliant. Billing begins after your free trial. Cancel anytime.</p>
           </div>
@@ -166,12 +166,13 @@ export default function MedFlowLogin() {
         </div>
 
         <div style={{ marginTop:20, textAlign:'center' }}>
-          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E5070', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>â†Â BACK TO PLATFORM SELECT</button>
+          <button onClick={()=>router.push('/')} style={{ background:'transparent', border:'none', color:'#2E5070', fontSize:11, fontFamily:"'Geist Mono',monospace", cursor:'pointer', letterSpacing:1.5 }}>← BACK TO PLATFORM SELECT BACK TO PLATFORM SELECT</button>
         </div>
         <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#152840', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>HIPAA COMPLIANT Â· USP &lt;797&gt; / &lt;800&gt; Â· MADE TECHNOLOGIES INC</div>
       </div>
     </main>
   );
 }
+
 
 
