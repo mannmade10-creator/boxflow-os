@@ -46,16 +46,7 @@ export default function MedFlowHome() {
           <span style={{ fontSize: 11, color: '#14D2C2', fontFamily: "'Geist Mono', monospace", letterSpacing: 2 }}>HIPAA COMPLIANT · USP &lt;797&gt; / &lt;800&gt;</span>
         </div>
 
-        {/* Demo + Learn More links */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 8, animation: 'fadeIn 1.2s ease forwards' }}>
-          <a href="/medflow-os" style={{ padding: '10px 22px', background: 'rgba(20,210,194,0.08)', border: '1px solid rgba(20,210,194,0.3)', borderRadius: 10, color: '#14D2C2', fontSize: 13, fontWeight: 600, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
-            Learn More →
-          </a>
-          <a href="/roi" style={{ padding: '10px 22px', background: 'linear-gradient(135deg, #0A6E68, #14D2C2)', borderRadius: 10, color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
-            Request a Demo
-          </a>
-        </div>
-
+        
         <div style={{ fontSize: 11, color: '#1A3040', fontFamily: "'Geist Mono', monospace", marginTop: 4 }}>
           {redirecting ? 'Redirecting to login...' : 'Redirecting to login in a moment...'}
         </div>

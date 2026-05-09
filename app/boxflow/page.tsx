@@ -43,16 +43,7 @@ export default function BoxFlowHome() {
           <span style={{ fontSize: 15, color: '#2E5070', fontFamily: "'Geist Mono', monospace" }}>by M.A.D.E Technologies Inc.</span>
         </div>
 
-        {/* Demo + Learn More links */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 16, animation: 'fadeIn 1.2s ease forwards' }}>
-          <a href="/boxflow-os" style={{ padding: '10px 22px', background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.35)', borderRadius: 10, color: '#60a5fa', fontSize: 13, fontWeight: 600, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
-            Learn More →
-          </a>
-          <a href="/roi" style={{ padding: '10px 22px', background: 'linear-gradient(135deg, #1d4ed8, #2563EB)', borderRadius: 10, color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
-            Request a Demo
-          </a>
-        </div>
-
+        
         <div style={{ fontSize: 11, color: '#1E3A5F', fontFamily: "'Geist Mono', monospace", marginTop: 4 }}>
           {redirecting ? 'Redirecting to login...' : 'Redirecting to login in a moment...'}
         </div>
