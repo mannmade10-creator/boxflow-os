@@ -1,11 +1,16 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function MedFlowHome() {
   const router = useRouter()
+  const [redirecting, setRedirecting] = useState(false)
+
   useEffect(() => {
-    const timer = setTimeout(() => router.push('/medflow-login'), 2500)
+    const timer = setTimeout(() => {
+      setRedirecting(true)
+      router.push('/medflow-login')
+    }, 2500)
     return () => clearTimeout(timer)
   }, [])
 
@@ -16,10 +21,13 @@ export default function MedFlowHome() {
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes glow { 0%, 100% { box-shadow: 0 0 60px rgba(20,210,194,0.4); } 50% { box-shadow: 0 0 100px rgba(20,210,194,0.7); } }
       `}</style>
+
       <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(20,210,194,0.07) 0%, transparent 70%)', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }} />
+
       {['tl','tr','bl','br'].map(c => (
         <div key={c} style={{ position: 'fixed', width: 28, height: 28, top: c.includes('t') ? 20 : 'auto', bottom: c.includes('b') ? 20 : 'auto', left: c.includes('l') ? 20 : 'auto', right: c.includes('r') ? 20 : 'auto', borderTop: c.includes('t') ? '1px solid rgba(20,210,194,0.25)' : 'none', borderBottom: c.includes('b') ? '1px solid rgba(20,210,194,0.25)' : 'none', borderLeft: c.includes('l') ? '1px solid rgba(20,210,194,0.25)' : 'none', borderRight: c.includes('r') ? '1px solid rgba(20,210,194,0.25)' : 'none' }} />
       ))}
+
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, animation: 'fadeIn 0.8s ease forwards' }}>
         <div style={{ width: 110, height: 110, borderRadius: 28, background: 'linear-gradient(135deg, #0A6E68, #14D2C2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52, animation: 'glow 2s ease infinite' }}>
           ⚕
@@ -34,8 +42,22 @@ export default function MedFlowHome() {
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#14D2C2', animation: 'pulse 1.2s ease infinite' }} />
           <span style={{ fontSize: 15, color: '#1A3040', fontFamily: "'Geist Mono', monospace" }}>by M.A.D.E Technologies Inc.</span>
         </div>
-        <div style={{ marginTop: 8, padding: '6px 16px', borderRadius: 20, border: '1px solid rgba(20,210,194,0.2)', background: 'rgba(20,210,194,0.05)' }}>
+        <div style={{ marginTop: 4, padding: '6px 16px', borderRadius: 20, border: '1px solid rgba(20,210,194,0.2)', background: 'rgba(20,210,194,0.05)' }}>
           <span style={{ fontSize: 11, color: '#14D2C2', fontFamily: "'Geist Mono', monospace", letterSpacing: 2 }}>HIPAA COMPLIANT · USP &lt;797&gt; / &lt;800&gt;</span>
+        </div>
+
+        {/* Demo + Learn More links */}
+        <div style={{ display: 'flex', gap: 12, marginTop: 8, animation: 'fadeIn 1.2s ease forwards' }}>
+          <a href="/medflow-os" style={{ padding: '10px 22px', background: 'rgba(20,210,194,0.08)', border: '1px solid rgba(20,210,194,0.3)', borderRadius: 10, color: '#14D2C2', fontSize: 13, fontWeight: 600, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
+            Learn More →
+          </a>
+          <a href="/roi" style={{ padding: '10px 22px', background: 'linear-gradient(135deg, #0A6E68, #14D2C2)', borderRadius: 10, color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', fontFamily: "'Geist Mono', monospace", letterSpacing: 0.5 }}>
+            Request a Demo
+          </a>
+        </div>
+
+        <div style={{ fontSize: 11, color: '#1A3040', fontFamily: "'Geist Mono', monospace", marginTop: 4 }}>
+          {redirecting ? 'Redirecting to login...' : 'Redirecting to login in a moment...'}
         </div>
       </div>
     </main>
