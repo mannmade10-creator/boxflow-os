@@ -3,8 +3,9 @@ import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
   host: 'smtppro.zoho.com',
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,
+  requireTLS: true,
   auth: {
     user: 'kenneth.covington@boxflowos.com',
     pass: process.env.ZOHO_SMTP_PASSWORD,
@@ -21,12 +22,16 @@ async function getZohoToken() {
 }
 
 async function sendEmail(to: string, subject: string, html: string) {
-  await transporter.sendMail({
-    from: '"BoxFlow OS" <kenneth.covington@boxflowos.com>',
-    to,
-    subject,
-    html,
-  })
+  try {
+    await transporter.sendMail({
+      from: '"BoxFlow OS" <kenneth.covington@boxflowos.com>',
+      to,
+      subject,
+      html,
+    })
+  } catch (err) {
+    console.error('SMTP email error:', err)
+  }
 }
 
 export async function POST(req: Request) {
@@ -56,7 +61,7 @@ export async function POST(req: Request) {
     const savings = body.Description?.match(/Est\. Savings: (.+?)\/yr/)?.[1] || 'N/A'
     const industry = body.Description?.match(/Industry: (.+?) \|/)?.[1] || 'N/A'
 
-    // 2️⃣ Notify you instantly
+    // 2️⃣ Notify Kenneth instantly
     await sendEmail(
       'kenneth.covington@boxflowos.com',
       `🔥 New BoxFlow OS Lead — ${leadName} from ${leadCompany}`,
@@ -118,6 +123,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true, zoho: zohoData })
+
   } catch (err) {
     console.error('Zoho lead error:', err)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
