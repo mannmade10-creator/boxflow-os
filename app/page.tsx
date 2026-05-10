@@ -55,10 +55,18 @@ const PLATFORMS = [
   },
 ];
 
+const PRODUCTS = [
+  { name: 'BoxFlow OS', color: '#2563EB', icon: '📦', desc: 'Logistics, fleet, dispatch, orders, production, and HR — unified in one AI-powered platform.' },
+  { name: 'MedFlow OS', color: '#14D2C2', icon: '⚕️', desc: 'Healthcare supply chain, cold chain, compliance, and pharmacy operations — purpose-built.' },
+  { name: 'PropFlow OS', color: '#F59E0B', icon: '🏢', desc: 'Property management, tenant portals, maintenance, and finance — all in one place.' },
+  { name: 'ClassFlow AI', color: '#A78BFA', icon: '🎓', desc: 'Education operations, scheduling, enrollment, and adaptive learning — built for institutions.' },
+];
+
 export default function PlatformHub() {
   const router = useRouter();
   const [screen,        setScreen]        = useState('splash');
   const [splashOpacity, setSplashOpacity] = useState(0);
+  const [madeOpacity,   setMadeOpacity]   = useState(0);
   const [cardsOpacity,  setCardsOpacity]  = useState(0);
   const [selectedId,    setSelectedId]    = useState(null);
   const [transitioning, setTransitioning] = useState(false);
@@ -68,11 +76,19 @@ export default function PlatformHub() {
     const t0 = setTimeout(() => setSplashOpacity(1), 50);
     const t1 = setTimeout(() => setSplashOpacity(0), 2800);
     const t2 = setTimeout(() => {
-      setScreen('cards');
-      setTimeout(() => setCardsOpacity(1), 50);
+      setScreen('made');
+      setTimeout(() => setMadeOpacity(1), 50);
     }, 3500);
     return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
   }, []);
+
+  const goToCards = () => {
+    setMadeOpacity(0);
+    setTimeout(() => {
+      setScreen('cards');
+      setTimeout(() => setCardsOpacity(1), 50);
+    }, 500);
+  };
 
   const selectPlatform = (p) => {
     if (transitioning) return;
@@ -96,6 +112,8 @@ export default function PlatformHub() {
         @keyframes textIn  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         @keyframes cardIn  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes tspin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         .ring-a { animation: rot-cw  12s linear infinite; transform-origin: 50% 50%; }
         .ring-b { animation: rot-ccw  7s linear infinite; transform-origin: 50% 50%; }
@@ -135,8 +153,15 @@ export default function PlatformHub() {
         .t-name  { font-size:34px; font-weight:900; letter-spacing:-1.2px; }
 
         .hub-foot { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:2.5px; color:#0D1B28; font-family:'Geist Mono',monospace; white-space:nowrap; z-index:5; }
+        .made-nav-link { color:#2E5470; text-decoration:none; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:1px; transition:color 0.15s; }
+        .made-nav-link:hover { color:#EEF6FB; }
+        .prod-card { transition:transform 0.2s, border-color 0.2s; cursor:default; }
+        .prod-card:hover { transform:translateY(-3px); }
+        .enter-btn { transition:all 0.2s; cursor:pointer; }
+        .enter-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(37,99,235,0.4); }
       `}</style>
 
+      {/* SPLASH SCREEN */}
       {screen === 'splash' && (
         <div style={{ position:'fixed', inset:0, zIndex:100, background:'#000', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:28, opacity:splashOpacity, transition:'opacity 0.7s ease' }}>
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, opacity:0.6 }}>
@@ -186,13 +211,116 @@ export default function PlatformHub() {
         </div>
       )}
 
+      {/* MADE TECHNOLOGIES LANDING */}
+      {screen === 'made' && (
+        <div style={{ width:'100%', minHeight:'100vh', background:'#04080F', display:'flex', flexDirection:'column', opacity:madeOpacity, transition:'opacity 0.5s ease', overflowY:'auto' }}>
+          <div className="sel-grid" />
+          <div className="corner c-tl" /><div className="corner c-tr" /><div className="corner c-bl" /><div className="corner c-br" />
+
+          {/* Nav */}
+          <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 48px', borderBottom:'1px solid rgba(255,255,255,0.04)', position:'sticky', top:0, background:'rgba(4,8,15,0.92)', backdropFilter:'blur(12px)', zIndex:10, flexShrink:0 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+              <div style={{ width:34, height:34, borderRadius:9, background:'linear-gradient(135deg,#0A6E68,#14D2C2)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:16, color:'#fff' }}>M</div>
+              <div>
+                <div style={{ fontSize:15, fontWeight:900, color:'#EEF6FB', letterSpacing:-0.3 }}>Made Technologies</div>
+                <div style={{ fontSize:8, color:'#14D2C2', letterSpacing:2, textTransform:'uppercase' }}>Enterprise Suite</div>
+              </div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:24 }}>
+              <a href="/about" className="made-nav-link">About</a>
+              <a href="/pricing" className="made-nav-link">Pricing</a>
+              <a href="/demo" className="made-nav-link">Demo</a>
+              <a href="/contact" className="made-nav-link">Contact</a>
+              <button onClick={goToCards} className="enter-btn" style={{ padding:'9px 22px', background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', borderRadius:10, color:'#fff', fontSize:13, fontWeight:700, fontFamily:"'Outfit',sans-serif" }}>
+                Enter Platform →
+              </button>
+            </div>
+          </nav>
+
+          {/* Hero */}
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'80px 32px 60px', textAlign:'center', animation:'fadeUp 0.8s ease both' }}>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(20,210,194,0.08)', border:'1px solid rgba(20,210,194,0.2)', borderRadius:100, padding:'6px 18px', fontSize:10, fontWeight:700, color:'#14D2C2', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:24, fontFamily:"'Geist Mono',monospace" }}>
+              <span style={{ width:6, height:6, borderRadius:'50%', background:'#14D2C2', display:'inline-block', animation:'pulse 2s infinite' }} />
+              Made Technologies Inc — Enterprise Software Suite
+            </div>
+            <h1 style={{ fontSize:'clamp(36px,5.5vw,64px)', fontWeight:900, lineHeight:1.05, margin:'0 0 22px', letterSpacing:-2, color:'#EEF6FB' }}>
+              One Company.<br />
+              <span style={{ color:'#14D2C2' }}>Every Industry.</span><br />
+              Built to Last.
+            </h1>
+            <p style={{ color:'#4A7090', fontSize:17, maxWidth:560, margin:'0 auto 44px', lineHeight:1.7, fontFamily:"'Outfit',sans-serif" }}>
+              We build purpose-built operating systems for industries that can't afford to run on generic software. Healthcare. Logistics. Property. Education.
+            </p>
+            <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
+              <button onClick={goToCards} className="enter-btn" style={{ padding:'15px 36px', background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', borderRadius:14, color:'#fff', fontSize:16, fontWeight:800, fontFamily:"'Outfit',sans-serif" }}>
+                Enter Platform Suite →
+              </button>
+              <a href="/demo" style={{ padding:'15px 36px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:14, color:'#EEF6FB', fontSize:16, fontWeight:700, textDecoration:'none', fontFamily:"'Outfit',sans-serif" }}>
+                Book a Demo
+              </a>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'0 32px 60px' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:14 }}>
+              {[['4','Industry Platforms'],['48hrs','Average Go-Live'],['60–80%','Cost Reduction'],['100%','Built in the USA']].map(([v,l],i) => (
+                <div key={i} style={{ background:'rgba(11,24,38,0.8)', border:'1px solid rgba(20,210,194,0.1)', borderRadius:14, padding:'20px 16px', textAlign:'center' }}>
+                  <div style={{ fontSize:28, fontWeight:900, color:'#14D2C2', marginBottom:5 }}>{v}</div>
+                  <div style={{ fontSize:11, color:'#2E5470', fontFamily:"'Geist Mono',monospace", letterSpacing:1 }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Products */}
+          <div style={{ maxWidth:900, margin:'0 auto', padding:'0 32px 60px' }}>
+            <div style={{ textAlign:'center', marginBottom:36 }}>
+              <h2 style={{ fontSize:28, fontWeight:900, color:'#EEF6FB', marginBottom:8 }}>Our Platform Suite</h2>
+              <p style={{ color:'#2E5470', fontSize:14, fontFamily:"'Geist Mono',monospace" }}>Four industry-specific operating systems. One company behind them all.</p>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(400px,1fr))', gap:16 }}>
+              {PRODUCTS.map((p,i) => (
+                <div key={i} className="prod-card" style={{ background:'rgba(11,24,38,0.8)', border:`1px solid ${p.color}18`, borderRadius:18, padding:26 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
+                    <div style={{ width:44, height:44, borderRadius:12, background:`${p.color}12`, border:`1px solid ${p.color}25`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>{p.icon}</div>
+                    <div style={{ fontSize:17, fontWeight:800, color:p.color }}>{p.name}</div>
+                  </div>
+                  <p style={{ color:'#4A7090', fontSize:13, lineHeight:1.6, margin:0 }}>{p.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div style={{ maxWidth:660, margin:'0 auto', padding:'0 32px 80px', textAlign:'center' }}>
+            <div style={{ background:'rgba(11,24,38,0.8)', border:'1px solid rgba(20,210,194,0.15)', borderRadius:20, padding:36 }}>
+              <h3 style={{ fontSize:22, fontWeight:900, color:'#EEF6FB', marginBottom:10 }}>Ready to See It in Your Operation?</h3>
+              <p style={{ color:'#4A7090', fontSize:14, marginBottom:24, lineHeight:1.6 }}>Book a 30-minute demo. We'll show you exactly what your platform looks like inside a business like yours.</p>
+              <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
+                <a href="/demo" style={{ padding:'12px 28px', background:'linear-gradient(135deg,#0A6E68,#14D2C2)', borderRadius:12, color:'#fff', textDecoration:'none', fontWeight:700, fontSize:14 }}>Book a Demo →</a>
+                <button onClick={goToCards} style={{ padding:'12px 28px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, color:'#EEF6FB', fontWeight:700, fontSize:14, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>Enter Platform</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ borderTop:'1px solid rgba(255,255,255,0.04)', padding:'20px 48px', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
+            <div style={{ fontSize:10, color:'#0D1B28', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>© 2026 MADE TECHNOLOGIES INC · ALL RIGHTS RESERVED</div>
+            <div style={{ display:'flex', gap:20 }}>
+              {[['Privacy','/privacy'],['Terms','/terms'],['Refund','/refund'],['Careers','/careers'],['Investors','/investors'],['Press','/press']].map(([l,h]) => (
+                <a key={h} href={h} className="made-nav-link" style={{ fontSize:10, letterSpacing:1 }}>{l}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PLATFORM CARDS */}
       {screen === 'cards' && (
         <div style={{ width:'100%', minHeight:'100vh', background:'#04080F', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'48px 32px', opacity:cardsOpacity, transition:'opacity 0.8s ease' }}>
           <div className="sel-grid" />
-          <div className="corner c-tl" />
-          <div className="corner c-tr" />
-          <div className="corner c-bl" />
-          <div className="corner c-br" />
+          <div className="corner c-tl" /><div className="corner c-tr" /><div className="corner c-bl" /><div className="corner c-br" />
           <div style={{ textAlign:'center', marginBottom:52 }}>
             <div style={{ fontSize:'9.5px', letterSpacing:4, color:'#1E3A50', fontFamily:"'Geist Mono',monospace", textTransform:'uppercase', marginBottom:14 }}>Made Technologies Inc · Select Your Platform</div>
             <h1 style={{ fontSize:38, fontWeight:900, letterSpacing:'-1.8px', color:'#EEF6FB', lineHeight:1, marginBottom:10 }}>Choose your <span style={{ color:'#14D2C2' }}>workspace</span></h1>
@@ -220,6 +348,9 @@ export default function PlatformHub() {
               </div>
             ))}
           </div>
+          <button onClick={() => { setScreen('made'); setCardsOpacity(0); setTimeout(() => { setMadeOpacity(0); setTimeout(() => setMadeOpacity(1), 50); }, 300); }} style={{ marginTop:32, background:'transparent', border:'none', color:'#1E3A50', fontSize:11, fontFamily:"'Geist Mono',monospace", letterSpacing:2, cursor:'pointer', textTransform:'uppercase' }}>
+            ← Back to Overview
+          </button>
         </div>
       )}
 
@@ -238,5 +369,3 @@ export default function PlatformHub() {
     </>
   );
 }
-
-
