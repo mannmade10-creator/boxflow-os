@@ -9,7 +9,7 @@ export default function BoxFlowHome() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setRedirecting(true)
-      router.push('/login')
+      router.push('/made')
     }, 2500)
     return () => clearTimeout(timer)
   }, [])
