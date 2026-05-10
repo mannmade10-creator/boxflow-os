@@ -118,7 +118,13 @@ export default function PlatformHub() {
         @keyframes tspin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        @keyframes coinSpin { 0%{transform:rotateY(0deg)} 100%{transform:rotateY(360deg)} }
+        @keyframes coinSpin { 
+        0%   { transform: rotateY(0deg) scaleX(1); }
+        25%  { transform: rotateY(90deg) scaleX(0.1); }
+        50%  { transform: rotateY(180deg) scaleX(1); }
+        75%  { transform: rotateY(270deg) scaleX(0.1); }
+        100% { transform: rotateY(360deg) scaleX(1); }
+}
         @keyframes coinFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-14px)} }
         .ring-a { animation: rot-cw  12s linear infinite; transform-origin: 50% 50%; }
         .ring-b { animation: rot-ccw  7s linear infinite; transform-origin: 50% 50%; }
@@ -267,7 +273,7 @@ export default function PlatformHub() {
             <div style={{ display:'flex', justifyContent:'center', alignItems:'flex-end', gap:40, flexWrap:'wrap' }}>
               {COINS.map((coin, i) => (
                 <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12 }}>
-                  <div style={{ perspective:'800px' }}>
+                  <div style={{ perspective:'400px', transformStyle:'preserve-3d' }}>
                     <img
                       src={coin.src}
                       alt={coin.name}
