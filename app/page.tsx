@@ -21,7 +21,7 @@ const PLATFORMS = [
     id: 'medflow', name: 'MedFlow', suffix: 'OS',
     tagline: 'Pharmacy Command Center',
     desc: 'Temperature monitoring, drug inventory and USP compliance.',
-    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow-splash',
+    color: '#14D2C2', glow: 'rgba(20,210,194,0.5)', login: '/medflow-login',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <polygon points="22,4 38,13 38,31 22,40 6,31 6,13" stroke="#14D2C2" strokeWidth="1.8" fill="rgba(20,210,194,0.07)" />
       <rect x="17" y="12" width="10" height="20" rx="2.5" stroke="#14D2C2" strokeWidth="1.6" fill="rgba(20,210,194,0.12)" />
@@ -55,10 +55,17 @@ const PLATFORMS = [
   },
 ];
 
+const COINS = [
+  { src: '/assets/coin-boxflow.png',   name: 'BoxFlow OS',   color: '#2563EB', duration: '3.5s', delay: '0s'    },
+  { src: '/assets/coin-medflow.png',   name: 'MedFlow OS',   color: '#14D2C2', duration: '4s',   delay: '0.4s'  },
+  { src: '/assets/coin-classflow.png', name: 'ClassFlow AI', color: '#F59E0B', duration: '3s',   delay: '0.8s'  },
+  { src: '/assets/coin-propflow.png',  name: 'PropFlow OS',  color: '#8b5cf6', duration: '4.5s', delay: '1.2s'  },
+];
+
 const PRODUCTS = [
-  { name: 'BoxFlow OS', color: '#2563EB', icon: '📦', desc: 'Logistics, fleet, dispatch, orders, production, and HR — unified in one AI-powered platform.' },
-  { name: 'MedFlow OS', color: '#14D2C2', icon: '⚕️', desc: 'Healthcare supply chain, cold chain, compliance, and pharmacy operations — purpose-built.' },
-  { name: 'PropFlow OS', color: '#F59E0B', icon: '🏢', desc: 'Property management, tenant portals, maintenance, and finance — all in one place.' },
+  { name: 'BoxFlow OS',   color: '#2563EB', icon: '📦', desc: 'Logistics, fleet, dispatch, orders, production, and HR — unified in one AI-powered platform.' },
+  { name: 'MedFlow OS',   color: '#14D2C2', icon: '⚕️', desc: 'Healthcare supply chain, cold chain, compliance, and pharmacy operations — purpose-built.' },
+  { name: 'PropFlow OS',  color: '#F59E0B', icon: '🏢', desc: 'Property management, tenant portals, maintenance, and finance — all in one place.' },
   { name: 'ClassFlow AI', color: '#A78BFA', icon: '🎓', desc: 'Education operations, scheduling, enrollment, and adaptive learning — built for institutions.' },
 ];
 
@@ -75,33 +82,23 @@ export default function PlatformHub() {
   useEffect(() => {
     const t0 = setTimeout(() => setSplashOpacity(1), 50);
     const t1 = setTimeout(() => setSplashOpacity(0), 2800);
-    const t2 = setTimeout(() => {
-      setScreen('made');
-      setTimeout(() => setMadeOpacity(1), 50);
-    }, 3500);
+    const t2 = setTimeout(() => { setScreen('made'); setTimeout(() => setMadeOpacity(1), 50); }, 3500);
     return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   const goToCards = () => {
     setMadeOpacity(0);
-    setTimeout(() => {
-      setScreen('cards');
-      setTimeout(() => setCardsOpacity(1), 50);
-    }, 500);
+    setTimeout(() => { setScreen('cards'); setTimeout(() => setCardsOpacity(1), 50); }, 500);
   };
 
   const goToMade = () => {
     setCardsOpacity(0);
-    setTimeout(() => {
-      setScreen('made');
-      setTimeout(() => setMadeOpacity(1), 50);
-    }, 500);
+    setTimeout(() => { setScreen('made'); setTimeout(() => setMadeOpacity(1), 50); }, 500);
   };
 
   const selectPlatform = (p: typeof PLATFORMS[0]) => {
     if (transitioning) return;
-    setSelectedId(p.id);
-    setTransitioning(true);
+    setSelectedId(p.id); setTransitioning(true);
     setTimeout(() => router.push(p.login), 1000);
   };
 
@@ -121,6 +118,8 @@ export default function PlatformHub() {
         @keyframes tspin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes coinSpin { 0%{transform:rotateY(0deg)} 100%{transform:rotateY(360deg)} }
+        @keyframes coinFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-14px)} }
         .ring-a { animation: rot-cw  12s linear infinite; transform-origin: 50% 50%; }
         .ring-b { animation: rot-ccw  7s linear infinite; transform-origin: 50% 50%; }
         .ring-c { animation: rot-cw   4s linear infinite; transform-origin: 50% 50%; }
@@ -240,7 +239,7 @@ export default function PlatformHub() {
           </nav>
 
           {/* Hero */}
-          <div style={{ maxWidth:860, margin:'0 auto', padding:'80px 32px 56px', textAlign:'center', animation:'fadeUp 0.8s ease both' }}>
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'80px 32px 48px', textAlign:'center', animation:'fadeUp 0.8s ease both' }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(20,210,194,0.08)', border:'1px solid rgba(20,210,194,0.2)', borderRadius:100, padding:'6px 18px', fontSize:10, fontWeight:700, color:'#14D2C2', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:24, fontFamily:"'Geist Mono',monospace" }}>
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#14D2C2', display:'inline-block', animation:'pulse 2s infinite' }} />
               Made Technologies Inc — Enterprise Software Suite
@@ -260,6 +259,30 @@ export default function PlatformHub() {
               <a href="/demo" style={{ padding:'15px 36px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:14, color:'#EEF6FB', fontSize:16, fontWeight:700, textDecoration:'none' }}>
                 Book a Demo
               </a>
+            </div>
+          </div>
+
+          {/* Spinning Coins */}
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'0 32px 56px' }}>
+            <div style={{ display:'flex', justifyContent:'center', alignItems:'flex-end', gap:40, flexWrap:'wrap' }}>
+              {COINS.map((coin, i) => (
+                <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12 }}>
+                  <div style={{ perspective:'800px' }}>
+                    <img
+                      src={coin.src}
+                      alt={coin.name}
+                      style={{
+                        width:150,
+                        height:150,
+                        objectFit:'contain',
+                        filter:`drop-shadow(0 0 24px ${coin.color}70)`,
+                        animation:`coinSpin ${coin.duration} linear infinite, coinFloat 3.5s ease-in-out infinite ${coin.delay}`,
+                      }}
+                    />
+                  </div>
+                  <span style={{ fontSize:11, color:coin.color, fontFamily:"'Geist Mono',monospace", letterSpacing:1.5, fontWeight:700 }}>{coin.name}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -294,7 +317,7 @@ export default function PlatformHub() {
             </div>
           </div>
 
-          {/* Why Made Technologies quote */}
+          {/* Why Made Technologies */}
           <div style={{ maxWidth:760, margin:'0 auto', padding:'0 32px 48px' }}>
             <div style={{ background:'rgba(11,24,38,0.6)', border:'1px solid rgba(20,210,194,0.12)', borderRadius:20, padding:'36px 40px' }}>
               <h3 style={{ fontSize:20, fontWeight:900, color:'#14D2C2', marginBottom:16, letterSpacing:-0.3 }}>Why Made Technologies?</h3>
