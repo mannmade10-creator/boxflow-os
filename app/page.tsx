@@ -68,9 +68,9 @@ export default function PlatformHub() {
   const [splashOpacity, setSplashOpacity] = useState(0);
   const [madeOpacity,   setMadeOpacity]   = useState(0);
   const [cardsOpacity,  setCardsOpacity]  = useState(0);
-  const [selectedId,    setSelectedId]    = useState(null);
+  const [selectedId,    setSelectedId]    = useState<string|null>(null);
   const [transitioning, setTransitioning] = useState(false);
-  const [hoveredId,     setHoveredId]     = useState(null);
+  const [hoveredId,     setHoveredId]     = useState<string|null>(null);
 
   useEffect(() => {
     const t0 = setTimeout(() => setSplashOpacity(1), 50);
@@ -90,7 +90,15 @@ export default function PlatformHub() {
     }, 500);
   };
 
-  const selectPlatform = (p) => {
+  const goToMade = () => {
+    setCardsOpacity(0);
+    setTimeout(() => {
+      setScreen('made');
+      setTimeout(() => setMadeOpacity(1), 50);
+    }, 500);
+  };
+
+  const selectPlatform = (p: typeof PLATFORMS[0]) => {
     if (transitioning) return;
     setSelectedId(p.id);
     setTransitioning(true);
@@ -105,21 +113,18 @@ export default function PlatformHub() {
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500&display=swap');
         * { margin:0; padding:0; box-sizing:border-box; }
         html, body, #__next { height:100%; background:#000; font-family:'Outfit',sans-serif; }
-
-        @keyframes rot-cw  { from{transform:rotate(0deg)}   to{transform:rotate(360deg)}  }
-        @keyframes rot-ccw { from{transform:rotate(0deg)}   to{transform:rotate(-360deg)} }
+        @keyframes rot-cw  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes rot-ccw { from{transform:rotate(0deg)} to{transform:rotate(-360deg)} }
         @keyframes pulse-c { 0%,100%{opacity:.7} 50%{opacity:1} }
         @keyframes textIn  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         @keyframes cardIn  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes tspin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
         .ring-a { animation: rot-cw  12s linear infinite; transform-origin: 50% 50%; }
         .ring-b { animation: rot-ccw  7s linear infinite; transform-origin: 50% 50%; }
         .ring-c { animation: rot-cw   4s linear infinite; transform-origin: 50% 50%; }
         .core-p { animation: pulse-c 2.5s ease-in-out infinite; }
-
         .pcard { flex:1; min-width:220px; max-width:255px; background:#070F18; border:1px solid rgba(255,255,255,0.06); border-radius:18px; padding:26px 22px; cursor:pointer; position:relative; overflow:hidden; transition:transform 0.2s ease,border-color 0.2s ease,box-shadow 0.2s ease; animation:cardIn 0.6s ease both; }
         .pcard:hover { transform:translateY(-6px); }
         .pcard.gone  { transform:scale(0.93); opacity:0.4; pointer-events:none; }
@@ -136,14 +141,12 @@ export default function PlatformHub() {
         .pcard-foot   { display:flex; align-items:center; gap:8px; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.04); position:relative; z-index:1; }
         .pcard-dot    { width:6px; height:6px; border-radius:50%; }
         .pcard-status { font-size:9px; letter-spacing:1.5px; font-family:'Geist Mono',monospace; text-transform:uppercase; }
-
         .sel-grid { position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px); background-size:80px 80px; }
         .corner { position:fixed; width:30px; height:30px; opacity:0.15; pointer-events:none; }
         .c-tl { top:20px; left:20px; border-top:1px solid #14D2C2; border-left:1px solid #14D2C2; }
         .c-tr { top:20px; right:20px; border-top:1px solid #14D2C2; border-right:1px solid #14D2C2; }
         .c-bl { bottom:20px; left:20px; border-bottom:1px solid #14D2C2; border-left:1px solid #14D2C2; }
         .c-br { bottom:20px; right:20px; border-bottom:1px solid #14D2C2; border-right:1px solid #14D2C2; }
-
         .t-overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; }
         .t-overlay.on { opacity:1; pointer-events:all; }
         .t-inner { display:flex; flex-direction:column; align-items:center; gap:18px; opacity:0; transform:scale(0.85); transition:opacity 0.45s ease 0.1s,transform 0.45s ease 0.1s; }
@@ -151,17 +154,16 @@ export default function PlatformHub() {
         .t-spinner { width:50px; height:50px; border-radius:50%; border:2px solid rgba(255,255,255,0.07); border-top-color:currentColor; animation:tspin 0.8s linear infinite; }
         .t-label { font-size:10px; letter-spacing:3.5px; font-family:'Geist Mono',monospace; text-transform:uppercase; color:#2E5470; }
         .t-name  { font-size:34px; font-weight:900; letter-spacing:-1.2px; }
-
         .hub-foot { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:2.5px; color:#0D1B28; font-family:'Geist Mono',monospace; white-space:nowrap; z-index:5; }
-        .made-nav-link { color:#2E5470; text-decoration:none; font-size:12px; font-family:'Geist Mono',monospace; letter-spacing:1px; transition:color 0.15s; }
-        .made-nav-link:hover { color:#EEF6FB; }
-        .prod-card { transition:transform 0.2s, border-color 0.2s; cursor:default; }
+        .made-link { color:#2E5470; text-decoration:none; font-size:11px; font-family:'Geist Mono',monospace; letter-spacing:1px; transition:color 0.15s; cursor:pointer; background:none; border:none; }
+        .made-link:hover { color:#EEF6FB; }
+        .prod-card { transition:transform 0.2s; }
         .prod-card:hover { transform:translateY(-3px); }
         .enter-btn { transition:all 0.2s; cursor:pointer; }
-        .enter-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(37,99,235,0.4); }
+        .enter-btn:hover { transform:translateY(-2px); }
       `}</style>
 
-      {/* SPLASH SCREEN */}
+      {/* ── SPLASH ── */}
       {screen === 'splash' && (
         <div style={{ position:'fixed', inset:0, zIndex:100, background:'#000', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:28, opacity:splashOpacity, transition:'opacity 0.7s ease' }}>
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, opacity:0.6 }}>
@@ -211,14 +213,14 @@ export default function PlatformHub() {
         </div>
       )}
 
-      {/* MADE TECHNOLOGIES LANDING */}
+      {/* ── MADE TECH LANDING ── */}
       {screen === 'made' && (
         <div style={{ width:'100%', minHeight:'100vh', background:'#04080F', display:'flex', flexDirection:'column', opacity:madeOpacity, transition:'opacity 0.5s ease', overflowY:'auto' }}>
           <div className="sel-grid" />
           <div className="corner c-tl" /><div className="corner c-tr" /><div className="corner c-bl" /><div className="corner c-br" />
 
           {/* Nav */}
-          <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 48px', borderBottom:'1px solid rgba(255,255,255,0.04)', position:'sticky', top:0, background:'rgba(4,8,15,0.92)', backdropFilter:'blur(12px)', zIndex:10, flexShrink:0 }}>
+          <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 48px', borderBottom:'1px solid rgba(255,255,255,0.04)', position:'sticky', top:0, background:'rgba(4,8,15,0.94)', backdropFilter:'blur(12px)', zIndex:10, flexShrink:0, flexWrap:'wrap', gap:12 }}>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
               <div style={{ width:34, height:34, borderRadius:9, background:'linear-gradient(135deg,#0A6E68,#14D2C2)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:16, color:'#fff' }}>M</div>
               <div>
@@ -226,11 +228,11 @@ export default function PlatformHub() {
                 <div style={{ fontSize:8, color:'#14D2C2', letterSpacing:2, textTransform:'uppercase' }}>Enterprise Suite</div>
               </div>
             </div>
-            <div style={{ display:'flex', alignItems:'center', gap:24 }}>
-              <a href="/about" className="made-nav-link">About</a>
-              <a href="/pricing" className="made-nav-link">Pricing</a>
-              <a href="/demo" className="made-nav-link">Demo</a>
-              <a href="/contact" className="made-nav-link">Contact</a>
+            <div style={{ display:'flex', alignItems:'center', gap:20, flexWrap:'wrap' }}>
+              <a href="/about" className="made-link">About</a>
+              <a href="/pricing" className="made-link">Pricing</a>
+              <a href="/demo" className="made-link">Demo</a>
+              <a href="/contact" className="made-link">Contact</a>
               <button onClick={goToCards} className="enter-btn" style={{ padding:'9px 22px', background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', borderRadius:10, color:'#fff', fontSize:13, fontWeight:700, fontFamily:"'Outfit',sans-serif" }}>
                 Enter Platform →
               </button>
@@ -238,7 +240,7 @@ export default function PlatformHub() {
           </nav>
 
           {/* Hero */}
-          <div style={{ maxWidth:860, margin:'0 auto', padding:'80px 32px 60px', textAlign:'center', animation:'fadeUp 0.8s ease both' }}>
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'80px 32px 56px', textAlign:'center', animation:'fadeUp 0.8s ease both' }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(20,210,194,0.08)', border:'1px solid rgba(20,210,194,0.2)', borderRadius:100, padding:'6px 18px', fontSize:10, fontWeight:700, color:'#14D2C2', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:24, fontFamily:"'Geist Mono',monospace" }}>
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#14D2C2', display:'inline-block', animation:'pulse 2s infinite' }} />
               Made Technologies Inc — Enterprise Software Suite
@@ -248,21 +250,21 @@ export default function PlatformHub() {
               <span style={{ color:'#14D2C2' }}>Every Industry.</span><br />
               Built to Last.
             </h1>
-            <p style={{ color:'#4A7090', fontSize:17, maxWidth:560, margin:'0 auto 44px', lineHeight:1.7, fontFamily:"'Outfit',sans-serif" }}>
+            <p style={{ color:'#4A7090', fontSize:17, maxWidth:560, margin:'0 auto 44px', lineHeight:1.7 }}>
               We build purpose-built operating systems for industries that can't afford to run on generic software. Healthcare. Logistics. Property. Education.
             </p>
             <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
               <button onClick={goToCards} className="enter-btn" style={{ padding:'15px 36px', background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', borderRadius:14, color:'#fff', fontSize:16, fontWeight:800, fontFamily:"'Outfit',sans-serif" }}>
                 Enter Platform Suite →
               </button>
-              <a href="/demo" style={{ padding:'15px 36px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:14, color:'#EEF6FB', fontSize:16, fontWeight:700, textDecoration:'none', fontFamily:"'Outfit',sans-serif" }}>
+              <a href="/demo" style={{ padding:'15px 36px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:14, color:'#EEF6FB', fontSize:16, fontWeight:700, textDecoration:'none' }}>
                 Book a Demo
               </a>
             </div>
           </div>
 
           {/* Stats */}
-          <div style={{ maxWidth:860, margin:'0 auto', padding:'0 32px 60px' }}>
+          <div style={{ maxWidth:860, margin:'0 auto', padding:'0 32px 56px' }}>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:14 }}>
               {[['4','Industry Platforms'],['48hrs','Average Go-Live'],['60–80%','Cost Reduction'],['100%','Built in the USA']].map(([v,l],i) => (
                 <div key={i} style={{ background:'rgba(11,24,38,0.8)', border:'1px solid rgba(20,210,194,0.1)', borderRadius:14, padding:'20px 16px', textAlign:'center' }}>
@@ -274,12 +276,12 @@ export default function PlatformHub() {
           </div>
 
           {/* Products */}
-          <div style={{ maxWidth:900, margin:'0 auto', padding:'0 32px 60px' }}>
-            <div style={{ textAlign:'center', marginBottom:36 }}>
+          <div style={{ maxWidth:900, margin:'0 auto', padding:'0 32px 56px' }}>
+            <div style={{ textAlign:'center', marginBottom:32 }}>
               <h2 style={{ fontSize:28, fontWeight:900, color:'#EEF6FB', marginBottom:8 }}>Our Platform Suite</h2>
-              <p style={{ color:'#2E5470', fontSize:14, fontFamily:"'Geist Mono',monospace" }}>Four industry-specific operating systems. One company behind them all.</p>
+              <p style={{ color:'#2E5470', fontSize:13, fontFamily:"'Geist Mono',monospace", letterSpacing:1 }}>Four industry-specific operating systems. One company behind them all.</p>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(400px,1fr))', gap:16 }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(380px,1fr))', gap:16 }}>
               {PRODUCTS.map((p,i) => (
                 <div key={i} className="prod-card" style={{ background:'rgba(11,24,38,0.8)', border:`1px solid ${p.color}18`, borderRadius:18, padding:26 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
@@ -289,6 +291,19 @@ export default function PlatformHub() {
                   <p style={{ color:'#4A7090', fontSize:13, lineHeight:1.6, margin:0 }}>{p.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Why Made Technologies quote */}
+          <div style={{ maxWidth:760, margin:'0 auto', padding:'0 32px 48px' }}>
+            <div style={{ background:'rgba(11,24,38,0.6)', border:'1px solid rgba(20,210,194,0.12)', borderRadius:20, padding:'36px 40px' }}>
+              <h3 style={{ fontSize:20, fontWeight:900, color:'#14D2C2', marginBottom:16, letterSpacing:-0.3 }}>Why Made Technologies?</h3>
+              <p style={{ color:'#4A7090', fontSize:15, lineHeight:1.8, marginBottom:16 }}>
+                Most industries run on software that was never designed for them. Healthcare logistics runs on generic shipping tools. Manufacturing plants run on ERP systems built for retailers. Property managers use spreadsheets and consumer apps.
+              </p>
+              <p style={{ color:'#C8DDE9', fontSize:15, lineHeight:1.8, margin:0 }}>
+                We build from the ground up — purpose-built platforms for each industry that unify every function into one operating system. Real-time data. One login. A fraction of the cost.
+              </p>
             </div>
           </div>
 
@@ -307,16 +322,16 @@ export default function PlatformHub() {
           {/* Footer */}
           <div style={{ borderTop:'1px solid rgba(255,255,255,0.04)', padding:'20px 48px', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
             <div style={{ fontSize:10, color:'#0D1B28', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>© 2026 MADE TECHNOLOGIES INC · ALL RIGHTS RESERVED</div>
-            <div style={{ display:'flex', gap:20 }}>
+            <div style={{ display:'flex', gap:20, flexWrap:'wrap' }}>
               {[['Privacy','/privacy'],['Terms','/terms'],['Refund','/refund'],['Careers','/careers'],['Investors','/investors'],['Press','/press']].map(([l,h]) => (
-                <a key={h} href={h} className="made-nav-link" style={{ fontSize:10, letterSpacing:1 }}>{l}</a>
+                <a key={h} href={h} className="made-link" style={{ fontSize:10, letterSpacing:1 }}>{l}</a>
               ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* PLATFORM CARDS */}
+      {/* ── PLATFORM CARDS ── */}
       {screen === 'cards' && (
         <div style={{ width:'100%', minHeight:'100vh', background:'#04080F', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'48px 32px', opacity:cardsOpacity, transition:'opacity 0.8s ease' }}>
           <div className="sel-grid" />
@@ -348,12 +363,13 @@ export default function PlatformHub() {
               </div>
             ))}
           </div>
-          <button onClick={() => { setScreen('made'); setCardsOpacity(0); setTimeout(() => { setMadeOpacity(0); setTimeout(() => setMadeOpacity(1), 50); }, 300); }} style={{ marginTop:32, background:'transparent', border:'none', color:'#1E3A50', fontSize:11, fontFamily:"'Geist Mono',monospace", letterSpacing:2, cursor:'pointer', textTransform:'uppercase' }}>
+          <button onClick={goToMade} className="made-link" style={{ marginTop:32 }}>
             ← Back to Overview
           </button>
         </div>
       )}
 
+      {/* Transition overlay */}
       <div className={`t-overlay${transitioning?' on':''}`} style={{ background:selected?`radial-gradient(ellipse at center,${selected.glow} 0%,rgba(2,4,8,0.98) 55%)`:'rgba(2,4,8,0.98)' }}>
         {selected && (
           <div className="t-inner">
