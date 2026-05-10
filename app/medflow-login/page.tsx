@@ -7,8 +7,7 @@ const PLANS = [
   {
     id: 'standard',
     name: 'Standard',
-    price: '$299',
-    period: '/mo',
+    price: { monthly: 299, annual: 249 },
     desc: '1 facility · Core modules',
     color: '#14D2C2',
     features: ['Temperature Monitoring', 'Drug Inventory', 'Compliance Logs', 'Compounding Batches', 'USP <797> / <800>'],
@@ -17,19 +16,17 @@ const PLANS = [
   {
     id: 'professional',
     name: 'Professional',
-    price: '$799',
-    period: '/mo',
+    price: { monthly: 799, annual: 669 },
     desc: 'Up to 3 facilities',
     color: '#0891B2',
     popular: true,
-    features: ['Everything in Standard', 'AI Control Panel', 'Cold Chain Fleet', 'Hospital Logistics', 'Cleanrooms Monitoring', 'Real-time Supabase sync'],
+    features: ['Everything in Standard', 'AI Control Panel', 'Cold Chain Fleet', 'Hospital Logistics', 'Cleanrooms Monitoring', 'Real-time sync'],
     addons: '$149/mo Cold Chain Fleet add-on',
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
-    price: '$1,999',
-    period: '/mo',
+    price: { monthly: 1999, annual: 1679 },
     desc: 'Unlimited facilities',
     color: '#A78BFA',
     features: ['Everything in Professional', 'Unlimited facilities', 'Full USP compliance suite', 'FDA audit trail export', 'Dedicated pharmacist support', 'Custom reporting & SLA'],
@@ -44,6 +41,7 @@ export default function MedFlowLogin() {
   const [password, setPassword] = useState('');
   const [name,     setName]     = useState('');
   const [plan,     setPlan]     = useState('standard');
+  const [annual,   setAnnual]   = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [message,  setMessage]  = useState('');
   const [step,     setStep]     = useState<'plan'|'account'>('plan');
@@ -59,7 +57,7 @@ export default function MedFlowLogin() {
   async function signUp() {
     if (!name || !email || !password) { setMessage('Please fill in all fields.'); return; }
     setLoading(true); setMessage('');
-    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, plan, product: 'medflow' } } });
+    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, plan, billing: annual ? 'annual' : 'monthly', product: 'medflow' } } });
     if (error) { setMessage('Sign up failed: ' + error.message); setLoading(false); return; }
     setMessage('Account created! Check your email to confirm, then sign in.');
     setLoading(false); setTab('signin');
@@ -75,7 +73,7 @@ export default function MedFlowLogin() {
       <div style={{ position:'absolute', width:600, height:600, borderRadius:'50%', background:'radial-gradient(circle,rgba(20,210,194,0.06) 0%,transparent 70%)', top:'50%', left:'50%', transform:'translate(-50%,-50%)', pointerEvents:'none' }} />
       {['tl','tr','bl','br'].map(c => <div key={c} style={{ position:'fixed', width:28, height:28, top:c.includes('t')?20:'auto', bottom:c.includes('b')?20:'auto', left:c.includes('l')?20:'auto', right:c.includes('r')?20:'auto', borderTop:c.includes('t')?'1px solid rgba(20,210,194,0.25)':'none', borderBottom:c.includes('b')?'1px solid rgba(20,210,194,0.25)':'none', borderLeft:c.includes('l')?'1px solid rgba(20,210,194,0.25)':'none', borderRight:c.includes('r')?'1px solid rgba(20,210,194,0.25)':'none' }} />)}
 
-      <div style={{ width:'100%', maxWidth: tab==='signup' && step==='plan' ? 900 : 440, transition:'max-width 0.3s ease' }}>
+      <div style={{ width:'100%', maxWidth: tab==='signup' && step==='plan' ? 960 : 440, transition:'max-width 0.3s ease' }}>
 
         <div style={{ textAlign:'center', marginBottom:28 }}>
           <div style={{ width:52, height:52, borderRadius:14, background:'linear-gradient(135deg,#0A6E68,#14D2C2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, margin:'0 auto 12px' }}>⚕</div>
@@ -118,16 +116,37 @@ export default function MedFlowLogin() {
 
         {tab === 'signup' && step === 'plan' && (
           <div>
-            <div style={{ textAlign:'center', marginBottom:24 }}>
+            <div style={{ textAlign:'center', marginBottom:20 }}>
               <h2 style={{ fontSize:22, fontWeight:800, color:'#EEF6FB', margin:0, marginBottom:6 }}>Choose your plan</h2>
-              <p style={{ fontSize:13, color:'#4A7090' }}>HIPAA compliant · USP &lt;797&gt; / &lt;800&gt; · Cancel anytime</p>
+              <p style={{ fontSize:13, color:'#4A7090', marginBottom:16 }}>HIPAA compliant · USP &lt;797&gt; / &lt;800&gt; · Cancel anytime</p>
+
+              {/* Billing toggle */}
+              <div style={{ display:'inline-flex', alignItems:'center', gap:4, background:'rgba(11,24,38,0.9)', border:'1px solid #152840', borderRadius:100, padding:4 }}>
+                <button onClick={()=>setAnnual(false)} style={{ padding:'7px 18px', borderRadius:100, border:'none', background:!annual?'#14D2C2':'transparent', color:!annual?'#04080F':'#4A7090', fontWeight:700, fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>Monthly</button>
+                <button onClick={()=>setAnnual(true)} style={{ padding:'7px 18px', borderRadius:100, border:'none', background:annual?'#14D2C2':'transparent', color:annual?'#04080F':'#4A7090', fontWeight:700, fontSize:13, cursor:'pointer', fontFamily:"'Outfit',sans-serif", display:'flex', alignItems:'center', gap:8 }}>
+                  Annual
+                  <span style={{ background:'#10b981', color:'#fff', fontSize:10, fontWeight:800, padding:'1px 7px', borderRadius:100 }}>SAVE 17%</span>
+                </button>
+              </div>
+              {annual && <p style={{ color:'#10b981', fontSize:12, marginTop:8, fontWeight:600 }}>Pay annually — lower monthly rate, billed as one yearly payment</p>}
             </div>
+
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginBottom:20 }}>
               {PLANS.map(p => (
                 <div key={p.id} onClick={()=>setPlan(p.id)}
                   style={{ background:'#0B1826', border:`2px solid ${plan===p.id?p.color:'#152840'}`, borderRadius:16, padding:'20px 18px', cursor:'pointer', position:'relative', transition:'all .2s', boxShadow:plan===p.id?`0 0 20px ${p.color}30`:'none' }}>
                   {p.popular && <div style={{ position:'absolute', top:-10, left:'50%', transform:'translateX(-50%)', background:p.color, color:'#fff', fontSize:9, fontWeight:700, fontFamily:"'Geist Mono',monospace", letterSpacing:1.5, padding:'3px 12px', borderRadius:20, whiteSpace:'nowrap' }}>MOST POPULAR</div>}
-                  <div style={{ fontSize:22, fontWeight:900, color:p.color, marginBottom:2 }}>{p.price}<span style={{ fontSize:12, fontWeight:400, color:'#4A7090' }}>{p.period}</span></div>
+                  <div style={{ fontSize:26, fontWeight:900, color:p.color, marginBottom:2 }}>
+                    ${(annual ? p.price.annual : p.price.monthly).toLocaleString()}
+                    <span style={{ fontSize:12, fontWeight:400, color:'#4A7090' }}>/mo</span>
+                  </div>
+                  {annual && (
+                    <div style={{ marginBottom:4 }}>
+                      <div style={{ fontSize:11, color:'#10b981', fontWeight:600 }}>Billed ${(p.price.annual * 12).toLocaleString()}/yr</div>
+                      <div style={{ fontSize:10, color:'#2E5470' }}>Save ${((p.price.monthly - p.price.annual) * 12).toLocaleString()}/yr</div>
+                    </div>
+                  )}
+                  {!annual && <div style={{ fontSize:10, color:'#2E5070', marginBottom:4, fontFamily:"'Geist Mono',monospace" }}>Or ${p.price.annual}/mo billed annually</div>}
                   <div style={{ fontSize:14, fontWeight:700, color:'#EEF6FB', marginBottom:4 }}>{p.name}</div>
                   <div style={{ fontSize:11, color:'#4A7090', fontFamily:"'Geist Mono',monospace", marginBottom:14 }}>{p.desc}</div>
                   <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
@@ -141,7 +160,7 @@ export default function MedFlowLogin() {
               ))}
             </div>
             <button onClick={()=>setStep('account')} style={{ width:'100%', padding:'13px', borderRadius:11, background:`linear-gradient(135deg,#0A6E68,${selectedPlan.color})`, border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif" }}>
-              Continue with {selectedPlan.name} Plan →
+              Continue with {selectedPlan.name} {annual ? 'Annual' : 'Monthly'} Plan →
             </button>
           </div>
         )}
@@ -150,11 +169,20 @@ export default function MedFlowLogin() {
           <div style={{ background:'#0B1826', border:'1px solid #152840', borderRadius:18, padding:32 }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
               <h2 style={{ fontSize:18, fontWeight:800, color:'#EEF6FB', margin:0 }}>Create your account</h2>
-              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>{selectedPlan.name} · {selectedPlan.price}/mo</div>
+              <div style={{ background:`${selectedPlan.color}20`, border:`1px solid ${selectedPlan.color}50`, borderRadius:8, padding:'4px 12px', fontSize:12, color:selectedPlan.color, fontWeight:700 }}>
+                {selectedPlan.name} · ${(annual ? selectedPlan.price.annual : selectedPlan.price.monthly).toLocaleString()}/mo {annual ? '(annual)' : '(monthly)'}
+              </div>
             </div>
             <div style={{ marginBottom:14 }}><label style={lbl}>FULL NAME</label><input value={name} onChange={e=>setName(e.target.value)} style={inp} placeholder="Dr. Rivera" /></div>
             <div style={{ marginBottom:14 }}><label style={lbl}>WORK EMAIL</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} style={inp} placeholder="dr.rivera@pharmacy.com" /></div>
             <div style={{ marginBottom:24 }}><label style={lbl}>PASSWORD</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} style={inp} placeholder="Min 8 characters" /></div>
+            {annual && (
+              <div style={{ marginBottom:16, padding:'12px 16px', background:'rgba(16,185,129,0.08)', border:'1px solid rgba(16,185,129,0.2)', borderRadius:10 }}>
+                <p style={{ color:'#10b981', fontSize:13, fontWeight:600, margin:0 }}>
+                  Annual billing: ${(selectedPlan.price.annual * 12).toLocaleString()}/yr — save ${((selectedPlan.price.monthly - selectedPlan.price.annual) * 12).toLocaleString()}/yr
+                </p>
+              </div>
+            )}
             <button onClick={signUp} disabled={loading} style={{ width:'100%', padding:'13px', borderRadius:11, background:'linear-gradient(135deg,#0A6E68,#14D2C2)', border:'none', color:'#fff', fontWeight:800, fontSize:15, cursor:'pointer', fontFamily:"'Outfit',sans-serif", opacity:loading?0.7:1, marginBottom:10 }}>
               {loading?'Creating account...':'Start Free Trial'}
             </button>
@@ -171,7 +199,6 @@ export default function MedFlowLogin() {
             ← BACK TO PLATFORM SELECT
           </button>
         </div>
-
         <div style={{ textAlign:'center', marginTop:12, fontSize:9, color:'#152840', fontFamily:"'Geist Mono',monospace", letterSpacing:2 }}>
           HIPAA COMPLIANT · USP &lt;797&gt; / &lt;800&gt; · MADE TECHNOLOGIES INC
         </div>

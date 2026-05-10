@@ -82,7 +82,6 @@ export default function PricingPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020818 0%, #070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
-      {/* NAV */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 40px', borderBottom: '1px solid rgba(14,165,233,0.1)', position: 'sticky', top: 0, background: 'rgba(2,8,24,0.9)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
           <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 36, height: 36 }} />
@@ -95,7 +94,6 @@ export default function PricingPage() {
         </div>
       </nav>
 
-      {/* HEADER */}
       <section style={{ maxWidth: 900, margin: '0 auto', padding: '80px 24px 60px', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.2)', borderRadius: 100, padding: '6px 16px', fontSize: 12, fontWeight: 700, color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 24 }}>
           Simple, Transparent Pricing
@@ -108,17 +106,16 @@ export default function PricingPage() {
           One platform. Every module. No hidden fees. Cancel anytime.
         </p>
 
-        {/* Toggle */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 16, background: 'rgba(12,26,56,0.9)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: 100, padding: '6px 8px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(12,26,56,0.9)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: 100, padding: '4px' }}>
           <button onClick={() => setAnnual(false)} style={{ padding: '8px 20px', borderRadius: 100, border: 'none', background: !annual ? '#0ea5e9' : 'transparent', color: !annual ? '#fff' : '#64748b', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit' }}>Monthly</button>
           <button onClick={() => setAnnual(true)} style={{ padding: '8px 20px', borderRadius: 100, border: 'none', background: annual ? '#0ea5e9' : 'transparent', color: annual ? '#fff' : '#64748b', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 8 }}>
             Annual
             <span style={{ background: '#10b981', color: '#fff', fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 100 }}>SAVE 17%</span>
           </button>
         </div>
+        {annual && <p style={{ color: '#10b981', fontSize: 13, marginTop: 12, fontWeight: 600 }}>Pay annually — lower monthly rate, higher total commitment</p>}
       </section>
 
-      {/* PLANS */}
       <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px 80px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
           {PLANS.map((plan) => (
@@ -132,10 +129,26 @@ export default function PricingPage() {
                 <h3 style={{ fontSize: 22, fontWeight: 900, color: plan.color, marginBottom: 4 }}>{plan.name}</h3>
                 <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>{plan.desc}</p>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
-                  <span style={{ fontSize: 48, fontWeight: 900, color: '#f0f6ff', lineHeight: 1 }}>${(annual ? plan.price.annual : plan.price.monthly).toLocaleString()}</span>
+                  <span style={{ fontSize: 48, fontWeight: 900, color: '#f0f6ff', lineHeight: 1 }}>
+                    ${(annual ? plan.price.annual : plan.price.monthly).toLocaleString()}
+                  </span>
                   <span style={{ color: '#64748b', fontSize: 15, marginBottom: 8 }}>/mo</span>
                 </div>
-                {annual && <p style={{ color: '#10b981', fontSize: 13, marginTop: 4, fontWeight: 600 }}>Billed annually — save ${((plan.price.monthly - plan.price.annual) * 12).toLocaleString()}/yr</p>}
+                {annual && (
+                  <div style={{ marginTop: 8 }}>
+                    <p style={{ color: '#10b981', fontSize: 13, fontWeight: 600, margin: 0 }}>
+                      Billed ${(plan.price.annual * 12).toLocaleString()}/yr
+                    </p>
+                    <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0 0' }}>
+                      Save ${((plan.price.monthly - plan.price.annual) * 12).toLocaleString()}/yr vs monthly
+                    </p>
+                  </div>
+                )}
+                {!annual && (
+                  <p style={{ color: '#64748b', fontSize: 12, marginTop: 6 }}>
+                    Or ${plan.price.annual.toLocaleString()}/mo billed annually
+                  </p>
+                )}
               </div>
 
               <div style={{ flex: 1, marginBottom: 24 }}>
@@ -161,7 +174,6 @@ export default function PricingPage() {
         </p>
       </section>
 
-      {/* COMPARISON */}
       <section style={{ background: 'rgba(7,15,36,0.6)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', padding: '80px 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
@@ -176,22 +188,26 @@ export default function PricingPage() {
               </div>
             ))}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', borderRadius: 10, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', marginTop: 8 }}>
-              <span style={{ color: '#f0f6ff', fontSize: 14, fontWeight: 700 }}>BoxFlow OS Professional</span>
+              <span style={{ color: '#f0f6ff', fontSize: 14, fontWeight: 700 }}>BoxFlow OS Professional (monthly)</span>
               <span style={{ color: '#10b981', fontWeight: 800, fontSize: 18 }}>$1,899/mo</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', borderRadius: 10, background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)' }}>
+              <span style={{ color: '#f0f6ff', fontSize: 14, fontWeight: 700 }}>BoxFlow OS Professional (annual)</span>
+              <span style={{ color: '#10b981', fontWeight: 800, fontSize: 18 }}>$1,599/mo · $19,188/yr</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
       <section style={{ maxWidth: 700, margin: '0 auto', padding: '80px 24px' }}>
         <h2 style={{ fontSize: 32, fontWeight: 900, textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
         {[
           { q: 'Is there really a free trial?', a: 'Yes — 14 days, full platform access, no credit card required. You get everything in your chosen plan from day one.' },
-          { q: 'How long does setup take?', a: 'Most operations are fully live within 48 hours. Our team handles data migration and configuration. You just show up trained and ready.' },
+          { q: 'How does annual billing work?', a: 'Annual billing charges you a lower monthly rate, billed as one payment for the full year. For example, the Starter plan is $499/mo on annual — billed as $5,988 once per year instead of $599/mo. You save 17% vs monthly billing.' },
+          { q: 'How long does setup take?', a: 'Most operations are fully live within 48 hours. Our team handles data migration and configuration.' },
           { q: 'Can I switch plans later?', a: 'Absolutely. Upgrade or downgrade anytime. Changes take effect on your next billing cycle.' },
-          { q: 'What happens if I exceed my truck limit?', a: 'Additional trucks are billed at $15/truck/mo. No surprise charges — you\'ll get a notification before anything is added.' },
-          { q: 'Do you offer custom pricing for larger operations?', a: 'Yes. If you need more than Enterprise covers, contact us and we\'ll build a custom plan around your operation.' },
+          { q: 'What happens if I exceed my truck limit?', a: 'Additional trucks are billed at $15/truck/mo. No surprise charges — you will get a notification before anything is added.' },
+          { q: 'Do you offer custom pricing for larger operations?', a: 'Yes. If you need more than Enterprise covers, contact us and we will build a custom plan around your operation.' },
         ].map((faq, i) => (
           <div key={i} style={{ padding: '24px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <h3 style={{ fontSize: 17, fontWeight: 700, color: '#f0f6ff', marginBottom: 10 }}>{faq.q}</h3>
@@ -200,18 +216,16 @@ export default function PricingPage() {
         ))}
       </section>
 
-      {/* BOTTOM CTA */}
       <section style={{ maxWidth: 700, margin: '0 auto', padding: '0 24px 100px', textAlign: 'center' }}>
         <div style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.08), rgba(139,92,246,0.06))', border: '1px solid rgba(14,165,233,0.2)', borderRadius: 24, padding: 48 }}>
           <h2 style={{ fontSize: 32, fontWeight: 900, marginBottom: 12 }}>Not Sure Which Plan Is Right?</h2>
-          <p style={{ color: '#94a3b8', fontSize: 16, marginBottom: 28, lineHeight: 1.6 }}>Book a 30-minute demo and we'll recommend the right plan for your operation — no pressure.</p>
+          <p style={{ color: '#94a3b8', fontSize: 16, marginBottom: 28, lineHeight: 1.6 }}>Book a 30-minute demo and we will recommend the right plan for your operation — no pressure.</p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/contact" style={{ padding: '14px 32px', background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>Book a Demo →</Link>
             <Link href="/roi" style={{ padding: '14px 32px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>Calculate Your Savings</Link>
           </div>
         </div>
       </section>
-
     </div>
   )
 }
