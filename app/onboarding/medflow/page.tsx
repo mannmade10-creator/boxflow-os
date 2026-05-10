@@ -3,18 +3,41 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const PLANS = [
-  { id: 'price_1TTAIzBEt8l7Ia34YblJyS0v', name: 'Standard',     price: '$299/mo',   desc: '1 facility · Core modules' },
-  { id: 'price_1TTAMRBEt8l7Ia34P2kiYUZ4', name: 'Professional', price: '$799/mo',   desc: 'Up to 3 facilities + AI Panel', popular: true },
-  { id: 'price_1TTARABEt8l7Ia34wUDTw0NZ', name: 'Enterprise',   price: '$1,999/mo', desc: 'Unlimited facilities + full USP suite' },
+  {
+    id: 'price_1TTAIzBEt8l7Ia34YblJyS0v',
+    annualId: 'price_1TTAIzBEt8l7Ia34YblJyS0v',
+    name: 'Standard',
+    price: { monthly: 299, annual: 249 },
+    desc: '1 facility · Core modules',
+    features: ['Temperature Monitoring', 'Drug Inventory', 'Compliance Logs', 'Compounding Batches', 'USP <797> / <800>'],
+  },
+  {
+    id: 'price_1TTAMRBEt8l7Ia34P2kiYUZ4',
+    annualId: 'price_1TTAMRBEt8l7Ia34P2kiYUZ4',
+    name: 'Professional',
+    price: { monthly: 799, annual: 669 },
+    desc: 'Up to 3 facilities + AI Panel',
+    popular: true,
+    features: ['Everything in Standard', 'AI Control Panel', 'Cold Chain Fleet', 'Hospital Logistics', 'Cleanrooms Monitoring'],
+  },
+  {
+    id: 'price_1TTARABEt8l7Ia34wUDTw0NZ',
+    annualId: 'price_1TTARABEt8l7Ia34wUDTw0NZ',
+    name: 'Enterprise',
+    price: { monthly: 1999, annual: 1679 },
+    desc: 'Unlimited facilities + full USP suite',
+    features: ['Everything in Professional', 'Unlimited facilities', 'Full USP compliance suite', 'FDA audit trail export', 'Dedicated pharmacist support'],
+  },
 ];
 
 const STEPS = ['Plan', 'Pharmacy', 'Staff', 'Inventory', 'Review'];
 
 export default function MedFlowOnboarding() {
   const router = useRouter();
-  const [step, setStep] = useState(0);
+  const [step,    setStep]    = useState(0);
   const [loading, setLoading] = useState(false);
-  const [plan, setPlan] = useState(PLANS[1].id);
+  const [plan,    setPlan]    = useState(PLANS[1].id);
+  const [annual,  setAnnual]  = useState(false);
   const [form, setForm] = useState({
     pharmacyName: '', email: '', phone: '', address: '', city: '', state: '', zip: '',
     npi: '', dea: '', pic: '', picLicense: '',
@@ -45,8 +68,10 @@ export default function MedFlowOnboarding() {
         priceId: plan,
         product: 'medflow',
         plan: selectedPlan.name,
+        billing: annual ? 'annual' : 'monthly',
         metadata: {
           price_id: plan, product: 'medflow', plan: selectedPlan.name,
+          billing: annual ? 'annual' : 'monthly',
           company_name: form.pharmacyName, email: form.email, phone: form.phone,
           address: `${form.address}, ${form.city}, ${form.state} ${form.zip}`,
           npi: form.npi, dea: form.dea, pic: form.pic, usp_level: form.uspLevel,
@@ -98,22 +123,54 @@ export default function MedFlowOnboarding() {
           {step === 0 && (
             <div>
               <h2 style={{ fontSize: 20, fontWeight: 800, margin: '0 0 6px' }}>Choose your MedFlowOS plan</h2>
-              <p style={{ fontSize: 13, color: dim, marginBottom: 24 }}>HIPAA compliant · USP &lt;797&gt; / &lt;800&gt; · Cancel anytime</p>
+              <p style={{ fontSize: 13, color: dim, marginBottom: 20 }}>HIPAA compliant · USP &lt;797&gt; / &lt;800&gt; · Cancel anytime</p>
+
+              {/* Billing toggle */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: card, border: '1px solid ' + border, borderRadius: 100, padding: 4 }}>
+                  <button onClick={() => setAnnual(false)} style={{ padding: '7px 18px', borderRadius: 100, border: 'none', background: !annual ? teal : 'transparent', color: !annual ? '#000' : dim, fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: D }}>Monthly</button>
+                  <button onClick={() => setAnnual(true)} style={{ padding: '7px 18px', borderRadius: 100, border: 'none', background: annual ? teal : 'transparent', color: annual ? '#000' : dim, fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: D, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    Annual
+                    <span style={{ background: '#10b981', color: '#fff', fontSize: 10, fontWeight: 800, padding: '1px 7px', borderRadius: 100 }}>SAVE 17%</span>
+                  </button>
+                </div>
+              </div>
+              {annual && <p style={{ color: '#10b981', fontSize: 12, textAlign: 'center', marginBottom: 16, fontWeight: 600 }}>Pay annually — lower monthly rate, billed as one yearly payment</p>}
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                 {PLANS.map(p => (
                   <div key={p.id} onClick={() => setPlan(p.id)}
-                    style={{ padding: '16px 20px', borderRadius: 12, border: '2px solid ' + (plan === p.id ? teal : border), background: plan === p.id ? teal + '10' : card, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+                    style={{ padding: '16px 20px', borderRadius: 12, border: '2px solid ' + (plan === p.id ? teal : border), background: plan === p.id ? teal + '10' : card, cursor: 'pointer', position: 'relative', transition: 'all .2s' }}>
                     {p.popular && <div style={{ position: 'absolute', top: -10, right: 16, background: teal, color: '#000', fontSize: 9, fontWeight: 700, padding: '2px 10px', borderRadius: 12, fontFamily: M, letterSpacing: 1.5 }}>MOST POPULAR</div>}
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: white }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>{p.desc}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: white }}>{p.name}</div>
+                        <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>{p.desc}</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', marginTop: 8 }}>
+                          {p.features.map(f => (
+                            <span key={f} style={{ fontSize: 11, color: dim }}>✓ {f}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 16 }}>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: teal }}>
+                          ${(annual ? p.price.annual : p.price.monthly).toLocaleString()}
+                          <span style={{ fontSize: 12, fontWeight: 400, color: dim }}>/mo</span>
+                        </div>
+                        {annual && (
+                          <div>
+                            <div style={{ fontSize: 11, color: '#10b981', fontWeight: 600 }}>Billed ${(p.price.annual * 12).toLocaleString()}/yr</div>
+                            <div style={{ fontSize: 10, color: dim }}>Save ${((p.price.monthly - p.price.annual) * 12).toLocaleString()}/yr</div>
+                          </div>
+                        )}
+                        {!annual && <div style={{ fontSize: 10, color: dim, marginTop: 2 }}>Or ${p.price.annual}/mo annually</div>}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: teal }}>{p.price}</div>
                   </div>
                 ))}
               </div>
               <button onClick={() => setStep(1)} style={{ width: '100%', padding: 14, borderRadius: 10, background: teal, border: 'none', color: '#000', fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: D }}>
-                Continue with {selectedPlan.name} →
+                Continue with {selectedPlan.name} {annual ? 'Annual' : 'Monthly'} →
               </button>
             </div>
           )}
@@ -221,12 +278,23 @@ export default function MedFlowOnboarding() {
               <p style={{ fontSize: 13, color: dim, marginBottom: 24 }}>Confirm your details before proceeding to payment.</p>
               <div style={{ background: card, border: '1px solid ' + border, borderRadius: 12, padding: 20, marginBottom: 16 }}>
                 <div style={{ fontSize: 12, color: dim, fontFamily: M, letterSpacing: 1, marginBottom: 12 }}>SUBSCRIPTION</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: white }}>MedFlowOS — {selectedPlan.name}</div>
                     <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>{selectedPlan.desc}</div>
+                    <div style={{ fontSize: 11, color: '#10b981', marginTop: 4 }}>{annual ? 'Annual billing' : 'Monthly billing'}</div>
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: teal }}>{selectedPlan.price}</div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: teal }}>
+                      ${(annual ? selectedPlan.price.annual : selectedPlan.price.monthly).toLocaleString()}/mo
+                    </div>
+                    {annual && (
+                      <div>
+                        <div style={{ fontSize: 12, color: '#10b981', fontWeight: 600 }}>Billed ${(selectedPlan.price.annual * 12).toLocaleString()}/yr</div>
+                        <div style={{ fontSize: 11, color: dim }}>Save ${((selectedPlan.price.monthly - selectedPlan.price.annual) * 12).toLocaleString()}/yr</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div style={{ background: card, border: '1px solid ' + border, borderRadius: 12, padding: 20, marginBottom: 20 }}>
