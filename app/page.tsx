@@ -8,7 +8,7 @@ const PLATFORMS = [
     id: 'boxflow', name: 'BoxFlow', suffix: 'OS',
     tagline: 'Logistics & Fleet Command',
     desc: 'Real-time dispatch, fleet tracking and operational analytics.',
-    color: '#2563EB', glow: 'rgba(37,99,235,0.5)', login: '/boxflow',
+    color: '#2563EB', glow: 'rgba(37,99,235,0.5)', login: '/login',
     icon: <svg viewBox="0 0 44 44" fill="none" width="44" height="44">
       <rect x="4" y="14" width="24" height="18" rx="3" stroke="#2563EB" strokeWidth="1.8" fill="rgba(37,99,235,0.1)" />
       <path d="M28 20h7l5 7v5H28V20z" stroke="#2563EB" strokeWidth="1.8" fill="rgba(37,99,235,0.1)" strokeLinejoin="round" />
