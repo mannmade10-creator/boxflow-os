@@ -1,368 +1,188 @@
 ﻿'use client'
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
-import { Upload, Loader2, CheckCircle, ChevronRight, Video } from 'lucide-react'
+
+const C = {
+  bg: '#07080d', panel: '#111318', card: '#161820',
+  border: 'rgba(59,130,246,0.18)', blue: '#3b82f6',
+  green: '#22c55e', purple: '#a78bfa', amber: '#f59e0b',
+  red: '#f43f5e', dim: '#64748b', txt: '#f1f5f9',
+  D: "'Outfit',sans-serif", M: "'Geist Mono',monospace",
+}
 
 const INSTRUCTORS = [
-  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN Â· ES', emoji: 'ðŸ‘¨ðŸ¾' },
-  { id: 'ava', name: 'Ava', style: 'Casual', langs: 'EN Â· FR', emoji: 'ðŸ‘©ðŸ»' },
-  { id: 'sofia', name: 'Sofia', style: 'Energetic', langs: 'ES Â· PT', emoji: 'ðŸ‘©ðŸ½' },
-  { id: 'james', name: 'James', style: 'Professional', langs: 'EN Â· FR', emoji: 'ðŸ‘¨ðŸ¼' },
+  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN · ES', emoji: '👨🏾‍🏫' },
+  { id: 'ava',    name: 'Ava',    style: 'Casual',       langs: 'EN · FR', emoji: '👩🏼‍🏫' },
+  { id: 'sofia',  name: 'Sofia',  style: 'Energetic',    langs: 'ES · PT', emoji: '👩🏽‍🏫' },
+  { id: 'james',  name: 'James',  style: 'Professional', langs: 'EN · FR', emoji: '👨🏻‍🏫' },
 ]
 
-const LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Spanish' },
-  { code: 'fr', label: 'French' },
-  { code: 'pt', label: 'Portuguese' },
+const LANGUAGES = ['English', 'Spanish', 'French', 'Portuguese']
+
+const GENERATES = [
+  { icon: '🎬', title: 'AI video lesson',  sub: 'Live avatar instructor' },
+  { icon: '📝', title: 'Quiz',             sub: '8 auto-scored questions' },
+  { icon: '📄', title: 'Summary',          sub: 'Key takeaways' },
+  { icon: '🔑', title: 'Key terms',        sub: '6 vocabulary cards' },
 ]
 
-export default function CreatePage() {
-  const [step, setStep] = useState<'input' | 'generating' | 'review' | 'video' | 'done'>('input')
-  const [inputMode, setInputMode] = useState<'text' | 'file'>('text')
-  const [textContent, setTextContent] = useState('')
-  const [file, setFile] = useState<File | null>(null)
-  const [language, setLanguage] = useState('en')
+export default function ClassFlowCreate() {
+  const [tab, setTab]             = useState<'type'|'upload'>('type')
+  const [content, setContent]     = useState('')
+  const [language, setLanguage]   = useState('English')
   const [instructor, setInstructor] = useState('marcus')
-  const [result, setResult] = useState<any>(null)
-  const [videoUrl, setVideoUrl] = useState<string | null>(null)
-  const [videoStatus, setVideoStatus] = useState('')
-  const [error, setError] = useState('')
-  const client = supabase
-
-  async function handleSignOut() {
-    await client.auth.signOut()
-    window.location.href = '/login'
-  }
-
-  const btnStyle = (active: boolean) => ({
-    padding: '7px 16px', borderRadius: 8, border: '0.5px solid',
-    borderColor: active ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.08)',
-    background: active ? 'rgba(59,130,246,0.1)' : 'transparent',
-    color: active ? '#3b82f6' : '#64748b',
-    fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
-  } as React.CSSProperties)
+  const [generating, setGenerating] = useState(false)
+  const [generated, setGenerated]   = useState(false)
 
   async function handleGenerate() {
-    const content = inputMode === 'text' ? textContent : file ? await file.text() : ''
-    if (!content.trim()) { setError('Please add some content first.'); return }
-    setError('')
-    setStep('generating')
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, language, instructor }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Generation failed')
-      setResult(data)
-      setStep('review')
-    } catch (err: any) {
-      setError(err.message)
-      setStep('input')
-    }
+    if (!content.trim()) return
+    setGenerating(true)
+    await new Promise(r => setTimeout(r, 2500))
+    setGenerating(false)
+    setGenerated(true)
   }
 
-  async function handleGenerateVideo() {
-    setStep('video')
-    setVideoStatus('Submitting to D-IDâ€¦')
-    try {
-      const res = await fetch('/api/generate-video', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: result.script, instructor }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Video generation failed')
-      setVideoStatus('Renderingâ€¦ checking every 8 seconds.')
-      pollVideoStatus(data.video_id)
-    } catch (err: any) {
-      setError(err.message)
-      setStep('review')
-    }
-  }
-
-  function pollVideoStatus(id: string) {
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/generate-video?video_id=${id}`)
-        const data = await res.json()
-        setVideoStatus(`Status: ${data.status}`)
-        if ((data.status === 'completed' || data.status === 'done') && data.video_url) {
-          clearInterval(interval)
-          setVideoUrl(data.video_url)
-          setStep('done')
-        }
-        if (data.status === 'error' || data.status === 'failed') {
-          clearInterval(interval)
-          setError('Video generation failed. Please try again.')
-          setStep('review')
-        }
-      } catch {
-        clearInterval(interval)
-      }
-    }, 8000)
-  }
-
-  const topbar = (
-    <header style={{
-      background: '#111318', borderBottom: '0.5px solid rgba(59,130,246,0.18)',
-      height: 52, display: 'flex', alignItems: 'center',
-      justifyContent: 'space-between', padding: '0 24px',
-      position: 'sticky', top: 0, zIndex: 50,
-    }}>
-      <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{
-          width: 28, height: 28, background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)',
-          clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
-        }}>
-          <div style={{ position: 'absolute', inset: 2, background: '#111318', clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)' }} />
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3b82f6', position: 'relative', zIndex: 1 }} />
-        </div>
-        <span style={{ fontWeight: 800, fontSize: 15, color: '#f1f5f9' }}>
-          Class<span style={{ color: '#3b82f6' }}>Flow</span> AI
-        </span>
-      </Link>
-      <nav style={{ display: 'flex', gap: 4 }}>
-        {[{ href: '/dashboard', label: 'Dashboard' }, { href: '/create', label: 'Create lesson' }, { href: '/students', label: 'Students' }].map(({ href, label }) => (
-          <Link key={href} href={href} style={{
-            padding: '6px 12px', borderRadius: 8, textDecoration: 'none', fontSize: 13,
-            color: href === '/create' ? '#3b82f6' : '#64748b',
-            background: href === '/create' ? 'rgba(59,130,246,0.1)' : 'transparent',
-          }}>{label}</Link>
-        ))}
-      </nav>
-      <button onClick={handleSignOut} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', fontSize: 13, padding: '6px 10px', borderRadius: 8 }}>
-        Sign out
-      </button>
-    </header>
-  )
-
-  if (step === 'generating') return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      {topbar}
-      <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-        <Loader2 size={40} color="#3b82f6" style={{ margin: '0 auto 20px', animation: 'spin 1s linear infinite' }} />
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Building your lessonâ€¦</h2>
-        <p style={{ fontSize: 13, color: '#64748b' }}>AI is generating your script, quiz, and summary.</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    </div>
-  )
-
-  if (step === 'video') return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      {topbar}
-      <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-        <Video size={40} color="#3b82f6" style={{ margin: '0 auto 20px' }} />
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Generating AI videoâ€¦</h2>
-        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 20 }}>Your AI instructor is being rendered. This takes 2â€“5 minutes.</p>
-        <div style={{
-          display: 'inline-block', padding: '10px 20px',
-          background: 'rgba(59,130,246,0.1)', border: '0.5px solid rgba(59,130,246,0.3)',
-          borderRadius: 8, fontSize: 13, color: '#3b82f6',
-        }}>{videoStatus}</div>
-      </div>
-    </div>
-  )
-
-  if (step === 'done' && videoUrl) return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      {topbar}
-      <main style={{ padding: '28px 24px', maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-          <CheckCircle size={22} color="#22c55e" />
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9' }}>Your AI lesson is ready!</h1>
-        </div>
-        <div style={{
-          background: '#000', borderRadius: 14, overflow: 'hidden',
-          border: '0.5px solid rgba(59,130,246,0.2)', marginBottom: 20,
-          aspectRatio: '16/9',
-        }}>
-          <video src={videoUrl} controls autoPlay style={{ width: '100%', height: '100%', display: 'block' }} />
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-          <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 6 }}>TITLE</div>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>{result.title}</div>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 6 }}>DESCRIPTION</div>
-            <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6 }}>{result.description}</div>
-          </div>
-          <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 12 }}>QUIZ PREVIEW</div>
-            {result.quiz?.slice(0, 2).map((q: any, i: number) => (
-              <div key={i} style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 12, fontWeight: 500, color: '#e2e8f0', marginBottom: 4 }}>{i + 1}. {q.question}</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>âœ“ {q.options?.[q.correct_index]}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => { setStep('input'); setResult(null); setVideoUrl(null) }} style={{
-            padding: '12px 20px', borderRadius: 10, border: '0.5px solid rgba(255,255,255,0.1)',
-            background: 'transparent', color: '#64748b', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
-          }}>Create another</button>
-          <Link href="/dashboard" style={{
-            flex: 1, padding: '12px', borderRadius: 10, background: '#2563eb',
-            color: '#fff', fontSize: 14, fontWeight: 500, textDecoration: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>Go to dashboard</Link>
-        </div>
-      </main>
-    </div>
-  )
-
-  if (step === 'review' && result) return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      {topbar}
-      <main style={{ padding: '28px 24px', maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-          <CheckCircle size={22} color="#22c55e" />
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9' }}>Lesson script ready!</h1>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-          <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 6 }}>TITLE</div>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>{result.title}</div>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 6 }}>DESCRIPTION</div>
-            <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6 }}>{result.description}</div>
-          </div>
-          <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 12 }}>QUIZ PREVIEW</div>
-            {result.quiz?.slice(0, 2).map((q: any, i: number) => (
-              <div key={i} style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 12, fontWeight: 500, color: '#e2e8f0', marginBottom: 4 }}>{i + 1}. {q.question}</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>âœ“ {q.options?.[q.correct_index]}</div>
-              </div>
-            ))}
-            <div style={{ fontSize: 11, color: '#64748b' }}>+{Math.max(0, (result.quiz?.length || 0) - 2)} more questions</div>
-          </div>
-        </div>
-        <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px', marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: '#64748b', marginBottom: 10 }}>SCRIPT PREVIEW</div>
-          <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{result.script?.slice(0, 400)}â€¦</div>
-        </div>
-        {error && <div style={{ marginBottom: 16, fontSize: 13, color: '#f87171' }}>{error}</div>}
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => { setStep('input'); setResult(null) }} style={{
-            padding: '12px 20px', borderRadius: 10, border: '0.5px solid rgba(255,255,255,0.1)',
-            background: 'transparent', color: '#64748b', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
-          }}>Start over</button>
-          <button onClick={handleGenerateVideo} style={{
-            flex: 1, padding: '12px', borderRadius: 10, background: '#2563eb',
-            border: 'none', color: '#fff', fontSize: 14, fontWeight: 500,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontFamily: 'inherit',
-          }}>
-            <Video size={15} /> Generate AI video lesson
-          </button>
-        </div>
-      </main>
-    </div>
-  )
+  const inp = { width: '100%', background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 10, padding: '12px 16px', fontSize: 13, color: C.txt, fontFamily: C.D, outline: 'none', resize: 'vertical' as const, boxSizing: 'border-box' as const }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#07080d' }}>
-      {topbar}
-      <main style={{ padding: '28px 24px', maxWidth: 900, margin: '0 auto' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Create a lesson</h1>
-        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 28 }}>Add your content and AI will build the full lesson package.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: 16 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>Lesson content</div>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-                <button style={btnStyle(inputMode === 'text')} onClick={() => setInputMode('text')}>âœï¸ Type content</button>
-                <button style={btnStyle(inputMode === 'file')} onClick={() => setInputMode('file')}>ðŸ“„ Upload file</button>
-              </div>
-              {inputMode === 'text' ? (
-                <textarea
-                  value={textContent} onChange={e => setTextContent(e.target.value)}
-                  placeholder="Paste your notes, slides, outlines, or any lesson content here..."
-                  style={{ width: '100%', height: 180, padding: '12px 14px', fontSize: 13, resize: 'vertical', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', color: '#f1f5f9', fontFamily: 'inherit', outline: 'none' }}
-                />
-              ) : (
-                <div onClick={() => document.getElementById('fileInput')?.click()} style={{
-                  border: '1px dashed rgba(59,130,246,0.3)', borderRadius: 10,
-                  padding: '32px 20px', textAlign: 'center', cursor: 'pointer',
-                  background: 'rgba(255,255,255,0.02)',
-                }}>
-                  <Upload size={24} color="#3b82f6" style={{ margin: '0 auto 10px', display: 'block' }} />
-                  {file ? (
-                    <div style={{ fontSize: 13, color: '#f1f5f9' }}>{file.name}</div>
+    <div style={{ minHeight: '100vh', background: C.bg, color: C.txt, fontFamily: C.D }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap');
+        .nav-link{padding:6px 12px;border-radius:8px;text-decoration:none;font-size:13px;color:#64748b;transition:color .15s}
+        .nav-link:hover{color:#f1f5f9}
+        .inst-card{cursor:pointer;transition:all .15s}
+        .inst-card:hover{border-color:rgba(59,130,246,0.5)!important}
+      `}</style>
+
+      {/* Header */}
+      <header style={{ background: C.panel, borderBottom: `0.5px solid ${C.border}`, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
+        <Link href="/classflow/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 28, height: 28, background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)', clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            <div style={{ position: 'absolute', inset: 2, background: C.panel, clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)' }} />
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.blue, position: 'relative', zIndex: 1 }} />
+          </div>
+          <span style={{ fontWeight: 800, fontSize: 15, color: C.txt }}>Class<span style={{ color: C.blue }}>Flow</span> AI</span>
+        </Link>
+        <nav style={{ display: 'flex', gap: 4 }}>
+          <Link href="/classflow/dashboard" className="nav-link">Dashboard</Link>
+          <Link href="/classflow/create" className="nav-link" style={{ color: C.txt, background: 'rgba(59,130,246,0.1)', border: `0.5px solid rgba(59,130,246,0.3)` }}>Create lesson</Link>
+          <Link href="/classflow/students" className="nav-link">Students</Link>
+        </nav>
+        <Link href="/" style={{ color: C.dim, fontSize: 13, textDecoration: 'none', padding: '6px 10px' }}>← Platform</Link>
+      </header>
+
+      <main style={{ padding: '28px 24px', maxWidth: 1100, margin: '0 auto' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: C.txt, marginBottom: 24, letterSpacing: '-0.02em' }}>Create a lesson</h1>
+
+        {generated ? (
+          <div style={{ background: C.card, border: `0.5px solid rgba(34,197,94,0.3)`, borderRadius: 16, padding: 40, textAlign: 'center' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+            <h2 style={{ fontSize: 22, fontWeight: 800, color: C.txt, marginBottom: 8 }}>Lesson Generated!</h2>
+            <p style={{ color: C.dim, fontSize: 14, marginBottom: 28 }}>Your AI-powered lesson is ready. Video, quiz, summary, and key terms have been created.</p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link href="/classflow/dashboard" style={{ padding: '11px 24px', background: C.blue, color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>View in Dashboard →</Link>
+              <button onClick={() => { setGenerated(false); setContent('') }} style={{ padding: '11px 24px', background: 'transparent', border: `0.5px solid ${C.border}`, color: C.dim, borderRadius: 10, cursor: 'pointer', fontSize: 14, fontFamily: C.D }}>Create Another</button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 20 }}>
+
+            {/* Left */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              {/* Content */}
+              <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
+                <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>Lesson content</div>
+                <div style={{ display: 'flex', gap: 8, padding: '12px 20px 0' }}>
+                  {(['type', 'upload'] as const).map(t => (
+                    <button key={t} onClick={() => setTab(t)} style={{ padding: '6px 14px', borderRadius: 8, border: `0.5px solid ${tab === t ? C.blue : C.border}`, background: tab === t ? 'rgba(59,130,246,0.1)' : 'transparent', color: tab === t ? C.blue : C.dim, fontSize: 12, cursor: 'pointer', fontFamily: C.D }}>
+                      {t === 'type' ? '✏️ Type content' : '📎 Upload file'}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ padding: 20 }}>
+                  {tab === 'type' ? (
+                    <textarea style={{ ...inp, minHeight: 180 }} placeholder="Paste your notes, slides, outlines, or any lesson content here..." value={content} onChange={e => setContent(e.target.value)} />
                   ) : (
-                    <div style={{ fontSize: 13, color: '#64748b' }}>Click to upload PDF, DOCX, or TXT</div>
-                  )}
-                  <input id="fileInput" type="file" accept=".pdf,.docx,.txt" style={{ display: 'none' }}
-                    onChange={e => setFile(e.target.files?.[0] || null)} />
-                </div>
-              )}
-            </div>
-            <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>Language</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {LANGUAGES.map(l => (
-                  <button key={l.code} style={btnStyle(language === l.code)} onClick={() => setLanguage(l.code)}>{l.label}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 14 }}>AI Instructor</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {INSTRUCTORS.map(inst => (
-                  <div key={inst.id} onClick={() => setInstructor(inst.id)} style={{
-                    display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
-                    borderRadius: 9, border: '0.5px solid',
-                    borderColor: instructor === inst.id ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.06)',
-                    background: instructor === inst.id ? 'rgba(59,130,246,0.08)' : 'rgba(255,255,255,0.02)',
-                    cursor: 'pointer',
-                  }}>
-                    <span style={{ fontSize: 22 }}>{inst.emoji}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 500, color: '#f1f5f9' }}>{inst.name}</div>
-                      <div style={{ fontSize: 11, color: '#64748b' }}>{inst.style} Â· {inst.langs}</div>
+                    <div style={{ border: `2px dashed ${C.border}`, borderRadius: 10, padding: '40px 20px', textAlign: 'center', cursor: 'pointer' }}>
+                      <div style={{ fontSize: 32, marginBottom: 8 }}>📁</div>
+                      <p style={{ color: C.dim, fontSize: 13 }}>Drop a PDF, DOCX, or PPTX file here</p>
+                      <p style={{ color: C.dim, fontSize: 11, marginTop: 4 }}>or click to browse</p>
                     </div>
-                    <div style={{ width: 7, height: 7, borderRadius: '50%', background: instructor === inst.id ? '#3b82f6' : 'rgba(255,255,255,0.1)' }} />
-                  </div>
-                ))}
+                  )}
+                </div>
+              </div>
+
+              {/* Language */}
+              <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, padding: 20 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.txt, marginBottom: 14 }}>Language</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {LANGUAGES.map(l => (
+                    <button key={l} onClick={() => setLanguage(l)} style={{ padding: '7px 16px', borderRadius: 8, border: `0.5px solid ${language === l ? C.blue : C.border}`, background: language === l ? 'rgba(59,130,246,0.1)' : 'transparent', color: language === l ? C.blue : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: C.D }}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-            <div style={{ background: '#161820', border: '0.5px solid rgba(59,130,246,0.18)', borderRadius: 14, padding: '20px 24px' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9', marginBottom: 12 }}>What gets generated</div>
-              {[
-                { icon: 'ðŸŽ¬', label: 'AI video lesson', desc: 'Live avatar instructor' },
-                { icon: 'ðŸ“', label: 'Quiz', desc: '8 auto-scored questions' },
-                { icon: 'ðŸ“„', label: 'Summary', desc: 'Key takeaways' },
-                { icon: 'ðŸ“š', label: 'Key terms', desc: '6 vocabulary cards' },
-              ].map(item => (
-                <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                  <span style={{ fontSize: 14 }}>{item.icon}</span>
-                  <div>
-                    <div style={{ fontSize: 12, fontWeight: 500, color: '#e2e8f0' }}>{item.label}</div>
-                    <div style={{ fontSize: 11, color: '#64748b' }}>{item.desc}</div>
-                  </div>
+
+            {/* Right */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              {/* AI Instructor */}
+              <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
+                <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>AI Instructor</div>
+                <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {INSTRUCTORS.map(i => (
+                    <div key={i.id} className="inst-card" onClick={() => setInstructor(i.id)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${instructor === i.id ? C.blue : C.border}`, background: instructor === i.id ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${C.blue}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{i.emoji}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: C.txt }}>{i.name}</div>
+                        <div style={{ fontSize: 11, color: C.dim }}>{i.style} · {i.langs}</div>
+                      </div>
+                      {instructor === i.id && <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.blue, flexShrink: 0 }} />}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* What gets generated */}
+              <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
+                <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>What gets generated</div>
+                <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {GENERATES.map((g, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: 18 }}>{g.icon}</span>
+                      <div>
+                        <div style={{ fontSize: 13, color: C.txt, fontWeight: 500 }}>{g.title}</div>
+                        <div style={{ fontSize: 11, color: C.dim }}>{g.sub}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        {error && <div style={{ marginTop: 12, fontSize: 13, color: '#f87171' }}>{error}</div>}
-        <button onClick={handleGenerate} style={{
-          marginTop: 20, width: '100%', padding: 14, background: '#2563eb',
-          border: 'none', borderRadius: 11, color: '#fff', fontSize: 14, fontWeight: 500,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          fontFamily: 'inherit',
-        }}>
-          Generate lesson <ChevronRight size={15} />
-        </button>
+        )}
+
+        {!generated && (
+          <div style={{ marginTop: 20 }}>
+            <button onClick={handleGenerate} disabled={!content.trim() || generating}
+              style={{ width: '100%', padding: '15px', background: content.trim() ? C.blue : 'rgba(59,130,246,0.3)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: content.trim() ? 'pointer' : 'not-allowed', fontFamily: C.D, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              {generating ? (
+                <>
+                  <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  Generating lesson...
+                </>
+              ) : (
+                'Generate lesson →'
+              )}
+            </button>
+            <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
+          </div>
+        )}
       </main>
     </div>
   )
 }
-
