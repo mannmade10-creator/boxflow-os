@@ -1,43 +1,59 @@
 'use client'
-import React from 'react'
+import Link from 'next/link'
+
+const NAV = [['About', '/about'], ['Pricing', '/pricing'], ['Demo', '/demo'], ['Contact', '/contact']]
 
 export default function PrivacyPage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020617 0%, #0b1220 100%)', color: '#fff', fontFamily: 'Arial, sans-serif', padding: '60px 20px' }}>
-      <div style={{ maxWidth: 800, margin: '0 auto' }}>
-        <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 40 }}>
-          <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 32, height: 32 }} />
-          <span style={{ color: '#fff', fontWeight: 900, fontSize: 18 }}>BoxFlow OS</span>
-        </a>
-        <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 24, padding: 40 }}>
-          <div style={{ color: '#60a5fa', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Legal</div>
-          <h1 style={{ fontSize: 40, fontWeight: 900, margin: '0 0 8px' }}>Privacy Policy</h1>
-          <p style={{ color: '#64748b', marginBottom: 40 }}>Last updated: April 1, 2026</p>
-          
-          {[
-            { title: '1. Information We Collect', content: 'We collect information you provide directly to us, such as when you create an account, subscribe to our service, or contact us for support. This includes: name, email address, company name, billing information, and usage data. We also automatically collect certain information when you use BoxFlow OS, including log data, device information, and cookies.' },
-            { title: '2. How We Use Your Information', content: 'We use the information we collect to provide, maintain, and improve our services, process transactions, send technical notices and support messages, respond to your comments and questions, and send you information about products, services, and events. We may also use your information to monitor and analyze trends and usage.' },
-            { title: '3. Information Sharing', content: 'We do not sell, trade, or rent your personal information to third parties. We may share your information with third-party vendors and service providers that perform services on our behalf, such as payment processing, data analysis, email delivery, hosting services, customer service, and marketing assistance.' },
-            { title: '4. Data Security', content: 'We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. All data is encrypted in transit using TLS and at rest using AES-256 encryption. We use Supabase enterprise-grade infrastructure for data storage.' },
-            { title: '5. Data Retention', content: 'We retain your personal information for as long as your account is active or as needed to provide you services. You may request deletion of your personal data at any time by contacting us at privacy@boxflowos.com. We will respond to your request within 30 days.' },
-            { title: '6. Cookies', content: 'We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. See our Cookie Policy for more details.' },
-            { title: '7. Third-Party Services', content: 'Our service integrates with third-party services including Supabase (database), Mapbox (mapping), and Twilio (communications). These services have their own privacy policies, and we encourage you to review them.' },
-            { title: '8. Your Rights', content: 'You have the right to access, update, or delete your personal information at any time. You may also object to processing of your personal information, request that we restrict processing of your personal information, and request portability of your personal information.' },
-            { title: '9. Changes to This Policy', content: 'We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. Your continued use of the service after any changes constitutes your acceptance of the new Privacy Policy.' },
-            { title: '10. Contact Us', content: 'If you have any questions about this Privacy Policy, please contact us at: privacy@boxflowos.com or BoxFlow OS, Enterprise Operations Suite, Oklahoma City, OK, United States.' },
-          ].map(section => (
-            <div key={section.title} style={{ marginBottom: 32 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#60a5fa', marginBottom: 12 }}>{section.title}</h2>
-              <p style={{ color: '#94a3b8', lineHeight: 1.8, margin: 0 }}>{section.content}</p>
-            </div>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#020818 0%,#070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui,sans-serif' }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'sticky', top: 0, background: 'rgba(2,8,24,0.9)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+          <div style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg,#0A6E68,#14D2C2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 16, color: '#fff' }}>M</div>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Made Technologies</div>
+            <div style={{ fontSize: 8, color: '#14D2C2', letterSpacing: 2, textTransform: 'uppercase' }}>Enterprise Suite</div>
+          </div>
+        </Link>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+          {NAV.map(([l, h]) => <Link key={h} href={h} style={{ color: '#64748b', fontSize: 13, textDecoration: 'none' }}>{l}</Link>)}
+        </div>
+      </nav>
+
+      <div style={{ maxWidth: 800, margin: '0 auto', padding: '64px 24px 100px' }}>
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ fontSize: 11, color: '#14D2C2', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 16, fontWeight: 700 }}>Legal</div>
+          <h1 style={{ fontSize: 42, fontWeight: 900, margin: '0 0 12px', letterSpacing: -1 }}>Privacy Policy</h1>
+          <p style={{ color: '#64748b', fontSize: 14 }}>Last updated: January 1, 2026</p>
+        </div>
+
+        {[
+          { title: '1. Information We Collect', body: 'We collect information you provide directly to us when you create an account, use our platforms, or contact us for support. This includes your name, email address, company name, phone number, and payment information. We also collect information automatically when you use our services, including log data, device information, and usage data.' },
+          { title: '2. How We Use Your Information', body: 'We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, respond to your comments and questions, and send you marketing communications (with your consent). We also use your information to monitor and analyze usage patterns and improve user experience.' },
+          { title: '3. Information Sharing', body: 'We do not sell, trade, or otherwise transfer your personal information to outside parties except as described in this policy. We may share your information with trusted third parties who assist us in operating our platform, conducting our business, or servicing you, as long as those parties agree to keep this information confidential.' },
+          { title: '4. Data Security', body: 'We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. All data is encrypted in transit using TLS and at rest using AES-256 encryption. We conduct regular security audits and penetration testing.' },
+          { title: '5. Data Retention', body: 'We retain your personal information for as long as your account is active or as needed to provide you services. You may request deletion of your data at any time by contacting us. We will delete or anonymize your information within 30 days of your request, subject to legal obligations.' },
+          { title: '6. Your Rights', body: 'You have the right to access, correct, or delete your personal information. You may also object to or restrict certain processing of your data. To exercise these rights, contact us at privacy@boxflowos.com. We will respond to your request within 30 days.' },
+          { title: '7. Cookies', body: 'We use cookies and similar tracking technologies to track activity on our platform and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, some parts of our service may not function properly.' },
+          { title: '8. Third-Party Services', body: 'Our platforms may contain links to third-party websites or integrate with third-party services. We are not responsible for the privacy practices of those third parties. We encourage you to review the privacy policies of any third-party services you use in connection with our platforms.' },
+          { title: '9. Children\'s Privacy', body: 'Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from children. If we become aware that we have collected personal information from a child, we will take steps to delete such information.' },
+          { title: '10. Changes to This Policy', body: 'We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date. We encourage you to review this policy periodically.' },
+          { title: '11. Contact Us', body: 'If you have any questions about this privacy policy or our privacy practices, please contact us at privacy@boxflowos.com or by mail at Made Technologies Inc, Enterprise Software Suite.' },
+        ].map((s, i) => (
+          <div key={i} style={{ borderLeft: '2px solid rgba(20,210,194,0.2)', paddingLeft: 24, marginBottom: 36 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#f0f6ff', marginBottom: 10 }}>{s.title}</h2>
+            <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.8, margin: 0 }}>{s.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ fontSize: 12, color: '#334155' }}>© 2026 Made Technologies Inc. All rights reserved.</div>
+        <div style={{ display: 'flex', gap: 20 }}>
+          {[['Terms', '/terms'], ['Refund', '/refund'], ['Privacy', '/privacy']].map(([l, h]) => (
+            <Link key={h} href={h} style={{ color: '#334155', fontSize: 12, textDecoration: 'none' }}>{l}</Link>
           ))}
         </div>
-        <div style={{ textAlign: 'center', marginTop: 40, color: '#334155', fontSize: 13 }}>
-          <a href="/terms" style={{ color: '#60a5fa', marginRight: 20, textDecoration: 'none' }}>Terms of Service</a>
-          <a href="/refund" style={{ color: '#60a5fa', marginRight: 20, textDecoration: 'none' }}>Refund Policy</a>
-          <a href="/cookies" style={{ color: '#60a5fa', textDecoration: 'none' }}>Cookie Policy</a>
-        </div>
-      </div>
+      </footer>
     </div>
   )
 }

@@ -1,83 +1,102 @@
 'use client'
-import React, { useState } from 'react'
+import Link from 'next/link'
+import { useState } from 'react'
 
-const jobs = [
-  { title: 'Senior Full-Stack Engineer', dept: 'Engineering', location: 'Remote', type: 'Full-time', desc: 'Build and scale the core BoxFlow OS platform. Experience with Next.js, TypeScript, and Supabase required.' },
-  { title: 'AI/ML Engineer', dept: 'Engineering', location: 'Remote', type: 'Full-time', desc: 'Build and improve our AI optimization engine for logistics and production workflows.' },
-  { title: 'Enterprise Sales Executive', dept: 'Sales', location: 'Remote / Travel', type: 'Full-time', desc: 'Close enterprise deals with paper manufacturers and logistics companies. $500K+ deal experience preferred.' },
-  { title: 'Customer Success Manager', dept: 'Customer Success', location: 'Remote', type: 'Full-time', desc: 'Help enterprise clients get maximum value from BoxFlow OS. Operations or logistics background a plus.' },
-  { title: 'Logistics Industry Specialist', dept: 'Product', location: 'Remote', type: 'Full-time', desc: 'Shape our product roadmap using deep industry expertise in paper manufacturing or fleet operations.' },
-  { title: 'DevOps Engineer', dept: 'Engineering', location: 'Remote', type: 'Full-time', desc: 'Own our infrastructure, deployment pipelines, and reliability. Vercel, Supabase, and cloud experience required.' },
+const ROLES = [
+  { title: 'Senior Full-Stack Engineer', dept: 'Engineering', type: 'Full-time', location: 'Remote (US)', desc: 'Build and scale our enterprise platform suite. You will work across the stack — Next.js, Supabase, TypeScript — shipping features that real operators use every day.' },
+  { title: 'Product Designer', dept: 'Design', type: 'Full-time', location: 'Remote (US)', desc: 'Design interfaces for industries that have never had great software. You will own the end-to-end design process from research to final UI across all four of our platforms.' },
+  { title: 'Enterprise Sales Representative', dept: 'Sales', type: 'Full-time', location: 'Remote (US)', desc: 'Sell BoxFlow OS and MedFlow OS to mid-market operations. You will run the full sales cycle from outreach to close, with strong commission potential.' },
+  { title: 'Customer Success Manager', dept: 'Customer Success', type: 'Full-time', location: 'Remote (US)', desc: 'Own the post-sale relationship with our enterprise customers. You will handle onboarding, drive adoption, and ensure our clients get maximum value from our platforms.' },
+  { title: 'DevOps Engineer', dept: 'Engineering', type: 'Full-time', location: 'Remote (US)', desc: 'Own our infrastructure on Vercel and Supabase. You will build CI/CD pipelines, monitor performance, and ensure our platforms are fast, reliable, and secure.' },
+]
+
+const VALUES = [
+  { icon: 'S', title: 'Speed Over Perfection', desc: 'We ship fast. We iterate. We build things operators actually use.' },
+  { icon: 'O', title: 'Operators First', desc: 'Every decision we make is for the people running the operation.' },
+  { icon: 'C', title: 'Clarity Over Complexity', desc: 'We build simple, clear products. No bloat. No unnecessary complexity.' },
+  { icon: 'R', title: 'Remote First', desc: 'Work from anywhere in the US. We judge by output, not hours.' },
 ]
 
 export default function CareersPage() {
-  const [selected, setSelected] = useState<string | null>(null)
+  const [selected, setSelected] = useState<any>(null)
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #020617 0%, #0b1220 100%)', color: '#fff', fontFamily: 'Arial, sans-serif', padding: '60px 20px' }}>
-      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-        <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 40 }}>
-          <img src="/assets/logo.png" alt="BoxFlow OS" style={{ width: 36, height: 36 }} />
-          <span style={{ color: '#fff', fontWeight: 900, fontSize: 18 }}>BoxFlow OS</span>
-        </a>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#020818 0%,#070f24 100%)', color: '#f0f6ff', fontFamily: 'system-ui,sans-serif' }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'sticky', top: 0, background: 'rgba(2,8,24,0.9)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+          <div style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg,#0A6E68,#14D2C2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 16, color: '#fff' }}>M</div>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Made Technologies</div>
+            <div style={{ fontSize: 8, color: '#14D2C2', letterSpacing: 2, textTransform: 'uppercase' }}>Enterprise Suite</div>
+          </div>
+        </Link>
+        <div style={{ display: 'flex', gap: 24 }}>
+          {[['About', '/about'], ['Contact', '/contact']].map(([l, h]) => <Link key={h} href={h} style={{ color: '#64748b', fontSize: 13, textDecoration: 'none' }}>{l}</Link>)}
+        </div>
+      </nav>
 
-        <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <div style={{ display: 'inline-block', padding: '6px 16px', borderRadius: 999, background: 'rgba(37,99,235,0.14)', border: '1px solid rgba(96,165,250,0.24)', color: '#93c5fd', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20 }}>Careers</div>
-          <h1 style={{ fontSize: 52, fontWeight: 900, margin: '0 0 16px' }}>Build the Future of<br/>Enterprise Operations</h1>
-          <p style={{ color: '#94a3b8', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>Join a team replacing $16M/year software stacks with one platform. We move fast, think big, and build for real industries.</p>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '64px 24px 100px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 64 }}>
+          <div style={{ fontSize: 11, color: '#14D2C2', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 16, fontWeight: 700 }}>Join the Team</div>
+          <h1 style={{ fontSize: 48, fontWeight: 900, margin: '0 0 16px', letterSpacing: -2 }}>Build Software That <span style={{ color: '#14D2C2' }}>Actually Matters.</span></h1>
+          <p style={{ color: '#94a3b8', fontSize: 17, maxWidth: 560, margin: '0 auto', lineHeight: 1.7 }}>We are a small team building enterprise software for industries that have been underserved for too long. If you want your work to matter, you are in the right place.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 60 }}>
-          {[
-            { icon: '🌍', title: '100% Remote', desc: 'Work from anywhere. We care about output, not office hours.' },
-            { icon: '💰', title: 'Competitive Pay', desc: 'Top-of-market salaries plus equity in a high-growth company.' },
-            { icon: '🚀', title: 'Real Impact', desc: 'Your work directly affects how Fortune 500 companies operate.' },
-          ].map(perk => (
-            <div key={perk.title} style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28, textAlign: 'center' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>{perk.icon}</div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 8 }}>{perk.title}</h3>
-              <p style={{ color: '#94a3b8', fontSize: 14, margin: 0, lineHeight: 1.6 }}>{perk.desc}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16, marginBottom: 64 }}>
+          {VALUES.map((v, i) => (
+            <div key={i} style={{ background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(20,210,194,0.12)', borderRadius: 16, padding: 24 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(20,210,194,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 900, color: '#14D2C2', marginBottom: 14 }}>{v.icon}</div>
+              <h3 style={{ fontSize: 15, fontWeight: 800, marginBottom: 8 }}>{v.title}</h3>
+              <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.6, margin: 0 }}>{v.desc}</p>
             </div>
           ))}
         </div>
 
-        <h2 style={{ fontSize: 32, fontWeight: 900, marginBottom: 24 }}>Open Positions</h2>
-        <div style={{ display: 'grid', gap: 16, marginBottom: 60 }}>
-          {jobs.map(job => (
-            <div key={job.title} style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 24, cursor: 'pointer' }} onClick={() => setSelected(selected === job.title ? null : job.title)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 24 }}>Open Roles</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 48 }}>
+          {ROLES.map((r, i) => (
+            <div key={i} onClick={() => setSelected(selected?.title === r.title ? null : r)}
+              style={{ background: 'rgba(12,26,56,0.8)', border: `1px solid ${selected?.title === r.title ? 'rgba(20,210,194,0.4)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 14, padding: '20px 24px', cursor: 'pointer', transition: 'all 0.15s' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8 }}>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 6 }}>{job.title}</div>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    <span style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa', padding: '3px 10px', borderRadius: 999, fontSize: 12, fontWeight: 700 }}>{job.dept}</span>
-                    <span style={{ background: 'rgba(148,163,184,0.1)', color: '#94a3b8', padding: '3px 10px', borderRadius: 999, fontSize: 12 }}>{job.location}</span>
-                    <span style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#22c55e', padding: '3px 10px', borderRadius: 999, fontSize: 12, fontWeight: 700 }}>{job.type}</span>
+                  <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{r.title}</h3>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, color: '#14D2C2', background: 'rgba(20,210,194,0.1)', border: '1px solid rgba(20,210,194,0.2)', borderRadius: 6, padding: '2px 10px' }}>{r.dept}</span>
+                    <span style={{ fontSize: 11, color: '#64748b' }}>{r.type}</span>
+                    <span style={{ fontSize: 11, color: '#64748b' }}>{r.location}</span>
                   </div>
                 </div>
-                <div style={{ color: '#60a5fa', fontSize: 20 }}>{selected === job.title ? '−' : '+'}</div>
+                <span style={{ color: '#14D2C2', fontSize: 18 }}>{selected?.title === r.title ? '-' : '+'}</span>
               </div>
-              {selected === job.title && (
-                <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(148,163,184,0.1)' }}>
-                  <p style={{ color: '#94a3b8', lineHeight: 1.7, marginBottom: 16 }}>{job.desc}</p>
-                  <a href={'mailto:careers@boxflowos.com?subject=Application: ' + job.title} style={{ display: 'inline-block', padding: '10px 24px', background: '#2563eb', color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>Apply Now →</a>
+              {selected?.title === r.title && (
+                <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>{r.desc}</p>
+                  <a href="mailto:careers@boxflowos.com" style={{ display: 'inline-block', padding: '10px 24px', background: 'linear-gradient(135deg,#0A6E68,#14D2C2)', borderRadius: 10, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 13 }}>
+                    Apply for this Role
+                  </a>
                 </div>
               )}
             </div>
           ))}
         </div>
 
-        <div style={{ background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: 24, padding: 32, textAlign: 'center', marginBottom: 40 }}>
-          <h2 style={{ fontSize: 28, fontWeight: 900, margin: '0 0 12px' }}>Do not see your role?</h2>
-          <p style={{ color: '#94a3b8', marginBottom: 20 }}>We are always looking for exceptional people. Send us your story.</p>
-          <a href="mailto:careers@boxflowos.com" style={{ padding: '14px 32px', background: '#2563eb', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>Get in Touch</a>
-        </div>
-
-        <div style={{ textAlign: 'center', color: '#334155', fontSize: 13, borderTop: '1px solid rgba(148,163,184,0.1)', paddingTop: 32 }}>
-          <a href="/about" style={{ color: '#60a5fa', marginRight: 20, textDecoration: 'none' }}>About Us</a>
-          <a href="/press" style={{ color: '#60a5fa', marginRight: 20, textDecoration: 'none' }}>Press Kit</a>
-          <a href="/contact" style={{ color: '#60a5fa', textDecoration: 'none' }}>Contact</a>
+        <div style={{ background: 'rgba(12,26,56,0.8)', border: '1px solid rgba(20,210,194,0.15)', borderRadius: 20, padding: 36, textAlign: 'center' }}>
+          <h3 style={{ fontSize: 22, fontWeight: 900, marginBottom: 10 }}>Do not see the right role?</h3>
+          <p style={{ color: '#94a3b8', fontSize: 15, marginBottom: 24 }}>We are always looking for great people. Send us your resume and tell us how you would contribute.</p>
+          <a href="mailto:careers@boxflowos.com" style={{ display: 'inline-block', padding: '13px 28px', background: 'linear-gradient(135deg,#0A6E68,#14D2C2)', borderRadius: 12, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>
+            Send Us Your Resume
+          </a>
         </div>
       </div>
+
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ fontSize: 12, color: '#334155' }}>© 2026 Made Technologies Inc. All rights reserved.</div>
+        <div style={{ display: 'flex', gap: 20 }}>
+          {[['Privacy', '/privacy'], ['Terms', '/terms'], ['Refund', '/refund']].map(([l, h]) => (
+            <Link key={h} href={h} style={{ color: '#334155', fontSize: 12, textDecoration: 'none' }}>{l}</Link>
+          ))}
+        </div>
+      </footer>
     </div>
   )
 }
