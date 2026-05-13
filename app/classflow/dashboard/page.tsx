@@ -62,7 +62,7 @@ export default function ClassFlowDashboard() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: C.txt, fontFamily: C.D, overflowY: 'auto' }}>
+    <div style={{ background: C.bg, color: C.txt, fontFamily: C.D, paddingBottom: 40 }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap');
         ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}
