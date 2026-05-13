@@ -11,25 +11,25 @@ const C = {
 }
 
 const INSTRUCTORS = [
-  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN · ES', emoji: '👨🏾‍🏫' },
-  { id: 'ava',    name: 'Ava',    style: 'Casual',       langs: 'EN · FR', emoji: '👩🏼‍🏫' },
-  { id: 'sofia',  name: 'Sofia',  style: 'Energetic',    langs: 'ES · PT', emoji: '👩🏽‍🏫' },
-  { id: 'james',  name: 'James',  style: 'Professional', langs: 'EN · FR', emoji: '👨🏻‍🏫' },
+  { id: 'marcus', name: 'Marcus', style: 'Professional', langs: 'EN · ES', avatar: 'M' },
+  { id: 'ava',    name: 'Ava',    style: 'Casual',       langs: 'EN · FR', avatar: 'A' },
+  { id: 'sofia',  name: 'Sofia',  style: 'Energetic',    langs: 'ES · PT', avatar: 'S' },
+  { id: 'james',  name: 'James',  style: 'Professional', langs: 'EN · FR', avatar: 'J' },
 ]
 
 const LANGUAGES = ['English', 'Spanish', 'French', 'Portuguese']
 
 const GENERATES = [
-  { icon: '🎬', title: 'AI video lesson',  sub: 'Live avatar instructor' },
-  { icon: '📝', title: 'Quiz',             sub: '8 auto-scored questions' },
-  { icon: '📄', title: 'Summary',          sub: 'Key takeaways' },
-  { icon: '🔑', title: 'Key terms',        sub: '6 vocabulary cards' },
+  { icon: 'V', title: 'AI video lesson',  sub: 'Live avatar instructor' },
+  { icon: 'Q', title: 'Quiz',             sub: '8 auto-scored questions' },
+  { icon: 'S', title: 'Summary',          sub: 'Key takeaways' },
+  { icon: 'K', title: 'Key terms',        sub: '6 vocabulary cards' },
 ]
 
 export default function ClassFlowCreate() {
-  const [tab, setTab]             = useState<'type'|'upload'>('type')
-  const [content, setContent]     = useState('')
-  const [language, setLanguage]   = useState('English')
+  const [tab, setTab]               = useState<'type'|'upload'>('type')
+  const [content, setContent]       = useState('')
+  const [language, setLanguage]     = useState('English')
   const [instructor, setInstructor] = useState('marcus')
   const [generating, setGenerating] = useState(false)
   const [generated, setGenerated]   = useState(false)
@@ -54,7 +54,6 @@ export default function ClassFlowCreate() {
         .inst-card:hover{border-color:rgba(59,130,246,0.5)!important}
       `}</style>
 
-      {/* Header */}
       <header style={{ background: C.panel, borderBottom: `0.5px solid ${C.border}`, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
         <Link href="/classflow/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 28, height: 28, background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)', clipPath: 'polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -68,35 +67,32 @@ export default function ClassFlowCreate() {
           <Link href="/classflow/create" className="nav-link" style={{ color: C.txt, background: 'rgba(59,130,246,0.1)', border: `0.5px solid rgba(59,130,246,0.3)` }}>Create lesson</Link>
           <Link href="/classflow/students" className="nav-link">Students</Link>
         </nav>
-        <Link href="/" style={{ color: C.dim, fontSize: 13, textDecoration: 'none', padding: '6px 10px' }}>← Platform</Link>
+        <Link href="/" style={{ color: C.dim, fontSize: 13, textDecoration: 'none', padding: '6px 10px' }}>Back to Platform</Link>
       </header>
 
       <main style={{ padding: '28px 24px', maxWidth: 1100, margin: '0 auto' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: C.txt, marginBottom: 24, letterSpacing: '-0.02em' }}>Create a lesson</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: C.txt, marginBottom: 6, letterSpacing: '-0.02em' }}>Create a lesson</h1>
+        <p style={{ fontSize: 13, color: C.dim, marginBottom: 24 }}>Add your content and AI will build the full lesson package.</p>
 
         {generated ? (
           <div style={{ background: C.card, border: `0.5px solid rgba(34,197,94,0.3)`, borderRadius: 16, padding: 40, textAlign: 'center' }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, margin: '0 auto 16px' }}>+</div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: C.txt, marginBottom: 8 }}>Lesson Generated!</h2>
             <p style={{ color: C.dim, fontSize: 14, marginBottom: 28 }}>Your AI-powered lesson is ready. Video, quiz, summary, and key terms have been created.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link href="/classflow/dashboard" style={{ padding: '11px 24px', background: C.blue, color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>View in Dashboard →</Link>
+              <Link href="/classflow/dashboard" style={{ padding: '11px 24px', background: C.blue, color: '#fff', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>View in Dashboard</Link>
               <button onClick={() => { setGenerated(false); setContent('') }} style={{ padding: '11px 24px', background: 'transparent', border: `0.5px solid ${C.border}`, color: C.dim, borderRadius: 10, cursor: 'pointer', fontSize: 14, fontFamily: C.D }}>Create Another</button>
             </div>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 20 }}>
-
-            {/* Left */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-              {/* Content */}
               <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
                 <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>Lesson content</div>
                 <div style={{ display: 'flex', gap: 8, padding: '12px 20px 0' }}>
                   {(['type', 'upload'] as const).map(t => (
                     <button key={t} onClick={() => setTab(t)} style={{ padding: '6px 14px', borderRadius: 8, border: `0.5px solid ${tab === t ? C.blue : C.border}`, background: tab === t ? 'rgba(59,130,246,0.1)' : 'transparent', color: tab === t ? C.blue : C.dim, fontSize: 12, cursor: 'pointer', fontFamily: C.D }}>
-                      {t === 'type' ? '✏️ Type content' : '📎 Upload file'}
+                      {t === 'type' ? 'Type content' : 'Upload file'}
                     </button>
                   ))}
                 </div>
@@ -105,7 +101,6 @@ export default function ClassFlowCreate() {
                     <textarea style={{ ...inp, minHeight: 180 }} placeholder="Paste your notes, slides, outlines, or any lesson content here..." value={content} onChange={e => setContent(e.target.value)} />
                   ) : (
                     <div style={{ border: `2px dashed ${C.border}`, borderRadius: 10, padding: '40px 20px', textAlign: 'center', cursor: 'pointer' }}>
-                      <div style={{ fontSize: 32, marginBottom: 8 }}>📁</div>
                       <p style={{ color: C.dim, fontSize: 13 }}>Drop a PDF, DOCX, or PPTX file here</p>
                       <p style={{ color: C.dim, fontSize: 11, marginTop: 4 }}>or click to browse</p>
                     </div>
@@ -113,7 +108,6 @@ export default function ClassFlowCreate() {
                 </div>
               </div>
 
-              {/* Language */}
               <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, padding: 20 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: C.txt, marginBottom: 14 }}>Language</div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -126,17 +120,14 @@ export default function ClassFlowCreate() {
               </div>
             </div>
 
-            {/* Right */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-              {/* AI Instructor */}
               <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
                 <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>AI Instructor</div>
                 <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {INSTRUCTORS.map(i => (
                     <div key={i.id} className="inst-card" onClick={() => setInstructor(i.id)}
                       style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `0.5px solid ${instructor === i.id ? C.blue : C.border}`, background: instructor === i.id ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
-                      <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${C.blue}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{i.emoji}</div>
+                      <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${C.blue}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 800, color: C.blue, flexShrink: 0 }}>{i.avatar}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, color: C.txt }}>{i.name}</div>
                         <div style={{ fontSize: 11, color: C.dim }}>{i.style} · {i.langs}</div>
@@ -147,13 +138,12 @@ export default function ClassFlowCreate() {
                 </div>
               </div>
 
-              {/* What gets generated */}
               <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
                 <div style={{ padding: '14px 20px', borderBottom: `0.5px solid ${C.border}`, fontSize: 14, fontWeight: 700, color: C.txt }}>What gets generated</div>
                 <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {GENERATES.map((g, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 18 }}>{g.icon}</span>
+                      <div style={{ width: 28, height: 28, borderRadius: 7, background: `${C.blue}18`, border: `0.5px solid ${C.blue}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: C.blue, flexShrink: 0 }}>{g.icon}</div>
                       <div>
                         <div style={{ fontSize: 13, color: C.txt, fontWeight: 500 }}>{g.title}</div>
                         <div style={{ fontSize: 11, color: C.dim }}>{g.sub}</div>
@@ -169,17 +159,9 @@ export default function ClassFlowCreate() {
         {!generated && (
           <div style={{ marginTop: 20 }}>
             <button onClick={handleGenerate} disabled={!content.trim() || generating}
-              style={{ width: '100%', padding: '15px', background: content.trim() ? C.blue : 'rgba(59,130,246,0.3)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: content.trim() ? 'pointer' : 'not-allowed', fontFamily: C.D, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              {generating ? (
-                <>
-                  <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                  Generating lesson...
-                </>
-              ) : (
-                'Generate lesson →'
-              )}
+              style={{ width: '100%', padding: '15px', background: content.trim() ? C.blue : 'rgba(59,130,246,0.3)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: content.trim() ? 'pointer' : 'not-allowed', fontFamily: C.D }}>
+              {generating ? 'Generating lesson...' : 'Generate lesson'}
             </button>
-            <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
           </div>
         )}
       </main>
