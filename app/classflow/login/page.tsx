@@ -20,7 +20,7 @@ export default function ClassFlowLogin() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#07080d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Outfit',sans-serif", padding: '24px' }}>
+    <div style={{ minHeight: '100vh', background: '#07080d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Outfit',sans-serif", padding: '24px', overflowY: 'auto' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');`}</style>
       <div style={{ width: '100%', maxWidth: 400 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
