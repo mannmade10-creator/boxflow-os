@@ -70,7 +70,7 @@ export default function RootLayout({
           }
         `}} />
       </head>
-      <body style={{ margin: 0, padding: 0, background: '#020617' }}>
+      <body style={{ margin: 0, padding: 0, background: '#020617', overflowY: 'scroll' }}>
         {children}
         <BoxFlowAIWidget />
       </body>
