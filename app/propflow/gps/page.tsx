@@ -8,6 +8,7 @@ const STAFF = [
   { id: 4, name: 'D. Harris',     role: 'Security',       color: '#ef4444', top: '50%', left: '28%' },
   { id: 5, name: 'Angela Brooks', role: 'Office Manager', color: '#a855f7', top: '70%', left: '22%' },
 ]
+const [showSidebar, setShowSidebar] = useState(true)
 
 const LEGEND = [
   { label: 'Maintenance', color: '#4f8ef7' },
@@ -131,7 +132,10 @@ export default function GPSPage() {
                 <span style={{ fontSize:8, color:'#4f8ef7', fontWeight:700, textAlign:'center' }}>{b.label}</span>
               </div>
             ))}
-
+            <button onClick={() => setShowSidebar(s => !s)}
+  style={{ padding:'6px 14px', background:'rgba(79,142,247,0.1)', border:'1px solid rgba(79,142,247,0.3)', borderRadius:8, color:'#4f8ef7', fontSize:11, fontWeight:700, cursor:'pointer', fontFamily:'system-ui' }}>
+  {showSidebar ? 'Hide Panel' : 'Show Panel'}
+</button>
             <div style={{ position:'absolute', top:'53%', left:'8%', right:'8%', height:7, background:'rgba(100,116,139,0.18)', borderRadius:4, pointerEvents:'none' }} />
             <div style={{ position:'absolute', top:'12%', bottom:'8%', left:'33%', width:7, background:'rgba(100,116,139,0.18)', borderRadius:4, pointerEvents:'none' }} />
             <div style={{ position:'absolute', top:'12%', bottom:'8%', left:'59%', width:7, background:'rgba(100,116,139,0.18)', borderRadius:4, pointerEvents:'none' }} />
@@ -175,7 +179,7 @@ export default function GPSPage() {
           </div>
 
           {/* SIDEBAR */}
-          <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          showSidebar && <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
 
             <div style={{ background:'rgba(15,23,42,0.9)', border:'1px solid rgba(99,132,255,0.12)', borderRadius:14, padding:16 }}>
               <div style={{ fontSize:10, color:'#475569', fontWeight:700, textTransform:'uppercase', letterSpacing:1, marginBottom:12 }}>Staff On Property</div>
