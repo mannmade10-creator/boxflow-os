@@ -22,6 +22,7 @@ export default function GPSPage() {
   const [timeStr, setTimeStr]       = useState('--:--:--')
   const [busOnRoute, setBusOnRoute] = useState(false)
   const [busArrived, setBusArrived] = useState(false)
+  const [busPos, setBusPos]         = useState({ top: '85%', left: '80%' })
   const [selected, setSelected]     = useState<typeof STAFF[0] | null>(null)
   const [showPanel, setShowPanel]   = useState(true)
   const [mapError, setMapError]     = useState(false)
@@ -39,7 +40,6 @@ export default function GPSPage() {
     }
     tick()
     const id = setInterval(tick, 1000)
-
     const updateSize = () => {
       const w = Math.min(window.innerWidth - 48, 900)
       const h = Math.round(w * 0.6)
@@ -47,7 +47,6 @@ export default function GPSPage() {
     }
     updateSize()
     window.addEventListener('resize', updateSize)
-
     return () => { clearInterval(id); window.removeEventListener('resize', updateSize) }
   }, [])
 
@@ -55,7 +54,20 @@ export default function GPSPage() {
     if (busOnRoute) return
     setBusOnRoute(true)
     setBusArrived(false)
-    setTimeout(() => { setBusOnRoute(false); setBusArrived(true) }, 5000)
+    setBusPos({ top: '85%', left: '80%' })
+    const steps = [
+      { top: '75%', left: '70%' },
+      { top: '65%', left: '60%' },
+      { top: '55%', left: '50%' },
+      { top: '50%', left: '48%' },
+    ]
+    steps.forEach((pos, i) => {
+      setTimeout(() => setBusPos(pos), (i + 1) * 1000)
+    })
+    setTimeout(() => {
+      setBusOnRoute(false)
+      setBusArrived(true)
+    }, 5000)
   }
 
   const mapUrl = token
@@ -66,17 +78,28 @@ export default function GPSPage() {
     <main style={{ minHeight:'100vh', background:'#050d1a', color:'#e2e8f0', fontFamily:'system-ui,Arial,sans-serif' }}>
       <style>{`
         @keyframes ping3{0%{transform:scale(1);opacity:0.7}100%{transform:scale(2.4);opacity:0}}
+        @keyframes busMove{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
+        @keyframes busPing{0%{transform:scale(1);opacity:0.8}100%{transform:scale(2.2);opacity:0}}
         .spin{cursor:pointer}
         .spin:hover .pd{transform:scale(1.12)}
         .pd{transition:transform 0.15s}
+        .bus-pin{transition:top 1s ease, left 1s ease;animation:busMove 1s ease infinite}
         .gps-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
         .gps-grid.full{grid-template-columns:minmax(0,1fr)!important}
         @media(max-width:768px){.gps-grid{grid-template-columns:1fr!important}}
         .gps-map{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(79,142,247,0.2);min-height:360px}
         @media(max-width:768px){.gps-map{min-height:300px}}
+        .mobile-nav{display:none}
+        @media(max-width:768px){
+          .desktop-nav{display:none!important}
+          .mobile-nav{display:flex!important;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:4px;padding:8px 16px;background:#070f1f;border-bottom:1px solid rgba(99,132,255,0.1)}
+          .mobile-nav::-webkit-scrollbar{display:none}
+          .mobile-nav a{flex-shrink:0}
+        }
       `}</style>
 
-      <header style={{ background:'#070f1f', borderBottom:'1px solid rgba(99,132,255,0.15)', padding:'0 24px', height:60, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
+      {/* HEADER */}
+      <header style={{ background:'#070f1f', borderBottom:'1px solid rgba(99,132,255,0.15)', padding:'0 24px', height:60, display:'flex', alignItems:'center', justifyContent:'space-between', gap:8 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <div style={{ width:34, height:34, borderRadius:8, background:'#4f8ef7', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, fontWeight:800, color:'#fff' }}>P</div>
           <div>
@@ -84,18 +107,29 @@ export default function GPSPage() {
             <div style={{ fontSize:9, color:'#475569', letterSpacing:1 }}>by M.A.D.E Technologies</div>
           </div>
         </div>
-        <nav style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
+        <nav className="desktop-nav" style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
           {NAV.map(item => (
             <a key={item} href={item==='Dashboard'?'/propflow/dashboard':`/propflow/${item.toLowerCase()}`}
-              style={{ padding:'6px 12px', fontSize:11, fontWeight:700, color:item==='GPS'?'#4f8ef7':'#475569', borderRadius:7, textDecoration:'none', background:item==='GPS'?'rgba(79,142,247,0.1)':'transparent' }}>
+              style={{ padding:'6px 12px', fontSize:11, fontWeight:700, color:item==='GPS'?'#4f8ef7':'#475569', borderRadius:7, textDecoration:'none', background:item==='GPS'?'rgba(79,142,247,0.1)':'transparent', whiteSpace:'nowrap' }}>
               {item}
             </a>
           ))}
         </nav>
       </header>
 
+      {/* MOBILE NAV — scrollable */}
+      <div className="mobile-nav">
+        {NAV.map(item => (
+          <a key={item} href={item==='Dashboard'?'/propflow/dashboard':`/propflow/${item.toLowerCase()}`}
+            style={{ padding:'6px 12px', fontSize:11, fontWeight:700, color:item==='GPS'?'#4f8ef7':'#475569', borderRadius:7, textDecoration:'none', background:item==='GPS'?'rgba(79,142,247,0.1)':'transparent', whiteSpace:'nowrap' }}>
+            {item}
+          </a>
+        ))}
+      </div>
+
       <div style={{ maxWidth:1300, margin:'0 auto', padding:24 }}>
 
+        {/* TITLE ROW */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16, flexWrap:'wrap', gap:12 }}>
           <div>
             <h1 style={{ fontSize:24, fontWeight:800, color:'#fff', marginBottom:4 }}>GPS Live Tracker</h1>
@@ -111,6 +145,7 @@ export default function GPSPage() {
           </div>
         </div>
 
+        {/* BUS ALERTS */}
         {busArrived && (
           <div style={{ background:'rgba(245,158,11,0.15)', border:'1px solid rgba(245,158,11,0.4)', borderRadius:12, padding:'14px 20px', marginBottom:16, display:'flex', alignItems:'center', gap:12 }}>
             <div style={{ width:40, height:40, borderRadius:8, background:'rgba(245,158,11,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, color:'#f59e0b', fontSize:10, flexShrink:0 }}>BUS</div>
@@ -120,7 +155,6 @@ export default function GPSPage() {
             </div>
           </div>
         )}
-
         {busOnRoute && (
           <div style={{ background:'rgba(79,142,247,0.1)', border:'1px solid rgba(79,142,247,0.3)', borderRadius:12, padding:'14px 20px', marginBottom:16 }}>
             <div style={{ fontSize:13, fontWeight:700, color:'#4f8ef7' }}>School bus is en route — ETA 5 minutes...</div>
@@ -131,18 +165,10 @@ export default function GPSPage() {
 
           {/* MAP */}
           <div className="gps-map">
-
-            {/* Real Mapbox satellite map */}
             {token && !mapError && (
-              <img
-                src={mapUrl}
-                alt="Property Map"
-                onError={() => setMapError(true)}
-                style={{ width:'100%', height:'100%', display:'block', objectFit:'cover', minHeight:360 }}
-              />
+              <img src={mapUrl} alt="Property Map" onError={() => setMapError(true)}
+                style={{ width:'100%', height:'100%', display:'block', objectFit:'cover', minHeight:360 }} />
             )}
-
-            {/* CSS fallback when no token or map fails */}
             {(!token || mapError) && (
               <div style={{ width:'100%', minHeight:360, background:'#0a1628', backgroundImage:'linear-gradient(rgba(79,142,247,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.05) 1px,transparent 1px)', backgroundSize:'40px 40px' }}>
                 <div style={{ position:'absolute', top:'12%', left:'8%', right:'8%', bottom:'8%', border:'2px dashed rgba(34,197,94,0.22)', borderRadius:8 }}>
@@ -166,7 +192,7 @@ export default function GPSPage() {
               </div>
             )}
 
-            {/* Staff pins — always on top of map */}
+            {/* Staff pins */}
             {STAFF.map(s => (
               <div key={s.id} className="spin" onClick={() => setSelected(selected?.id===s.id?null:s)}
                 style={{ position:'absolute', top:s.top, left:s.left, transform:'translate(-50%,-50%)', zIndex:10 }}>
@@ -181,6 +207,24 @@ export default function GPSPage() {
                 </div>
               </div>
             ))}
+
+            {/* Bus pin — shows when bus is en route or arrived */}
+            {(busOnRoute || busArrived) && (
+              <div className="bus-pin"
+                style={{ position:'absolute', top:busArrived?'50%':busPos.top, left:busArrived?'48%':busPos.left, transform:'translate(-50%,-50%)', zIndex:15 }}>
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+                  <div style={{ position:'relative', width:42, height:42 }}>
+                    <div style={{ position:'absolute', inset:0, borderRadius:'50%', border:'2px solid #f59e0b', animation:'busPing 1.5s ease-out infinite' }} />
+                    <div style={{ width:42, height:42, borderRadius:'50%', background:'#f59e0b', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:900, color:'#000', border:'2px solid rgba(255,255,255,0.9)', boxShadow:'0 0 20px rgba(245,158,11,0.8)', position:'relative', zIndex:1 }}>
+                      BUS
+                    </div>
+                  </div>
+                  <div style={{ fontSize:9, color:'#f59e0b', marginTop:3, textShadow:'0 1px 6px rgba(0,0,0,1)', fontWeight:700, whiteSpace:'nowrap' }}>
+                    {busArrived ? 'ARRIVED' : 'EN ROUTE'}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Map overlays */}
             <div style={{ position:'absolute', top:10, left:10, background:'rgba(2,8,18,0.88)', padding:'6px 10px', borderRadius:6, zIndex:5 }}>
@@ -199,6 +243,12 @@ export default function GPSPage() {
                     <span style={{ fontSize:9, color:'#94a3b8' }}>{l.label}</span>
                   </div>
                 ))}
+                {(busOnRoute || busArrived) && (
+                  <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                    <div style={{ width:8, height:8, borderRadius:'50%', background:'#f59e0b' }} />
+                    <span style={{ fontSize:9, color:'#94a3b8' }}>School Bus</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
