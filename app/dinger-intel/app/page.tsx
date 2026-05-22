@@ -264,7 +264,7 @@ export default function DingerIntelApp() {
           )}
 
           {game && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', marginBottom: 14, background: 'rgba(255,255,255,0.03)', borderRadius: 10, fontSize: 12, flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', marginBottom: 14, background: 'rgba(255,255,255,0.03)', borderRadius: 10, fontSize: 12, flexWrap: 'wrap' }}>
               <span style={{ fontSize: 18 }}>{(weather?.precip_pct ?? 0) > 50 ? '🌧' : (weather?.wind_mph ?? 0) > 10 ? '💨' : '☀️'}</span>
               <span style={{ color: '#64748b' }}>
                 <strong style={{ color: '#f0f6ff' }}>{game.venue_name}</strong>
