@@ -429,7 +429,7 @@ export default function TenantPortal() {
 
                 {/* Unit details */}
                 <div style={{ background: '#070f1f', border: '1px solid rgba(79,142,247,0.1)', borderRadius: 14, padding: 22 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: BLUE, marginBottom: 14, textTransform: 'uppercase', letterSpacing: 1, fontSize: 11 }}>Unit Details</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: BLUE, marginBottom: 14, textTransform: 'uppercase', letterSpacing: 1 }}>Unit Details</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10 }}>
                     {[
                       { label: 'Unit Number',  value: unit?.unit_number },
