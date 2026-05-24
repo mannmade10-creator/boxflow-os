@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <main style={{ minHeight: '100vh', background: '#050d1a', color: '#e2e8f0', fontFamily: 'Inter,Arial,sans-serif' }}>
-      <header style={{ background: '#070f1f', borderBottom: '1px solid rgba(99,132,255,0.15)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' as const, gap: 8 }}>
+      <header style={{ background: '#070f1f', borderBottom: '1px solid rgba(99,132,255,0.15)', padding: '0 12px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, overflow: 'hidden' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/assets/logo.png" alt="PropFlow OS" style={{ height: 44, objectFit: 'contain' }} />
           <div>
@@ -54,10 +54,10 @@ export default function Dashboard() {
             <div style={{ fontSize: 9, color: '#475569', letterSpacing: 1 }}>by M.A.D.E Technologies</div>
           </div>
         </div>
-        <nav style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
+        <nav style={{ display: 'flex', gap: 4, overflowX: 'auto', WebkitOverflowScrolling: 'touch' as any, scrollbarWidth: 'none' as any, msOverflowStyle: 'none' as any, flexShrink: 1, minWidth: 0 }}>
           {['Dashboard', 'Units', 'Tenants', 'Maintenance', 'GPS', 'Finance', 'Community'].map(item => (
             <a key={item} href={`/${item === 'Dashboard' ? 'propflow/dashboard' : 'propflow/' + item.toLowerCase()}`}
-              style={{ padding: '6px 12px', fontSize: 11, fontWeight: 700, color: item === 'Dashboard' ? '#4f8ef7' : '#475569', borderRadius: 7, textDecoration: 'none', background: item === 'Dashboard' ? 'rgba(79,142,247,0.1)' : 'transparent' }}>
+              style={{ padding: '6px 10px', fontSize: 11, fontWeight: 700, color: item === 'Dashboard' ? '#4f8ef7' : '#475569', borderRadius: 7, textDecoration: 'none', background: item === 'Dashboard' ? 'rgba(79,142,247,0.1)' : 'transparent', flexShrink: 0, whiteSpace: 'nowrap' as const }}>
               {item}
             </a>
           ))}
