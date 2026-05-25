@@ -323,7 +323,7 @@ export default function IncomeVerificationPage() {
                       <label style={{ display: 'block', padding: '7px 12px', background: BLUE + '18', border: `1px solid ${BLUE}40`, borderRadius: 8, color: BLUE, fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'center' }}>
                         Choose File
                         <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: 'none' }}
-                          onChange={e => { const f = e.target.files?.[0]; if (f) setDocs(d => ({ ...d, [d.key]: f })) }} />
+                          onChange={e => { const f = e.target.files?.[0]; const k = d.key; if (f) setDocs(prev => ({ ...prev, [k]: f })) }} />
                       </label>
                     )}
                   </div>
