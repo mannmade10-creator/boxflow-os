@@ -327,18 +327,18 @@ export default function AnalyticsPage() {
               </div>
               <div style={{ background: '#070f1f', border: '1px solid rgba(79,142,247,0.1)', borderRadius: 14, padding: 22 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#f0f6ff', marginBottom: 16 }}>By Assigned Tech</div>
-                {Object.entries(
+                Object.entries(
                   maintenance.reduce((acc: Record<string, number>, m) => {
                     const name = m.assigned_to ?? 'Unassigned'
                     acc[name] = (acc[name] ?? 0) + 1
                     return acc
-                  }, {})
-                ).sort((a, b) => b[1] - a[1]).map(([name, count], i) => (
+                  }, {} as Record<string, number>)
+                ).sort((a, b) => (b[1] as number - (a[1] as number)))
                   <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <span style={{ fontSize: 12, color: '#94a3b8' }}>{name}</span>
                     <span style={{ fontSize: 12, fontWeight: 700, color: PURPLE }}>{count} requests</span>
                   </div>
-                ))}
+                }
               </div>
             </div>
 
@@ -361,7 +361,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
           </div>
-        )}
+        )
 
         {/* ── VACANCY READINESS TAB ── */}
         {activeTab === 'vacancy' && (
