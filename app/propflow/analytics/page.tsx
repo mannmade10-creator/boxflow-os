@@ -317,10 +317,10 @@ export default function AnalyticsPage() {
                   <div key={i} style={{ marginBottom: 12 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                       <span style={{ fontSize: 12, color: '#94a3b8', textTransform: 'capitalize' }}>{cat}</span>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: BLUE }}>{count} requests</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: BLUE }}>{count as number} requests</span>
                     </div>
                     <div style={{ height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3 }}>
-                      <div style={{ height: '100%', width: `${(count / maintenance.length) * 100}%`, background: BLUE, borderRadius: 3, opacity: 0.8 }} />
+                      <div style={{ height: '100%', width: `${((count as number) / maintenance.length) * 100}%`, background: BLUE, borderRadius: 3, opacity: 0.8 }} />
                     </div>
                   </div>
                 ))}
@@ -336,7 +336,7 @@ export default function AnalyticsPage() {
                 ).sort((a, b) => (b[1] as number) - (a[1] as number)).map(([name, count], i) => (
                   <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <span style={{ fontSize: 12, color: '#94a3b8' }}>{name}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: PURPLE }}>{count} requests</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: PURPLE }}>{count as number} requests</span>
                   </div>
                 ))}
               </div>
