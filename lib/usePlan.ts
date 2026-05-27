@@ -44,7 +44,7 @@ export const PLAN_INFO = {
     unitLimit: 10,
     description: 'Perfect for individual landlords with a few properties.',
     color: '#4f8ef7',
-    stripeMonthlyPriceId: 'price_landlord_monthly', // replace with real Stripe price ID
+    stripeMonthlyPriceId: 'price_1TbQliBEt8l7Ia34tEBF6JBY', // replace with real Stripe price ID
   },
   professional: {
     name: 'Professional',
@@ -77,12 +77,12 @@ export function hasFeatureAccess(
 
 // Stripe add-on price IDs — replace with real ones from Stripe dashboard
 export const ADDON_STRIPE_PRICE_IDS: Record<AddonKey, string> = {
-  ach_payments:        'price_ach_monthly',
-  income_verification: 'price_income_monthly',
-  gps_tracker:         'price_gps_monthly',
-  community_board:     'price_community_monthly',
-  accounting:          'price_accounting_monthly',
-  payroll:             'price_payroll_monthly',
-  analytics:           'price_analytics_monthly',
+  ach_payments:        'price_1TbQpJBEt8l7Ia34415WlUAG',
+  income_verification: 'price_1TbQq2BEt8l7Ia34oLJgkigu',
+  gps_tracker:         'price_1TbQqUBEt8l7Ia3421TWa0pV',
+  community_board:     'price_1TbQuDBEt8l7Ia344V8sTtFl',
+  accounting:          'price_1TbQslBEt8l7Ia34QAaf3NgV',
+  payroll:             'price_1TbQtGBEt8l7Ia34dHdEooAS',
+  analytics:           'price_1TbQtlBEt8l7Ia347V30WRDH',
   tenant_app:          '',
 }
