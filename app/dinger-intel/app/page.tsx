@@ -152,17 +152,25 @@ function PickCard({ pick, onToggleParlay, inParlay }: any) {
 }
 
 export default function DingerIntelApp() {
-  const [data, setData]               = useState<any[]>([])
-  const [loading, setLoading]         = useState(true)
-  const [error, setError]             = useState<string | null>(null)
+  const [data, setData]                   = useState<any[]>([])
+  const [loading, setLoading]             = useState(true)
+  const [error, setError]                 = useState<string | null>(null)
   const [activeGameIdx, setActiveGameIdx] = useState(0)
-  const [activeTab, setActiveTab]     = useState('picks')
-  const [parlay, setParlay]           = useState<any[]>([])
-  const [countdown, setCountdown]     = useState(60)
+  const [activeTab, setActiveTab]         = useState('picks')
+  const [parlay, setParlay]               = useState<any[]>([])
+  const [countdown, setCountdown]         = useState(60)
+  // FIX: today must be client-only state to avoid React hydration mismatch (#418)
+  const [today, setToday]                 = useState('')
+
+  // FIX: set today only on client after mount
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }))
+  }, [])
 
   const fetchData = useCallback(async () => {
     try {
-      const date = new Date().toISOString().slice(0, 10)
+      // FIX: use ET timezone so date matches MLB schedule dates, not UTC
+      const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date())
       const res  = await fetch(`${API}?date=${date}`)
       const json = await res.json()
       if (!json.ok) throw new Error(json.error || 'API error')
@@ -203,8 +211,6 @@ export default function DingerIntelApp() {
     return acc * americanToDecimal(l.best_hr_odds)
   }, 1)
 
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-
   return (
     <div style={{ minHeight: '100vh', background: '#0a0e1a', color: '#f0f6ff', fontFamily: 'system-ui,sans-serif' }}>
       <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}`}</style>
@@ -219,6 +225,7 @@ export default function DingerIntelApp() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* today is empty string on server, fills in on client — no hydration mismatch */}
           <div style={{ fontSize: 12, color: '#475569', background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '4px 10px' }}>{today}</div>
           <div onClick={fetchData} style={{ fontSize: 12, color: '#22c55e', background: 'rgba(34,197,94,0.08)', border: '0.5px solid rgba(34,197,94,0.25)', borderRadius: 7, padding: '4px 10px', cursor: 'pointer' }}>
             LIVE · {countdown}s
@@ -341,7 +348,7 @@ export default function DingerIntelApp() {
           {[
             ['Hot Streak (L10)', 'HR and hit rate in the last 10 games, weighted toward the most recent. A player with 4 HR in 10 scores ~90.'],
             ['Matchup Score', "Batter's ISO vs the pitcher's handedness. Higher ISO against the pitcher's throw hand = higher score."],
-            ['Park Factor', 'Each park\'s HR park factor vs league average (100). Coors Field = 118, Petco Park = 91. Normalized to 0-100.'],
+            ['Park Factor', "Each park's HR park factor vs league average (100). Coors Field = 118, Petco Park = 91. Normalized to 0-100."],
             ['Weather Boost', 'Out-to-CF wind above 10mph adds points. Heat above 85°F adds points. Rain or wind in subtracts points.'],
             ['Pitch Type Edge', "Batter's ISO broken down by each pitch type the pitcher throws. More exploitable pitches = higher score."],
             ['Pitcher Weak Spot', "The pitcher's highest xBA-against pitch, cross-referenced with how well this batter hits that specific pitch."],
