@@ -38,7 +38,8 @@ export default function DashboardPage() {
     const [ordersRes] = await Promise.all([
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
     ])
-    setOrders(ordersRes.data || [])
+    console.log('ORDERS FROM SUPABASE:', ordersRes)
+setOrders(ordersRes.data || [])
     setLoading(false)
   }
 
