@@ -43,7 +43,16 @@ export default function FleetMapPage() {
             </div>
           ))}
           <span style={{ color: 'rgba(180,197,255,0.2)' }}>|</span>
-          <span style={{ fontSize: 13, color: 'rgba(195,198,215,0.4)', fontFamily: 'monospace' }}>{time.toLocaleTimeString()}</span>
+          <span
+  suppressHydrationWarning
+  style={{
+    fontSize: 13,
+    color: 'rgba(195,198,215,0.4)',
+    fontFamily: 'monospace',
+  }}
+>
+  {time.toLocaleTimeString()}
+</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 3, padding: '4px 12px' }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
             <span style={{ color: '#22c55e', fontSize: 12, fontWeight: 700, letterSpacing: 2 }}>GEO SYNC ACTIVE</span>

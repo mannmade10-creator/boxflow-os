@@ -14,7 +14,6 @@ const navItems = [
   { key: 'corrugator', label: 'Corrugator Production', href: '/production-v2' },
   { key: 'orders', label: 'Orders', href: '/orders' },
   { key: 'dispatch', label: 'Dispatch', href: '/dispatch' },
-  { key: 'freight', label: 'Freight Dispatch', href: '/dispatch-v2' },
   { key: 'fleet-map', label: 'Fleet Map', href: '/fleet-map' },
   { key: 'driver', label: 'Driver', href: '/driver' },
   { key: 'client', label: 'Client', href: '/client' },
@@ -22,7 +21,6 @@ const navItems = [
   { key: 'equipment', label: 'Equipment', href: '/equipment' },
   { key: 'hr', label: 'HR', href: '/hr' },
   { key: 'analytics', label: 'Analytics', href: '/analytics' },
-  { key: 'pitch', label: 'Pitch Deck', href: '/pitch' },
   { key: 'settings', label: 'Settings', href: '/settings' },
 ]
 

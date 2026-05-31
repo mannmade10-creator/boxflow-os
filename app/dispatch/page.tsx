@@ -87,7 +87,16 @@ export default function DispatchPage() {
                 <span style={{ color: '#ef4444', fontSize: 11, fontWeight: 700, letterSpacing: 2 }}>{alerts.length} AI ALERTS</span>
               </div>
             )}
-            <span style={{ fontSize: 13, color: 'rgba(195,198,215,0.4)', fontFamily: 'monospace' }}>{time.toLocaleTimeString()}</span>
+            <span
+  suppressHydrationWarning
+  style={{
+    fontSize: 13,
+    color: 'rgba(195,198,215,0.4)',
+    fontFamily: 'monospace',
+  }}
+>
+  {time.toLocaleTimeString()}
+</span>
           </div>
         </header>
 

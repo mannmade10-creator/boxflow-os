@@ -84,7 +84,16 @@ export default function CommandCenterPage() {
             <h1 style={{ fontSize: 22, fontWeight: 900, color: '#dce1fb', letterSpacing: 2, textTransform: 'uppercase', margin: 0 }}>COMMAND_CENTER</h1>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <span style={{ fontSize: 14, color: 'rgba(195,198,215,0.4)', fontFamily: 'monospace' }}>{time.toLocaleTimeString()}</span>
+            <span
+  suppressHydrationWarning
+  style={{
+    fontSize: 14,
+    color: 'rgba(195,198,215,0.4)',
+    fontFamily: 'monospace',
+  }}
+>
+  {time.toLocaleTimeString()}
+</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.15)', borderRadius: 3, padding: '3px 10px' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e' }} />
               <span style={{ color: '#22c55e', fontSize: 13, fontWeight: 700, letterSpacing: 2 }}>ALL SYSTEMS ONLINE</span>
