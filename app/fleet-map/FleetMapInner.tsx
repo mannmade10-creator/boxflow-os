@@ -260,6 +260,27 @@ export default function FleetMapInner() {
 
   return (
     <main style={{ height: '100vh', width: '100%', background: '#020617', color: '#fff', overflow: 'hidden', position: 'relative' }}>
+      <div style={topBar}>
+        <div>
+          <div style={{ fontSize: 12, color: '#60a5fa', fontWeight: 900, letterSpacing: 4 }}>BOXFLOW_OS</div>
+          <div style={{ fontSize: 24, fontWeight: 900, marginTop: 6 }}>Fleet Command</div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => setDemoMode('admin')} style={demoMode === 'admin' ? activeBtn : btn}>Admin</button>
+          <button onClick={() => setDemoMode('client')} style={demoMode === 'client' ? activeBtn : btn}>Client</button>
+          <button onClick={() => setDemoMode('driver')} style={demoMode === 'driver' ? activeBtn : btn}>Driver</button>
+          <button onClick={() => setViewMode(viewMode === 'local' ? 'national' : 'local')} style={btn}>
+            {viewMode === 'local' ? 'National View' : 'Local View'}
+          </button>
+          <button onClick={handleOptimizeRoute} style={optimizeBtn}>AI Optimize</button>
+          <a href="/dashboard" style={backBtn}>← Back</a>
+        </div>
+      </div>
+
+      {error && <div style={errorBanner}>{error}</div>}
+      {optimizeMessage && <div style={successBanner}>{optimizeMessage}</div>}
+
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
         center={selectedTrip ? { lat: selectedTrip.currentLat, lng: selectedTrip.currentLng } : OKC}
@@ -325,26 +346,6 @@ export default function FleetMapInner() {
           )
         })}
       </GoogleMap>
-
-      <div style={topBar}>
-        <div>
-          <div style={{ fontSize: 12, color: '#60a5fa', fontWeight: 900, letterSpacing: 4 }}>BOXFLOW_OS</div>
-          <div style={{ fontSize: 24, fontWeight: 900, marginTop: 6 }}>Fleet Command</div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => setDemoMode('admin')} style={demoMode === 'admin' ? activeBtn : btn}>Admin</button>
-          <button onClick={() => setDemoMode('client')} style={demoMode === 'client' ? activeBtn : btn}>Client</button>
-          <button onClick={() => setDemoMode('driver')} style={demoMode === 'driver' ? activeBtn : btn}>Driver</button>
-          <button onClick={() => setViewMode(viewMode === 'local' ? 'national' : 'local')} style={btn}>
-            {viewMode === 'local' ? 'National View' : 'Local View'}
-          </button>
-          <button onClick={handleOptimizeRoute} style={optimizeBtn}>AI Optimize</button>
-          <a href="/dashboard" style={backBtn}>← Back</a>
-        </div>
-      </div>
-
-      {error && <div style={errorBanner}>{error}</div>}
-      {optimizeMessage && <div style={successBanner}>{optimizeMessage}</div>}
 
       <div style={telemetryBox}>
         <div style={{ color: '#22c55e', fontWeight: 900 }}>● GEO SYNC ACTIVE</div>
