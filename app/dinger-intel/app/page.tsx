@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 
-const API = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/dipicksapi`
+const API = `${process.env.NEXT_PUBLIC_DINGER_SUPABASE_URL}/functions/v1/dipicksapi`
 
 const PARK_FACTORS: Record<string, number> = {
   COL:118,BOS:108,CIN:107,PHI:106,NYY:105,TEX:103,ATL:103,HOU:103,MIL:102,CHC:102,
@@ -159,17 +159,14 @@ export default function DingerIntelApp() {
   const [activeTab, setActiveTab]         = useState('picks')
   const [parlay, setParlay]               = useState<any[]>([])
   const [countdown, setCountdown]         = useState(60)
-  // FIX: today must be client-only state to avoid React hydration mismatch (#418)
   const [today, setToday]                 = useState('')
 
-  // FIX: set today only on client after mount
   useEffect(() => {
     setToday(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }))
   }, [])
 
   const fetchData = useCallback(async () => {
     try {
-      // FIX: use ET timezone so date matches MLB schedule dates, not UTC
       const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date())
       const res  = await fetch(`${API}?date=${date}`)
       const json = await res.json()
@@ -225,7 +222,6 @@ export default function DingerIntelApp() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* today is empty string on server, fills in on client — no hydration mismatch */}
           <div style={{ fontSize: 12, color: '#475569', background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 7, padding: '4px 10px' }}>{today}</div>
           <div onClick={fetchData} style={{ fontSize: 12, color: '#22c55e', background: 'rgba(34,197,94,0.08)', border: '0.5px solid rgba(34,197,94,0.25)', borderRadius: 7, padding: '4px 10px', cursor: 'pointer' }}>
             LIVE · {countdown}s
