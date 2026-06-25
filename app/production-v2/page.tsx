@@ -2,8 +2,48 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
-function useSupabaseTable(table: string, query = '') {
-  const [data, setData] = useState<any[]>([])
+type CorrugatorOrder = {
+  id?: string | number
+  order_id?: string
+  program?: string
+  status?: string
+  length?: number
+  total_length?: number
+  set_number?: number
+  flute?: string
+  roll_width?: number
+  papers_required?: number
+  priority?: number
+}
+
+type CorrugatorRoll = {
+  id?: string | number
+  station?: string
+  position?: string
+  rem_paper?: number
+  grade?: string
+  roll_id?: string
+  diameter?: number
+  next_splice?: number
+  to_core?: number
+  shortage?: number
+}
+
+type CorrugatorPerformance = {
+  run_time_sec?: number
+  down_time_sec?: number
+  total_length?: number
+  shift_number?: number
+  elapsed_time_sec?: number
+  flute_c_length?: number
+  flute_b_length?: number
+  waste_trim?: number
+  waste_corrug?: number
+  num_changes?: number
+}
+
+function useSupabaseTable<T extends Record<string, unknown> = Record<string, unknown>>(table: string, query = '') {
+  const [data, setData] = useState<T[]>([])
   useEffect(() => {
     let q = supabase.from(table).select('*')
     // Re-apply the same ordering the page relied on
@@ -27,9 +67,9 @@ function useSupabaseTable(table: string, query = '') {
 }
 
 export default function ProductionV2() {
-  const orders = useSupabaseTable('corrugator_orders', 'select=*')
-  const rolls = useSupabaseTable('corrugator_rolls', 'select=*')
-  const perf = useSupabaseTable('corrugator_performance', 'select=*&order=created_at.desc&limit=1')
+  const orders = useSupabaseTable<CorrugatorOrder>('corrugator_orders', 'select=*')
+  const rolls = useSupabaseTable<CorrugatorRoll>('corrugator_rolls', 'select=*')
+  const perf = useSupabaseTable<CorrugatorPerformance>('corrugator_performance', 'select=*&order=created_at.desc&limit=1')
 
   const [now, setNow] = useState(new Date())
   const [authChecked, setAuthChecked] = useState(false)
@@ -58,8 +98,14 @@ export default function ProductionV2() {
         .single()
       if (error || !profile || !profile.approved) {
         setRole(null)
+      } else if (
+        profile.role === 'admin' ||
+        profile.role === 'management' ||
+        profile.role === 'production'
+      ) {
+        setRole(profile.role)
       } else {
-        setRole(profile.role as any)
+        setRole(null)
       }
       setAuthChecked(true)
     }
@@ -96,10 +142,10 @@ export default function ProductionV2() {
     return [h, m, s].map(v => String(v).padStart(2, '0')).join(':')
   }
 
-  const statusColor: any = {
+  const statusColor: Record<'PROC' | 'XMTD' | 'HIST' | 'RXMT', string> = {
     PROC: '#22c55e', XMTD: '#4f8ef7', HIST: '#475569', RXMT: '#f59e0b'
   }
-  const fluteColor: any = { B: '#4f8ef7', C: '#a855f7', BC: '#f59e0b' }
+  const fluteColor: Record<'B' | 'C' | 'BC', string> = { B: '#4f8ef7', C: '#a855f7', BC: '#f59e0b' }
 
   // Still checking auth/role — avoid flashing the wrong screen
   if (!authChecked) {
@@ -119,7 +165,7 @@ export default function ProductionV2() {
         <div style={{ background: '#070f1f', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 20, padding: 40, width: 380, textAlign: 'center' as const }}>
           <div style={{ fontSize: 16, fontWeight: 800, color: '#ef4444', marginBottom: 10 }}>Access Restricted</div>
           <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>
-            Your account isn't authorized for the Corrugator Production System. Contact a manager or admin if you believe this is incorrect.
+            Your account isn&apos;t authorized for the Corrugator Production System. Contact a manager or admin if you believe this is incorrect.
           </div>
         </div>
       </div>
@@ -422,7 +468,7 @@ export default function ProductionV2() {
               </div>
             </div>
             <div style={{ background: '#070f1f', border: '1px solid rgba(99,132,255,0.12)', borderRadius: 14, padding: 20 }}>
-              <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Today's Downtime Summary</div>
+              <div style={{ fontSize: 10, color: '#475569', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: 1.5, marginBottom: 14 }}>Today&apos;s Downtime Summary</div>
               <div style={{ color: '#475569', fontSize: 12 }}>
                 Downtime history will appear here once event logging is connected to the database.
               </div>
