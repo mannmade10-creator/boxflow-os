@@ -7,58 +7,58 @@ const slides = [
     type: 'cover',
     label: 'Introduction',
     title: 'BoxFlow OS',
-    subtitle: 'The Enterprise Operations System for Paper Manufacturing & Logistics',
-    body: 'Corrugator · Dispatch · Fleet · Production · AI · HR · Client Portal',
-    note: 'One platform. Every operation. Built from the plant floor up.',
+    subtitle: 'The Enterprise Operations System for Any Manufacturing or Logistics Company',
+    body: 'Production · Dispatch · Fleet · AI · HR · Client Portal',
+    note: 'One platform. Every operation. Every industry.',
     color: '#3b82f6',
   },
   {
     id: 2,
     type: 'problem',
     label: 'The Problem',
-    title: 'Box Plants Are Running on Legacy Systems From the 1980s',
+    title: 'Manufacturing & Logistics Companies Are Running on Disconnected Tools',
     points: [
-      '🖥️ KIWIPLAN — order queue terminal, green screen interface, deployed 1985',
-      '🖥️ Qualitek — wet-end production control, separate hardware terminal',
+      '🖥️ Production software — siloed, legacy, industry-specific terminals',
       '📋 Dispatch software — $2,000/month, not connected to production',
       '🚛 Fleet tracking — $1,500/month, separate login, separate data',
-      '👥 HR + Payroll — $800/month, no connection to floor operations',
+      '👥 HR + Payroll — $800/month, disconnected from floor operations',
       '📊 Analytics — spreadsheets, manual reports, always a day behind',
+      '📱 No mobile access — operators tied to terminals on the floor',
     ],
-    total: 'Total: $7,200+/month for DISCONNECTED, OUTDATED tools',
+    total: 'Total: $7,200+/month for DISCONNECTED, OUTDATED tools — across every industry',
     color: '#ef4444',
   },
   {
     id: 3,
     type: 'solution',
     label: 'The Solution',
-    title: 'BoxFlow OS — Everything in One Modern Platform',
+    title: 'BoxFlow OS — One Platform Configured for Your Industry',
     points: [
-      '✅ Corrugator Production System — replaces KIWIPLAN + Qualitek entirely',
-      '✅ Real-time order queue with live completion timers per order',
-      '✅ Roll stock tracker with splice timers and shortage alerts',
+      '✅ Select your industry at setup — corrugated, steel, food, trucking, warehousing, or general manufacturing',
+      '✅ Platform configures itself with your terminology, KPIs, and modules',
+      '✅ Production Floor — real-time machine status, order queue, shift performance',
       '✅ Smart Dispatch with AI truck assignment and GPS routing',
       '✅ Live Fleet Map with real-time driver tracking',
       '✅ HR + Payroll Command Center',
-      '✅ Client Portal — clients track their order from production to delivery',
+      '✅ Client Portal — customers track orders from production to delivery',
     ],
-    total: 'All of this: Starting at $599/month',
+    total: 'All of this: Starting at $599/month — any industry, any size',
     color: '#22c55e',
   },
   {
     id: 4,
-    type: 'corrugator',
-    label: 'Corrugator Module',
-    title: 'The KIWIPLAN & Qualitek Replacement',
-    features: [
-      { icon: '📋', title: 'Order Queue (AIAB)', desc: 'Full transmission queue — HIST, PROC, XMTD, RXMT with live countdown timers for every order based on current machine speed' },
-      { icon: '🎞️', title: 'Roll Stock Timers', desc: 'Real-time remaining paper calculation, time-to-splice countdown, shortage alerts with color-coded urgency per station' },
-      { icon: '📊', title: 'Shift Performance', desc: 'Elapsed time, run time, downtime, footage by flute B/C/BC, waste %, and number of order changes — all in real time' },
-      { icon: '⬇️', title: 'Downtime Logging', desc: 'One-tap downtime event logging — paper break, splice, order change, mechanical, washup, scheduled break, no orders' },
-      { icon: '⚡', title: 'DB Cruise Control', desc: 'Manager-only speed slider from 200-800 FPM. All order timers, roll timers, and completion estimates recalculate instantly' },
-      { icon: '🔐', title: 'Role-Based Access', desc: 'Machine operators clock in on-site only. Production managers access the full dashboard from anywhere — including home' },
+    type: 'industries',
+    label: 'Industries',
+    title: 'Built for Every Type of Operation',
+    industries: [
+      { icon: '📦', name: 'Corrugated & Paper', desc: 'Order queues, roll stock timers, shift performance — replaces legacy terminals', color: '#3b82f6' },
+      { icon: '🏗️', name: 'Steel & Metal', desc: 'Mill schedules, furnace monitoring, tons per shift, scrap tracking', color: '#64748b' },
+      { icon: '🍕', name: 'Food & Beverage', desc: 'Batch tracking, recipe management, HACCP compliance, yield reporting', color: '#f59e0b' },
+      { icon: '🚛', name: 'Trucking & Freight', desc: 'DAT-style load board, driver assignment, GPS tracking, rate per mile', color: '#22c55e' },
+      { icon: '🏪', name: 'Warehousing & 3PL', desc: 'Inventory management, pick rates, dock scheduling, fulfillment tracking', color: '#a855f7' },
+      { icon: '🏭', name: 'General Manufacturing', desc: 'Units per shift, OEE tracking, order management, delivery portal', color: '#ef4444' },
     ],
-    color: '#a855f7',
+    color: '#8b5cf6',
   },
   {
     id: 5,
@@ -66,10 +66,10 @@ const slides = [
     label: 'Live Demo',
     title: 'See It In Action',
     demos: [
-      { icon: '🏭', title: 'Corrugator Dashboard', desc: 'Live order queue, roll stock timers, shift performance — all updating in real time at boxflowos.com/production-v2' },
-      { icon: '🚀', title: 'Demo Mode', desc: 'Watch orders update, trucks move, and alerts fire in real time from the executive dashboard' },
-      { icon: '🗺️', title: 'Fleet Map', desc: 'Live GPS tracking with route optimization and ETA predictions for every truck' },
-      { icon: '📱', title: 'Mobile Apps', desc: 'Driver app and client order tracking app — both live on Android right now' },
+      { icon: '🏭', title: 'Production Dashboard', desc: 'Real-time machine status, order queue, and shift performance — live at boxflowos.com' },
+      { icon: '🚀', title: '60-Second Demo', desc: 'Watch the full platform in action — production, fleet, AI dispatch, and client tracking' },
+      { icon: '🗺️', title: 'Fleet Map', desc: 'Live GPS tracking with AI route optimization and ETA predictions' },
+      { icon: '📱', title: 'Mobile Apps', desc: 'Driver app and client order tracking — built for Android and iOS' },
     ],
     color: '#8b5cf6',
   },
@@ -77,12 +77,12 @@ const slides = [
     id: 6,
     type: 'market',
     label: 'Market Size',
-    title: 'Massive Market. Zero Modern Competition.',
+    title: 'Massive Market. Fragmented Competition.',
     stats: [
       { value: '$52B', label: 'Global TMS Market by 2030', color: '#3b82f6' },
-      { value: '1,400+', label: 'Corrugated box plants in the US', color: '#a855f7' },
+      { value: '500K+', label: 'Manufacturing facilities in the US', color: '#a855f7' },
       { value: '$7,200', label: 'Avg monthly spend on disconnected tools', color: '#f59e0b' },
-      { value: '1985', label: 'Year KIWIPLAN was first deployed', color: '#ef4444' },
+      { value: '1', label: 'Platform that does it all — BoxFlow OS', color: '#22c55e' },
     ],
     color: '#0ea5e9',
   },
@@ -94,7 +94,7 @@ const slides = [
     streams: [
       { name: 'Starter Plan', price: '$599/mo', desc: 'Small operations, 1 location', color: '#3b82f6' },
       { name: 'Professional Plan', price: '$1,899/mo', desc: 'Mid-size, up to 3 locations', color: '#8b5cf6' },
-      { name: 'Enterprise Plan', price: '$4,499/mo', desc: 'Large operations, unlimited', color: '#22c55e' },
+      { name: 'Enterprise Plan', price: '$4,499/mo', desc: 'Large operations, unlimited locations', color: '#22c55e' },
       { name: 'Per-Truck Add-on', price: '$15/truck/mo', desc: 'Scales with fleet size', color: '#f59e0b' },
       { name: 'White Label', price: '$799/mo', desc: 'Resellers and agencies', color: '#a855f7' },
       { name: 'API Access', price: '$299/mo', desc: 'Custom integrations', color: '#0ea5e9' },
@@ -105,20 +105,20 @@ const slides = [
     id: 8,
     type: 'traction',
     label: 'Traction',
-    title: 'Built. Tested. Ready to Scale.',
+    title: 'Built. Live. Ready to Scale.',
     metrics: [
-      { value: '15+', label: 'Core modules built', color: '#3b82f6' },
+      { value: '6', label: 'Industries supported', color: '#3b82f6' },
       { value: '2', label: 'Live SaaS products', color: '#22c55e' },
       { value: '2', label: 'Android apps built', color: '#a855f7' },
       { value: '$0', label: 'Raised to date', color: '#f59e0b' },
     ],
     points: [
-      'Full-stack SaaS built on Next.js 16 + Supabase — deployed on Vercel',
-      'Corrugator Production System live at boxflowos.com/production-v2',
+      'Full-stack SaaS built on Next.js + Supabase — deployed on Vercel',
+      'Industry-aware dashboard — configures itself per company type at signup',
       'PropFlow OS property management platform live at propflowos.com',
       'Real-time GPS with Mapbox satellite imagery integration',
-      'Stripe live payments — $63 rental application fee processing',
-      'TransUnion SmartMove credit screening integration',
+      'Stripe live payments integrated across both products',
+      'Freight dispatch board with AI driver assignment — live',
       'Android APK built — Google Play submission ready',
     ],
     color: '#f59e0b',
@@ -135,7 +135,7 @@ const slides = [
       { pct: '20%', label: 'Operations & Support', color: '#22c55e' },
       { pct: '10%', label: 'Legal & Infrastructure', color: '#f59e0b' },
     ],
-    goal: 'Goal: 50 paying customers in 12 months = $570K ARR',
+    goal: 'Goal: 50 paying customers across 6 industries in 12 months = $570K ARR',
     color: '#a855f7',
   },
 ]
@@ -205,7 +205,7 @@ export default function PitchPage() {
               <h1 style={{ fontSize: 'clamp(32px, 7vw, 80px)', fontWeight: 900, margin: '0 0 16px', letterSpacing: -2, lineHeight: 1 }}>{slide.title}</h1>
               <p style={{ fontSize: 22, color: '#94a3b8', margin: '0 0 16px' }}>{slide.subtitle}</p>
               <p style={{ fontSize: 16, color: slide.color, fontWeight: 700, letterSpacing: 2 }}>{slide.body}</p>
-              <div style={{ marginTop: 40, padding: '16px 32px', background: slide.color + '15', border: '1px solid ' + slide.color + '30', borderRadius: 16, display: 'inline-block' }}>
+              <div style={{ marginTop: 32, padding: '16px 32px', background: slide.color + '15', border: '1px solid ' + slide.color + '30', borderRadius: 16, display: 'inline-block' }}>
                 <span style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{slide.note}</span>
               </div>
               <div style={{ marginTop: 24 }}>
@@ -230,16 +230,15 @@ export default function PitchPage() {
             </div>
           )}
 
-          {slide.type === 'corrugator' && (
+          {slide.type === 'industries' && (
             <div>
-              <h1 style={{ fontSize: 'clamp(22px, 4vw, 48px)', fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
-              <p style={{ color: '#94a3b8', fontSize: 16, marginBottom: 32 }}>Live at boxflowos.com/production-v2 — replacing KIWIPLAN and Qualitek on the International Paper Oklahoma City corrugator floor.</p>
+              <h1 style={{ fontSize: 'clamp(22px, 4vw, 48px)', fontWeight: 900, margin: '0 0 32px', lineHeight: 1.1 }}>{slide.title}</h1>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-                {slide.features?.map((f: any, i: number) => (
-                  <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(168,85,247,0.2)', borderTop: '3px solid ' + slide.color, borderRadius: 16, padding: 24 }}>
-                    <div style={{ fontSize: 28, marginBottom: 10 }}>{f.icon}</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#c084fc', marginBottom: 8 }}>{f.title}</div>
-                    <div style={{ color: '#64748b', fontSize: 13, lineHeight: 1.7 }}>{f.desc}</div>
+                {slide.industries?.map((ind: any) => (
+                  <div key={ind.name} style={{ background: 'rgba(15,23,42,0.8)', border: `1px solid ${ind.color}30`, borderTop: `3px solid ${ind.color}`, borderRadius: 16, padding: 24 }}>
+                    <div style={{ fontSize: 32, marginBottom: 10 }}>{ind.icon}</div>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: ind.color, marginBottom: 8 }}>{ind.name}</div>
+                    <div style={{ color: '#64748b', fontSize: 13, lineHeight: 1.6 }}>{ind.desc}</div>
                   </div>
                 ))}
               </div>
@@ -249,7 +248,7 @@ export default function PitchPage() {
           {slide.type === 'demo' && (
             <div>
               <h1 style={{ fontSize: 'clamp(24px, 5vw, 56px)', fontWeight: 900, margin: '0 0 12px' }}>{slide.title}</h1>
-              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32 }}>Live system — not a mockup. Real data. Real production floor.</p>
+              <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32 }}>Live system — not a mockup. Real data. Works for any industry.</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 32 }}>
                 {slide.demos?.map((demo: any, i: number) => (
                   <div key={i} style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.14)', borderRadius: 20, padding: 28 }}>
@@ -262,7 +261,6 @@ export default function PitchPage() {
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' as const }}>
                 <a href="/demo" style={{ display: 'inline-block', padding: '16px 36px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 16, boxShadow: '0 0 30px rgba(239,68,68,0.3)' }}>▶ Watch 60-Second Live Demo</a>
                 <a href="/dashboard" style={{ display: 'inline-block', padding: '14px 32px', background: 'linear-gradient(135deg, #1d4ed8, #7c3aed)', color: '#fff', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>Launch BoxFlow OS →</a>
-                <a href="/production-v2" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', color: '#c084fc', borderRadius: 14, textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>View Corrugator →</a>
               </div>
             </div>
           )}
@@ -347,7 +345,7 @@ export default function PitchPage() {
         <button onClick={goPrev} disabled={current === 0} style={{ padding: '12px 28px', background: current === 0 ? 'rgba(148,163,184,0.05)' : 'rgba(15,23,42,0.8)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 12, color: current === 0 ? '#334155' : '#fff', fontWeight: 700, cursor: current === 0 ? 'not-allowed' : 'pointer', fontSize: 15 }}>
           ← Previous
         </button>
-        <div style={{ color: '#64748b', fontSize: 13 }}>Use ← → arrow keys to navigate • M.A.D.E Technologies Inc.</div>
+        <div style={{ color: '#64748b', fontSize: 13 }}>Use ← → arrow keys • M.A.D.E Technologies Inc.</div>
         <button onClick={goNext} disabled={current === slides.length - 1} style={{ padding: '12px 28px', background: current === slides.length - 1 ? 'rgba(148,163,184,0.05)' : 'linear-gradient(135deg, ' + slide.color + ', ' + slide.color + 'cc)', border: 'none', borderRadius: 12, color: current === slides.length - 1 ? '#334155' : '#fff', fontWeight: 700, cursor: current === slides.length - 1 ? 'not-allowed' : 'pointer', fontSize: 15 }}>
           Next →
         </button>
