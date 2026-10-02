@@ -32,8 +32,31 @@ export default function EnterprisePage() {
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', industry: '', size: '', message: '' })
 
-  function update(field: string, value: string) {
+    function update(field: string, value: string) {
     setForm(f => ({ ...f, [field]: value }))
+  }
+
+  async function handleSubmit() {
+    if (!form.name || !form.email || !form.industry) return
+    try {
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+      await supabase.from('demo_requests').insert({
+        name: form.name,
+        company: form.company,
+        email: form.email,
+        phone: form.phone,
+        industry: form.industry,
+        size: form.size,
+        message: form.message,
+      })
+    } catch (err) {
+      console.error(err)
+    }
+    setSubmitted(true)
   }
 
   const inputStyle: React.CSSProperties = {
@@ -219,7 +242,7 @@ export default function EnterprisePage() {
                 <textarea value={form.message} onChange={e => update('message', e.target.value)} placeholder="What software are you currently using? What's your biggest operational challenge?" style={{ ...inputStyle, height: 100, resize: 'none' as const }} />
               </div>
               <button
-                onClick={() => { if (form.name && form.email && form.industry) setSubmitted(true) }}
+                onClick={handleSubmit}
                 disabled={!form.name || !form.email || !form.industry}
                 style={{ width: '100%', padding: '16px', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: form.name && form.email && form.industry ? 'pointer' : 'not-allowed', background: form.name && form.email && form.industry ? '#3b82f6' : 'rgba(59,130,246,0.3)', border: 'none', color: '#fff' }}>
                 Request Demo →
