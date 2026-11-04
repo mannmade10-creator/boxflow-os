@@ -1,14 +1,13 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase'
 import AppSidebar from '@/components/AppSidebar'
 
 export default function SettingsPage() {
   const router = useRouter()
 
   async function handleSignOut() {
-    const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/login')
   }
