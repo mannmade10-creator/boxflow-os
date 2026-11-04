@@ -1,16 +1,7 @@
-﻿import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/api/affiliates/track",
-]);
-
-export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Capture affiliate ref cookie on landing
+export function middleware(req: NextRequest) {
   const ref = req.nextUrl.searchParams.get("ref");
   if (ref) {
     const res = NextResponse.next();
@@ -28,15 +19,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     });
     return res;
   }
-
-  if (!isPublicRoute(req)) {
-    await auth.protect();
-  }
-});
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
   ],
 };
