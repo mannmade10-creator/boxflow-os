@@ -1,8 +1,18 @@
 'use client'
 import React from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import AppSidebar from '@/components/AppSidebar'
 
 export default function SettingsPage() {
+  const router = useRouter()
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0a0f1e', padding: 20, gap: 24 }}>
       <AppSidebar active="settings" />
@@ -43,6 +53,30 @@ export default function SettingsPage() {
                 <span style={{ color: '#cbd5e1' }}>AI Engine</span>
                 <span style={{ color: '#22c55e', fontWeight: 700 }}>Online</span>
               </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(15,23,42,0.92)', border: '1px solid rgba(148,163,184,0.16)', borderRadius: 20, padding: 24 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 16 }}>Session</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
+              <div>
+                <span style={{ color: '#cbd5e1', display: 'block' }}>Sign out of BoxFlow OS</span>
+                <span style={{ color: '#64748b', fontSize: 12 }}>You will be redirected to the login page</span>
+              </div>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  background: 'rgba(239,68,68,0.15)',
+                  border: '1px solid rgba(239,68,68,0.4)',
+                  color: '#f87171',
+                  padding: '10px 20px',
+                  borderRadius: 10,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                }}
+              >
+                Sign Out
+              </button>
             </div>
           </div>
         </div>
