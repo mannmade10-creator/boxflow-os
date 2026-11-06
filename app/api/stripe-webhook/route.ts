@@ -55,6 +55,8 @@ export async function POST(req: NextRequest) {
       'Prefer': 'return=minimal',
     };
 
+    const affRef = metadata.affiliate_ref || null;
+
     // Save subscription to Supabase
     await fetch(`${supabaseUrl}/rest/v1/subscriptions`, {
       method: 'POST',
@@ -71,9 +73,43 @@ export async function POST(req: NextRequest) {
         company_name:          metadata.company_name,
         phone:                 metadata.phone,
         address:               metadata.address,
+        affiliate_ref:         affRef,
         metadata:              JSON.stringify(metadata),
       }),
     }).catch(() => {});
+
+    // Log affiliate conversion if ref present
+    if (affRef) {
+      // Look up the affiliate by ref_code
+      const affRes = await fetch(
+        `${supabaseUrl}/rest/v1/affiliates?ref_code=eq.${encodeURIComponent(affRef)}&select=id,commission_pct&limit=1`,
+        { headers }
+      ).catch(() => null);
+      const affRows: any[] = affRes ? await affRes.json().catch(() => []) : [];
+      const affiliate = affRows[0];
+
+      if (affiliate) {
+        const amount = session.amount_total ? session.amount_total / 100 : 0;
+        const commissionPct = Number(affiliate.commission_pct) || 3;
+        const commissionUsd = parseFloat((amount * commissionPct / 100).toFixed(2));
+
+        await fetch(`${supabaseUrl}/rest/v1/affiliate_conversions`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            aff_id:         affiliate.id,
+            product:        info?.product || metadata.product || 'boxflow',
+            plan:           info?.plan    || metadata.plan    || 'Starter',
+            mrr_usd:        amount,
+            commission_pct: commissionPct,
+            commission_usd: commissionUsd,
+            status:         'pending',
+            converted_at:   new Date().toISOString(),
+            notes:          `Stripe session ${session.id} — customer ${session.customer_details?.email}`,
+          }),
+        }).catch(() => {});
+      }
+    }
   }
 
   return NextResponse.json({ received: true });

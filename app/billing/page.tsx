@@ -61,6 +61,14 @@ export default function BillingPage() {
     setLoading(planId)
     try {
       const { data: { user } } = await supabase.auth.getUser()
+      // Read affiliate ref stored by layout.tsx on first visit
+      let affRef: string | null = null
+      try {
+        const ref = localStorage.getItem('aff_ref')
+        const ts  = Number(localStorage.getItem('aff_ref_ts') || '0')
+        // Honor ref for 30 days
+        if (ref && (Date.now() - ts) < 30 * 24 * 60 * 60 * 1000) affRef = ref
+      } catch(e) {}
       const res = await fetch('https://irifwmikcugfxpfhyfrm.supabase.co/functions/v1/stripe-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,6 +79,7 @@ export default function BillingPage() {
           email: user?.email || '',
           name:  user?.user_metadata?.full_name || '',
           user_id: user?.id || '',
+          affiliate_ref: affRef || undefined,
           success_url: `${window.location.origin}/billing/success`,
           cancel_url:  `${window.location.origin}/billing`,
         }),

@@ -47,15 +47,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        
-        
-        
-        
+
+
+
+
         <noscript dangerouslySetInnerHTML={{ __html: `
           <img height="1" width="1" style="display:none"
           src="https://www.facebook.com/tr?id=857558109989904&ev=PageView&noscript=1"/>
         `}} />
-        
+        {/* Affiliate ref capture — reads ?ref= from URL and stores in localStorage for 30 days */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var ref = params.get('ref');
+              if (ref) {
+                localStorage.setItem('aff_ref', ref);
+                localStorage.setItem('aff_ref_ts', Date.now().toString());
+              }
+            } catch(e) {}
+          })();
+        `}} />
       </head>
       <body style={{ margin: 0, padding: 0, background: '#020617', overflowY: 'scroll' }}>
         {children}
